@@ -1,0 +1,10 @@
+{
+  "description": "Showcases a visually stunning parallax campus website with a blue palette, delivering an engaging and user-friendly experience for students and visitors.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
