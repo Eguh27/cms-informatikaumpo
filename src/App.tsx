@@ -2289,13 +2289,13 @@ export default function App() {
       {/* ============================================================== */}
       {/* 11. FOOTER DENGAN KONTEN ASLI TI.UMPO.AC.ID                     */}
       {/* ============================================================== */}
-      <footer id="kontak" className="bg-[#041333] px-5 pb-10 pt-20 text-white lg:px-8">
+      <footer id="kontak" className="relative bg-gradient-to-b from-[#0B3A8C] to-[#062459] px-5 pb-10 pt-20 text-white lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 border-b border-white/10 pb-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div className="grid gap-12 border-b border-white/15 pb-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
             {/* Identity & Address */}
             <div>
               <div className="flex items-center gap-3">
-                <span className="grid size-11 place-items-center rounded-2xl bg-white text-[#1453d6] p-1.5">
+                <span className="grid size-11 place-items-center rounded-2xl bg-white text-[#1E6FD9] p-1.5 shadow-sm">
                   <img
                     src="https://ti.umpo.ac.id/wp-content/uploads/2026/09/LOGO-UNMUH-150x150.png"
                     alt="Logo UMPO"
@@ -2304,10 +2304,10 @@ export default function App() {
                 </span>
                 <span className="font-display text-xl font-bold">Teknik Informatika UMPO</span>
               </div>
-              <p className="mt-5 max-w-sm leading-relaxed text-[#859ac2] text-xs">
+              <p className="mt-5 max-w-sm leading-relaxed text-[#D5E3FF] text-xs">
                 Program Studi S1 Teknik Informatika, Fakultas Teknik Universitas Muhammadiyah Ponorogo. Membangun talenta digital berkarakter Islami.
               </p>
-              <div className="mt-4 text-xs text-[#a3b8e0] space-y-1">
+              <div className="mt-4 text-xs text-[#FFE8CC] space-y-1 font-medium">
                 <div>SK Ditjen DIKTI No. 378/D/T/2005</div>
                 <div>Akreditasi B BAN-PT (SK No. 0206/SKB/BAN-PT/Akred/S/I/2017)</div>
               </div>
@@ -2315,8 +2315,8 @@ export default function App() {
 
             {/* Menu Akademik */}
             <div>
-              <div className="font-display font-semibold">Jelajahi</div>
-              <div className="mt-5 grid gap-3 text-sm text-[#859ac2]">
+              <div className="font-display font-bold text-white">Jelajahi</div>
+              <div className="mt-5 grid gap-3 text-sm text-[#D5E3FF]">
                 <button onClick={() => navigateTo("profil", "sejarah")} className="text-left hover:text-white transition">
                   Sejarah Prodi
                 </button>
@@ -2343,24 +2343,24 @@ export default function App() {
 
             {/* Tautan Layanan Kampus */}
             <div>
-              <div className="font-display font-semibold">Layanan Kampus</div>
-              <div className="mt-5 grid gap-3 text-sm text-[#859ac2]">
-                <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+              <div className="font-display font-bold text-white">Layanan Kampus</div>
+              <div className="mt-5 grid gap-3 text-sm text-[#D5E3FF]">
+                <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   SPMB UMPO
                 </a>
-                <a href="https://simtik.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://simtik.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   SIMTIK (SIAKAD)
                 </a>
-                <a href="https://siskrip.simakumpo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://siskrip.simakumpo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   SISKRIP (Skripsi)
                 </a>
-                <a href="https://giat.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://giat.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   KKN GIAT UMPO
                 </a>
-                <a href="https://library.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://library.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   Perpustakaan
                 </a>
-                <a href="https://tracer.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://tracer.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   Tracer Study
                 </a>
               </div>
@@ -2368,8 +2368,8 @@ export default function App() {
 
             {/* Kontak Resmi */}
             <div>
-              <div className="font-display font-semibold">Hubungi Kami</div>
-              <div className="mt-5 grid gap-3 text-xs text-[#859ac2] leading-relaxed">
+              <div className="font-display font-bold text-white">Hubungi Kami</div>
+              <div className="mt-5 grid gap-3 text-xs text-[#D5E3FF] leading-relaxed">
                 <span>Jl. Budi Utomo No.10, Ronowijayan, Kec. Siman, Kab. Ponorogo, Jawa Timur 63471</span>
                 <span>Telp. (0352) 481124, 487662 (psw 2211)</span>
                 <span>Fax : (0352) 461796</span>
@@ -2379,14 +2379,14 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between gap-3 pt-7 text-xs text-[#687da5] md:flex-row">
+          <div className="flex flex-col justify-between gap-3 pt-7 text-xs text-[#D5E3FF]/75 md:flex-row">
             <span>© 2026 Program Studi Teknik Informatika Universitas Muhammadiyah Ponorogo.</span>
             <div className="flex gap-4">
-              <a href="https://instagram.com/informatika.umpo" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+              <a href="https://instagram.com/informatika.umpo" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                 Instagram: @informatika.umpo
               </a>
               <span>•</span>
-              <a href="https://ti.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+              <a href="https://ti.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                 ti.umpo.ac.id
               </a>
             </div>
