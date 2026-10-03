@@ -1903,38 +1903,95 @@ export default function App() {
         </section>
 
         {/* ============================================================== */}
-        {/* 6. KEHIDUPAN MAHASISWA & HIMATIF UMPO (PARALLAX BANNER ASLI)   */}
+        {/* 6. KEHIDUPAN MAHASISWA & HIMATIF UMPO                          */}
         {/* ============================================================== */}
-        <section
-          id="himatif"
-          className="relative min-h-[38rem] overflow-hidden bg-fixed bg-center bg-cover"
-          style={{
-            backgroundImage:
-              "linear-gradient(90deg,rgba(4,28,82,.9),rgba(8,53,143,.32)),url('https://images.unsplash.com/photo-1663162551013-8bb8ab151e11?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=90&w=1800')",
-          }}
-        >
-          <div className="absolute inset-0 parallax-lines opacity-30" />
-          <div className="relative mx-auto flex min-h-[38rem] max-w-7xl items-center px-5 lg:px-8">
-            <div className="max-w-2xl text-white">
-              <div className="section-label section-label-light">Kehidupan Mahasiswa & HIMATIF</div>
-              <h2 className="mt-5 font-display text-5xl font-semibold leading-[1.05] tracking-[-.045em] md:text-7xl">
-                Eksperimen. Kolaborasi. Bertumbuh.
-              </h2>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#d3e1ff]">
-                Dari Himpunan Mahasiswa Teknik Informatika (HIMATIF), coding bootcamp, hackathon, kompetisi nasional,
-                hingga riset pengabdian masyarakat, pengalaman belajarmu jauh melampaui ruang kelas.
-              </p>
-              <div className="mt-9 flex flex-wrap gap-4">
-                <a
-                  href="https://instagram.com/informatika.umpo"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 rounded-full bg-white px-7 py-3.5 font-bold text-[#134dbf] shadow-lg transition hover:-translate-y-1 hover:bg-[#e7eeff]"
-                >
-                  Lihat Instagram @informatika.umpo <ArrowRight className="size-4" />
-                </a>
+        <section id="himatif" className="relative overflow-hidden bg-[#FFFBF5] py-20 lg:py-28">
+          <div className="mx-auto max-w-7xl px-5 lg:px-8">
+            {/* Main Feature Banner */}
+            <Reveal className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#1E6FD9] via-[#1258b8] to-[#0B3A8C] p-8 md:p-14 lg:p-16 text-white shadow-[0_24px_60px_-15px_rgba(11,58,140,0.3)]">
+              {/* Background Glow & Circuit Lines */}
+              <div className="absolute -right-24 -top-24 size-96 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+              <div className="absolute -left-20 -bottom-20 size-80 rounded-full bg-[#FFB84D]/15 blur-3xl pointer-events-none" />
+              <div className="absolute inset-0 hero-grid opacity-15 pointer-events-none" />
+
+              <div className="relative z-10 max-w-3xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#FFE8CC] backdrop-blur-md border border-white/20">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> Kehidupan Mahasiswa & HIMATIF
+                </div>
+                <h2 className="mt-5 font-display text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.08] tracking-[-.04em] text-white">
+                  Eksperimen. Kolaborasi. Bertumbuh.
+                </h2>
+                <p className="mt-5 text-base md:text-lg leading-relaxed text-[#D5E3FF]">
+                  Dari Himpunan Mahasiswa Teknik Informatika (HIMATIF), coding bootcamp, hackathon, kompetisi nasional,
+                  hingga riset pengabdian masyarakat, pengalaman belajarmu jauh melampaui ruang kelas.
+                </p>
+
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <a
+                    href="https://instagram.com/informatika.umpo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2.5 rounded-full bg-white px-7 py-3.5 font-bold text-[#0B3A8C] shadow-lg shadow-black/10 transition-all hover:-translate-y-1 hover:bg-[#FFE8CC] hover:text-[#0F2A4A]"
+                  >
+                    Lihat Instagram @informatika.umpo <ArrowRight className="size-4" />
+                  </a>
+                  <button
+                    onClick={() => navigateTo("berita")}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3.5 font-bold text-white backdrop-blur-md transition-all hover:bg-white/20 hover:-translate-y-0.5"
+                  >
+                    Galeri & Berita Kegiatan
+                  </button>
+                </div>
               </div>
+            </Reveal>
+
+            {/* 3 Activity Pillars */}
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  icon: Code2,
+                  title: "Coding Bootcamp & Workshop",
+                  desc: "Sesi intensif penguasaan teknologi stack modern: React, Python, Cloud, dan AI bersama alumni serta instruktur industri.",
+                  tag: "Komunitas Belajar",
+                },
+                {
+                  icon: Award,
+                  title: "Informatics Hackathon & Expo",
+                  desc: "Ajang tahunan unjuk kebolehan inovasi digital, pameran produk software mahasiswa, dan kompetisi pemecahan masalah nyata.",
+                  tag: "Kompetisi & Prestasi",
+                },
+                {
+                  icon: Users,
+                  title: "Pengabdian Masyarakat Digital",
+                  desc: "Pemberdayaan UMKM lokal dan literasi teknologi sekolah pedesaan di Ponorogo dan sekitarnya melalui KKN tematik digital.",
+                  tag: "Dampak Sosial",
+                },
+              ].map((act, idx) => {
+                const IconC = act.icon;
+                const delay = idx === 0 ? "reveal-delay-1" : idx === 1 ? "reveal-delay-2" : "reveal-delay-3";
+                return (
+                  <Reveal key={act.title} delayClass={delay}>
+                    <div className="h-full rounded-3xl border border-[#1E6FD9]/15 bg-white p-7 shadow-[0_10px_30px_rgba(15,42,74,0.05)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#1E6FD9]/40 hover:shadow-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="grid size-12 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] shadow-xs">
+                          <IconC className="size-6" />
+                        </div>
+                        <span className="rounded-full bg-[#FFFBF5] border border-[#1E6FD9]/15 px-3 py-1 text-[11px] font-bold text-[#1E6FD9]">
+                          {act.tag}
+                        </span>
+                      </div>
+                      <h3 className="mt-5 font-display text-lg font-bold text-[#0B3A8C]">{act.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-[#4B6B94]">{act.desc}</p>
+                    </div>
+                  </Reveal>
+                );
+              })}
             </div>
+          </div>
+
+          {/* Organic Wave Divider into Fasilitas section */}
+          <div className="mt-20">
+            <WaveDivider fill="#F0F4FC" />
           </div>
         </section>
 
