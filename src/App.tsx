@@ -1154,73 +1154,92 @@ export default function App() {
         {/* ============================================================== */}
         {/* 4. KURIKULUM & ROADMAP KEILMUAN                                 */}
         {/* ============================================================== */}
-        <section id="kurikulum" className="bg-[#061d4e] py-24 text-white lg:py-32">
+        <section id="kurikulum" className="relative bg-[#EAF4FF]/70 py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+            <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <div className="section-label section-label-light">Kurikulum Masa Depan</div>
-                <h2 className="mt-5 max-w-2xl font-display text-4xl font-semibold tracking-[-.04em] md:text-6xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> Kurikulum Masa Depan
+                </div>
+                <h2 className="mt-4 max-w-2xl font-display text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.04em] text-[#0B3A8C]">
                   Pilih fokusmu. Ciptakan terobosanmu.
                 </h2>
               </div>
-              <p className="max-w-sm leading-relaxed text-[#9eb5df]">
-                Tiga rumpun kompetensi keilmuan yang dirancang bersama industri agar kompetensimu selalu relevan.
+              <p className="max-w-md text-base leading-relaxed text-[#4B6B94]">
+                Tiga rumpun kompetensi keilmuan yang dirancang bersama industri agar kompetensimu selalu relevan dengan standar global.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="mt-14 grid gap-5 lg:grid-cols-3">
-              {CURRICULUM_TRACKS.map((program) => {
+            <div className="mt-12 grid gap-6 lg:grid-cols-3">
+              {CURRICULUM_TRACKS.map((program, idx) => {
                 const IconComp = program.icon;
+                const delayClass = idx === 0 ? "reveal-delay-1" : idx === 1 ? "reveal-delay-2" : "reveal-delay-3";
                 return (
-                  <article
-                    key={program.title}
-                    className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[.06] p-7 transition-all duration-500 hover:-translate-y-2 hover:border-[#5590ff]/60 hover:bg-[#1047ad] md:p-8"
-                  >
-                    <div className="flex items-start justify-between">
-                      <span className="grid size-14 place-items-center rounded-2xl bg-white/10 text-[#82aeff] transition group-hover:bg-white group-hover:text-[#1453d6]">
-                        <IconComp className="size-7" />
-                      </span>
-                      <span className="font-display text-sm text-white/30">{program.number}</span>
-                    </div>
-                    <h3 className="mt-10 font-display text-2xl font-semibold">{program.title}</h3>
-                    <p className="mt-4 leading-relaxed text-[#aebfe1] transition group-hover:text-white/75">
-                      {program.copy}
-                    </p>
-                    <div className="mt-8 flex flex-wrap gap-2">
-                      {program.tags.map((tag) => (
-                        <span key={tag} className="rounded-full border border-white/15 px-3 py-1.5 text-xs text-white/70">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-8 border-t border-white/10 pt-4 text-xs font-semibold text-[#8ab3ff]">
-                      Prospek: {program.prospects}
-                    </div>
-                  </article>
+                  <Reveal key={program.title} delayClass={delayClass}>
+                    <article
+                      className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-[#1E6FD9]/15 bg-white p-7 shadow-[0_10px_30px_rgba(15,42,74,0.05)] transition-all duration-500 hover:-translate-y-2 hover:border-[#1E6FD9]/50 hover:shadow-[0_20px_40px_rgba(30,111,217,0.12)] md:p-8"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between">
+                          <span className="grid size-14 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] transition-colors group-hover:bg-[#1E6FD9] group-hover:text-white shadow-xs">
+                            <IconComp className="size-7" />
+                          </span>
+                          <span className="font-mono text-sm font-bold text-[#1E6FD9]/40">{program.number}</span>
+                        </div>
+                        <h3 className="mt-7 font-display text-2xl font-bold text-[#0B3A8C] transition-colors group-hover:text-[#1E6FD9]">
+                          {program.title}
+                        </h3>
+                        <p className="mt-3.5 leading-relaxed text-[#4B6B94] text-sm md:text-base">
+                          {program.copy}
+                        </p>
+                        <div className="mt-6 flex flex-wrap gap-2">
+                          {program.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full bg-[#FFFBF5] border border-[#1E6FD9]/15 px-3 py-1 text-xs font-semibold text-[#0F2A4A]"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mt-8 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9] flex items-center justify-between">
+                        <span>Prospek: {program.prospects}</span>
+                        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                      </div>
+                    </article>
+                  </Reveal>
                 );
               })}
             </div>
 
             {/* Direct Google Drive link from ti.umpo.ac.id */}
-            <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md sm:flex-row sm:px-8">
-              <div className="flex items-center gap-4">
-                <div className="grid size-12 place-items-center rounded-2xl bg-white/10 text-[#6edbff]">
-                  <FileText className="size-6" />
+            <Reveal delayClass="reveal-delay-4" className="mt-10">
+              <div className="flex flex-col items-center justify-between gap-4 rounded-3xl border border-[#1E6FD9]/20 bg-white p-6 shadow-[0_12px_32px_rgba(15,42,74,0.06)] sm:flex-row sm:px-8">
+                <div className="flex items-center gap-4">
+                  <div className="grid size-12 place-items-center rounded-2xl bg-[#FFE8CC] text-[#0F2A4A] shadow-xs">
+                    <FileText className="size-6 text-[#FFB84D]" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-[#0B3A8C] text-base">Struktur Kurikulum & Silabus Mata Kuliah</div>
+                    <div className="text-xs text-[#4B6B94]">Unduh dokumen kurikulum lengkap berformat PDF dari Google Drive resmi prodi</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-bold text-white">Struktur Kurikulum & Silabus Mata Kuliah</div>
-                  <div className="text-xs text-[#9eb5df]">Unduh dokumen kurikulum lengkap berformat PDF dari Google Drive resmi</div>
-                </div>
+                <a
+                  href="https://drive.google.com/file/d/1MBJ4e8JyA6YZPJl39maTZMhMiZ1B58SN/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#1E6FD9] px-6 py-3 text-xs font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:bg-[#0B3A8C] hover:shadow-lg"
+                >
+                  Unduh Kurikulum (Drive) <ExternalLink className="size-3.5" />
+                </a>
               </div>
-              <a
-                href="https://drive.google.com/file/d/1MBJ4e8JyA6YZPJl39maTZMhMiZ1B58SN/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-bold text-[#061d4e] transition hover:bg-[#6edbff]"
-              >
-                Unduh Kurikulum (Drive) <ExternalLink className="size-3.5" />
-              </a>
-            </div>
+            </Reveal>
+          </div>
+
+          {/* Organic Wave Divider into next section */}
+          <div className="mt-16">
+            <WaveDivider fill="#FFFBF5" />
           </div>
         </section>
 
