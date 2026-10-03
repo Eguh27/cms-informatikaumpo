@@ -1,21 +1,22 @@
-node_modules/
-dist/
-build/
-.cache/
-.env*
-.vite/
-vite.config.*.timestamp-*
-*.tsbuildinfo
-*-debug.log*
-logs/
-*.log
-.claude-replay.*
-.tmp-*
-/.figma/design-context/
+build
+dist / media
+node_modules
+.DS_Store
+.env
+.next
+next-env.d.ts
+.vercel
 
-# Platform-managed agentplat state, not project source. In the
-# client-initiated single-repo workspace layout (make's `Path: "."` spec) the
-# repo root IS the workspace root, so these land inside this repo rather than
-# beside it.
-/.plugins/
-/.opencode-skills/
+# Payload default media upload directory
+public/media/
+
+public/robots.txt
+public/sitemap*.xml
+
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
