@@ -1367,41 +1367,47 @@ export default function App() {
         {/* ============================================================== */}
         {/* 5. DOSEN & PENELITI (21 DOSEN ASLI TI UMPO)                    */}
         {/* ============================================================== */}
-        <section id="dosen" className="relative overflow-hidden bg-slate-50/50 py-24 lg:py-32">
-          {/* Ambient Lighting & Glow */}
-          <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full bg-gradient-to-br from-blue-200/40 via-indigo-100/30 to-transparent blur-3xl pointer-events-none" />
-          <div className="absolute right-0 top-1/3 size-96 rounded-full bg-cyan-100/30 blur-3xl pointer-events-none" />
+        {/* ============================================================== */}
+        {/* 5. DOSEN & PENELITI (21 DOSEN ASLI TI UMPO)                    */}
+        {/* ============================================================== */}
+        <section id="dosen" className="relative overflow-hidden bg-[#FFFBF5] py-24 lg:py-32">
+          {/* Subtle warm lighting orb */}
+          <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full bg-gradient-to-br from-[#EAF4FF] via-[#FFE8CC]/40 to-transparent blur-3xl pointer-events-none" />
+          <div className="absolute right-0 top-1/3 size-96 rounded-full bg-[#EAF4FF]/50 blur-3xl pointer-events-none" />
 
           <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
             {/* Header */}
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <div className="section-label">Tenaga Pendidik & Peneliti</div>
-                <h2 className="mt-4 max-w-2xl font-display text-4xl font-semibold tracking-[-.04em] text-[#09275e] md:text-5xl lg:text-6xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> Tenaga Pendidik & Peneliti
+                </div>
+                <h2 className="mt-4 max-w-2xl font-display text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.04em] text-[#0B3A8C]">
                   Dosen & Pakar Teknologi Berdedikasi.
                 </h2>
               </div>
               <div className="max-w-md">
-                <p className="text-sm md:text-base leading-relaxed text-[#64789c]">
+                <p className="text-sm md:text-base leading-relaxed text-[#4B6B94]">
                   21 akademisi & praktisi S2/S3 Fakultas Teknik UMPO yang aktif membimbing, meneliti, dan membawa teknologi industri mutakhir langsung ke ruang kelas.
                 </p>
-                {/* Micro stats */}
-                <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 border border-slate-200 shadow-xs">
-                    <Award className="size-3.5 text-amber-500" /> 21 Dosen Tetap
+                {/* Micro stats with AnimatedCounter */}
+                <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-[#0F2A4A]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 border border-[#1E6FD9]/15 shadow-xs">
+                    <Award className="size-3.5 text-[#FFB84D]" />
+                    <span className="font-bold text-[#1E6FD9]"><AnimatedCounter end={21} /></span> Dosen Tetap
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 border border-slate-200 shadow-xs">
-                    <BadgeCheck className="size-3.5 text-emerald-500" /> 100% Ber-NIDN
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 border border-[#1E6FD9]/15 shadow-xs">
+                    <BadgeCheck className="size-3.5 text-emerald-600" /> 100% Ber-NIDN
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 border border-slate-200 shadow-xs">
-                    <Cpu className="size-3.5 text-blue-500" /> Riset AI, RPL & IoT
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 border border-[#1E6FD9]/15 shadow-xs">
+                    <Cpu className="size-3.5 text-[#1E6FD9]" /> Riset AI, RPL & IoT
                   </span>
                 </div>
               </div>
-            </div>
+            </Reveal>
 
             {/* Filter Tabs, Style Switcher & Search Bar */}
-            <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-sm">
+            <Reveal delayClass="reveal-delay-1" className="mt-10 flex flex-col gap-4 rounded-3xl border border-[#1E6FD9]/15 bg-white p-4 shadow-sm">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 {/* Category Tabs */}
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -1416,10 +1422,10 @@ export default function App() {
                       onClick={() => {
                         setLecturerCategory(tab.key as any);
                       }}
-                      className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all duration-200 ${
+                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
                         lecturerCategory === tab.key
-                          ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
-                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                          ? "bg-[#1E6FD9] text-white shadow-md shadow-blue-600/25"
+                          : "text-[#4B6B94] hover:bg-[#EAF4FF] hover:text-[#0B3A8C]"
                       }`}
                     >
                       <span>{tab.label}</span>
@@ -1427,7 +1433,7 @@ export default function App() {
                         className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold ${
                           lecturerCategory === tab.key
                             ? "bg-white/20 text-white"
-                            : "bg-slate-100 text-slate-500"
+                            : "bg-[#FFFBF5] text-[#4B6B94]"
                         }`}
                       >
                         {tab.count}
@@ -1439,16 +1445,16 @@ export default function App() {
                 {/* Right controls: Style Switcher & Search */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   {/* Style Switcher */}
-                  <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200/80 self-start sm:self-auto">
-                    <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <div className="flex items-center rounded-xl bg-[#FFFBF5] p-1 border border-[#1E6FD9]/15 self-start sm:self-auto">
+                    <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-[#4B6B94]">
                       Gaya:
                     </span>
                     <button
                       onClick={() => setCardStyle("modern")}
                       className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
                         cardStyle === "modern"
-                          ? "bg-white text-[#1453d6] shadow-xs"
-                          : "text-slate-600 hover:text-slate-900"
+                          ? "bg-white text-[#1E6FD9] shadow-xs"
+                          : "text-[#4B6B94] hover:text-[#0B3A8C]"
                       }`}
                       title="Gaya Kartu Modern Studio"
                     >
@@ -1458,8 +1464,8 @@ export default function App() {
                       onClick={() => setCardStyle("badge")}
                       className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
                         cardStyle === "badge"
-                          ? "bg-white text-[#1453d6] shadow-xs"
-                          : "text-slate-600 hover:text-slate-900"
+                          ? "bg-white text-[#1E6FD9] shadow-xs"
+                          : "text-[#4B6B94] hover:text-[#0B3A8C]"
                       }`}
                       title="Gaya ID Badge / Horizontal"
                     >
@@ -1469,12 +1475,12 @@ export default function App() {
                       onClick={() => setCardStyle("cyber")}
                       className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
                         cardStyle === "cyber"
-                          ? "bg-[#06183d] text-cyan-300 shadow-xs"
-                          : "text-slate-600 hover:text-slate-900"
+                          ? "bg-[#EAF4FF] text-[#0B3A8C] shadow-xs"
+                          : "text-[#4B6B94] hover:text-[#0B3A8C]"
                       }`}
-                      title="Gaya Dark Cyber Glass"
+                      title="Gaya Minimalist Card"
                     >
-                      Cyber Glass
+                      Minimalist
                     </button>
                   </div>
 
@@ -1743,16 +1749,16 @@ export default function App() {
                   );
                 }
 
-                // Style 3: Cyber Glass (Futuristic Dark Navy)
+                // Style 3: Minimalist Card (Light & Crisp)
                 return (
                   <article
                     key={lecturer.name}
                     onClick={() => setSelectedLecturer(lecturer)}
-                    className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-blue-900/60 bg-gradient-to-b from-[#081b3d] to-[#040e22] text-white shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/50 hover:shadow-[0_20px_45px_-10px_rgba(6,182,212,0.18)] cursor-pointer"
+                    className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#1E6FD9]/15 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-[#1E6FD9]/40 hover:shadow-[0_20px_45px_-10px_rgba(30,111,217,0.15)] cursor-pointer"
                   >
                     {/* Top Portrait */}
-                    <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-[#0e2a5e] to-[#081b3d]">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(110,219,255,0.2),transparent_70%)]" />
+                    <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-[#EAF4FF] to-white">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(30,111,217,0.1),transparent_70%)]" />
 
                       {/* Badges */}
                       <div className="absolute left-3.5 top-3.5 z-10">
@@ -1762,19 +1768,19 @@ export default function App() {
                           </span>
                         )}
                         {lecturer.category === "lab" && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-500/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-600/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
                             <Cpu className="size-3.5" /> Ka. Lab
                           </span>
                         )}
                         {lecturer.category === "dosen" && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1E6FD9]/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
                             <GraduationCap className="size-3.5" /> Dosen
                           </span>
                         )}
                       </div>
 
                       <div className="absolute right-3.5 top-3.5 z-10">
-                        <span className="grid size-7 place-items-center rounded-full bg-black/40 text-cyan-300 backdrop-blur-md border border-cyan-400/30">
+                        <span className="grid size-7 place-items-center rounded-full bg-white/90 text-emerald-600 shadow-xs border border-white">
                           <BadgeCheck className="size-4" />
                         </span>
                       </div>
@@ -1786,16 +1792,16 @@ export default function App() {
                         onError={(e) => {
                           (e.target as HTMLElement).setAttribute(
                             "src",
-                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='%23EAF4FF'%3E%3Crect width='200' height='200' fill='%23EAF4FF'/%3E%3Ccircle cx='100' cy='80' r='40' fill='%231E6FD9' opacity='0.3'/%3E%3Cpath d='M30 180 C30 130 70 120 100 120 C130 120 170 130 170 180 Z' fill='%231E6FD9' opacity='0.3'/%3E%3C/svg%3E"
                           );
                         }}
                       />
-                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#081b3d] to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white/90 to-transparent" />
 
                       {/* Hover pill */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-cyan-400 px-4 py-2 text-xs font-bold text-[#06183d] shadow-xl">
-                          <Eye className="size-3.5 text-[#06183d]" /> Lihat Profil
+                      <div className="absolute inset-0 flex items-center justify-center bg-slate-900/15 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0B3A8C] shadow-lg">
+                          <Eye className="size-3.5 text-[#1E6FD9]" /> Lihat Profil
                         </span>
                       </div>
                     </div>
@@ -1803,33 +1809,33 @@ export default function App() {
                     {/* Content */}
                     <div className="flex flex-1 flex-col justify-between p-5 pt-3">
                       <div>
-                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-300">
+                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#1E6FD9]">
                           {lecturer.role}
                         </div>
-                        <h3 className="mt-1 font-display text-[15px] font-bold leading-snug text-white group-hover:text-cyan-200 transition-colors line-clamp-2">
+                        <h3 className="mt-1 font-display text-[15px] font-bold leading-snug text-[#0B3A8C] group-hover:text-[#1E6FD9] transition-colors line-clamp-2">
                           {lecturer.name}
                         </h3>
 
                         <div className="mt-2.5 flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1.5 rounded-lg border border-blue-800/80 bg-blue-950/80 px-2.5 py-1 font-mono text-[11px] font-semibold text-blue-200">
-                            <span className="font-sans text-[10px] font-bold text-blue-400">NIDN</span>
+                          <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#1E6FD9]/15 bg-[#FFFBF5] px-2.5 py-1 font-mono text-[11px] font-semibold text-[#0F2A4A]">
+                            <span className="font-sans text-[10px] font-bold text-[#4B6B94]">NIDN</span>
                             {lecturer.nidn}
                           </span>
-                          <span className="text-[10px] font-mono text-cyan-400/80">INFORMATIKA</span>
+                          <span className="text-[10px] font-mono text-[#1E6FD9]">INFORMATIKA</span>
                         </div>
 
-                        <div className="mt-3 rounded-xl border border-blue-900/60 bg-blue-950/40 p-3">
-                          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300/80">
-                            <Sparkles className="size-3 text-amber-400" /> Bidang Riset & Fokus
+                        <div className="mt-3 rounded-xl border border-[#1E6FD9]/15 bg-[#EAF4FF]/40 p-3">
+                          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#1E6FD9]">
+                            <Sparkles className="size-3 text-[#FFB84D]" /> Bidang Riset & Fokus
                           </div>
-                          <p className="mt-1 line-clamp-2 text-xs font-medium text-slate-300 leading-relaxed">
+                          <p className="mt-1 line-clamp-2 text-xs font-medium text-[#4B6B94] leading-relaxed">
                             {lecturer.focus}
                           </p>
                         </div>
                       </div>
 
-                      <div className="mt-4 flex items-center justify-between border-t border-blue-900/60 pt-3">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300 group-hover:text-cyan-200 transition-colors">
+                      <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E6FD9] group-hover:text-[#0B3A8C] transition-colors">
                           Detail Lengkap <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
                         </span>
                         <a
@@ -1837,7 +1843,7 @@ export default function App() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-[#1ebd59] shadow-md shadow-emerald-500/20"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-[#1ebd59] shadow-sm shadow-emerald-500/20"
                           title={`Chat WhatsApp dengan ${lecturer.name}`}
                         >
                           <WhatsAppIcon className="size-3.5" />
@@ -1861,7 +1867,7 @@ export default function App() {
                       setLecturerSearch("");
                       setLecturerCategory("semua");
                     }}
-                    className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#071c4a]"
+                    className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#1E6FD9] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#0B3A8C]"
                   >
                     Reset Pencarian
                   </button>
@@ -1873,7 +1879,7 @@ export default function App() {
             <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
                 onClick={() => navigateTo("dosen")}
-                className="group inline-flex items-center gap-3 rounded-full bg-[#1453d6] px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-[#0e3ea6]"
+                className="group inline-flex items-center gap-3 rounded-full bg-[#1E6FD9] px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-[#0B3A8C]"
               >
                 Buka Direktori Lengkap 21 Dosen TI UMPO
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
@@ -1881,13 +1887,18 @@ export default function App() {
               {lecturerCategory === "semua" && !lecturerSearch && filteredLecturers.length > 8 && (
                 <button
                   onClick={() => setShowAllLecturers(!showAllLecturers)}
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#1E6FD9]/20 bg-white px-6 py-3.5 text-xs font-bold text-[#0B3A8C] transition hover:bg-[#EAF4FF]"
                 >
                   {showAllLecturers ? "Ringkas Tampilan" : "Buka Semua di Halaman Ini"}
                   <ChevronDown className={`size-3.5 transition-transform ${showAllLecturers ? "rotate-180" : ""}`} />
                 </button>
               )}
             </div>
+          </div>
+
+          {/* Organic Wave Divider into next section */}
+          <div className="mt-20">
+            <WaveDivider fill="#EAF4FF" />
           </div>
         </section>
 
