@@ -1505,7 +1505,7 @@ export default function App() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
 
             {/* Active search / filter status counter */}
             {(lecturerSearch.trim() || lecturerCategory !== "semua") && (
@@ -2091,21 +2091,26 @@ export default function App() {
         {/* ============================================================== */}
         {/* 8. MITRA RESMI KAMPUS                                          */}
         {/* ============================================================== */}
-        <section className="border-y border-slate-200 bg-white py-14">
+        <section className="relative border-y border-[#1E6FD9]/15 bg-white py-16">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <div className="text-center">
-              <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Our Strategic Partners</div>
-              <h3 className="mt-2 font-display text-2xl font-bold text-[#09275e]">Kemitraan Industri & Teknologi Global</h3>
-            </div>
+            <Reveal className="text-center">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20">
+                <Sparkles className="size-3 text-[#FFB84D]" /> Strategic Partners
+              </div>
+              <h3 className="mt-3 font-display text-2xl md:text-3xl font-bold text-[#0B3A8C]">
+                Kemitraan Industri & Teknologi Global
+              </h3>
+            </Reveal>
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {PARTNERS.map((partner) => (
-                <div
-                  key={partner.name}
-                  className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center transition hover:-translate-y-1 hover:border-[#1453d6] hover:bg-white hover:shadow-md"
-                >
-                  <div className="font-display text-base font-bold text-[#09275e]">{partner.name}</div>
-                  <div className="mt-1 text-[11px] text-[#59709b]">{partner.label}</div>
-                </div>
+              {PARTNERS.map((partner, idx) => (
+                <Reveal key={partner.name} delayClass={`reveal-delay-${(idx % 4) + 1}`}>
+                  <div
+                    className="flex flex-col justify-between rounded-2xl border border-[#1E6FD9]/15 bg-[#FFFBF5] p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[#1E6FD9] hover:bg-white hover:shadow-md"
+                  >
+                    <div className="font-display text-base font-bold text-[#0B3A8C]">{partner.name}</div>
+                    <div className="mt-1 text-[11px] font-semibold text-[#4B6B94]">{partner.label}</div>
+                  </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -2114,12 +2119,14 @@ export default function App() {
         {/* ============================================================== */}
         {/* 9. BERITA TERBARU (KONTEN ASLI TI.UMPO.AC.ID)                  */}
         {/* ============================================================== */}
-        <section id="berita" className="py-24 lg:py-32">
+        <section id="berita" className="relative bg-[#FFFBF5] py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <div className="section-label">Cerita & Pengumuman</div>
-                <h2 className="mt-5 font-display text-4xl font-semibold tracking-[-.04em] text-[#09275e] md:text-6xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> Cerita & Pengumuman
+                </div>
+                <h2 className="mt-4 font-display text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.04em] text-[#0B3A8C]">
                   Yang sedang terjadi.
                 </h2>
               </div>
@@ -2128,65 +2135,71 @@ export default function App() {
                   <button
                     key={cat}
                     onClick={() => setNewsFilter(cat)}
-                    className={`rounded-full px-4 py-2 text-xs font-bold transition ${
+                    className={`rounded-full px-5 py-2 text-xs font-bold transition-all duration-200 ${
                       newsFilter === cat
-                        ? "bg-[#1453d6] text-white"
-                        : "border border-slate-200 bg-white text-slate-600 hover:border-slate-400"
+                        ? "bg-[#1E6FD9] text-white shadow-md shadow-blue-500/25"
+                        : "border border-[#1E6FD9]/20 bg-white text-[#4B6B94] hover:bg-[#EAF4FF] hover:text-[#0B3A8C]"
                     }`}
                   >
                     {cat}
                   </button>
                 ))}
               </div>
-            </div>
+            </Reveal>
 
-            <div className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
-              {filteredNews.map((item) => (
-                <article key={item.id} className="group flex flex-col justify-between rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm transition duration-500 hover:-translate-y-1.5 hover:shadow-xl">
-                  <div>
-                    {item.image ? (
-                      <div className="relative overflow-hidden rounded-2xl bg-slate-100">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-105"
-                        />
-                        <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#1453d6] backdrop-blur">
-                          {item.category}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="flex aspect-[16/6] items-center justify-between rounded-2xl bg-[#09275e] p-6 text-white">
-                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{item.category}</span>
-                        <Bookmark className="size-5 text-white/50" />
-                      </div>
-                    )}
+            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredNews.map((item, idx) => (
+                <Reveal key={item.id} delayClass={`reveal-delay-${(idx % 3) + 1}`}>
+                  <article className="group flex h-full flex-col justify-between rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#1E6FD9]/40 hover:shadow-xl">
+                    <div>
+                      {item.image ? (
+                        <div className="relative overflow-hidden rounded-2xl bg-[#EAF4FF]">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-105"
+                            onError={(e) => {
+                              // Safe fallback to building crop without breaking rules
+                              (e.target as HTMLElement).setAttribute("src", "/assets/hero/gedung-cerah.webp");
+                            }}
+                          />
+                          <span className="absolute left-3.5 top-3.5 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#1E6FD9] shadow-sm backdrop-blur">
+                            {item.category}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex aspect-[16/6] items-center justify-between rounded-2xl bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C] p-6 text-white shadow-inner">
+                          <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{item.category}</span>
+                          <Bookmark className="size-5 text-white/70" />
+                        </div>
+                      )}
 
-                    <div className="pt-5">
-                      <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-[#7386a8]">
-                        <Calendar className="size-3.5" />
-                        <span>{item.date}</span>
-                        <span>•</span>
-                        <span>{item.readTime}</span>
+                      <div className="pt-5">
+                        <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-[#4B6B94]">
+                          <Calendar className="size-3.5 text-[#1E6FD9]" />
+                          <span>{item.date}</span>
+                          <span>•</span>
+                          <span>{item.readTime}</span>
+                        </div>
+                        <h3 className="mt-2.5 font-display text-lg font-bold leading-snug text-[#0B3A8C] transition group-hover:text-[#1E6FD9]">
+                          {item.title}
+                        </h3>
+                        <p className="mt-2 text-xs leading-relaxed text-[#4B6B94]">{item.excerpt}</p>
                       </div>
-                      <h3 className="mt-2.5 font-display text-lg font-semibold leading-snug text-[#0b2b66] transition group-hover:text-[#2f6dff]">
-                        {item.title}
-                      </h3>
-                      <p className="mt-2 text-xs leading-relaxed text-[#64789c]">{item.excerpt}</p>
                     </div>
-                  </div>
 
-                  <div className="pt-4 border-t border-slate-100 mt-4">
-                    <a
-                      href="https://ti.umpo.ac.id/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1453d6] hover:text-[#2f6dff]"
-                    >
-                      Baca Selengkapnya di Portal <ArrowUpRight className="size-3.5" />
-                    </a>
-                  </div>
-                </article>
+                    <div className="pt-4 border-t border-slate-100 mt-4">
+                      <a
+                        href="https://ti.umpo.ac.id/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E6FD9] hover:text-[#0B3A8C]"
+                      >
+                        Baca Selengkapnya di Portal <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </a>
+                    </div>
+                  </article>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -2195,36 +2208,43 @@ export default function App() {
         {/* ============================================================== */}
         {/* 10. PENDAFTARAN MAHASISWA BARU (BANNER ASLI)                   */}
         {/* ============================================================== */}
-        <section id="admissions" className="px-5 pb-10 lg:px-8">
-          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-[#1453d6] px-6 py-16 text-center text-white md:px-16 md:py-24">
-            <div className="absolute -left-20 -top-20 size-72 rounded-full border-[3rem] border-white/5 pointer-events-none" />
-            <div className="absolute -bottom-36 -right-20 size-96 rounded-full border-[4rem] border-white/5 pointer-events-none" />
-            <div className="relative">
-              <Sparkles className="mx-auto size-10 text-[#9fc0ff]" />
-              <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-semibold tracking-[-.045em] md:text-6xl">
-                Siap menjadi bagian dari Teknik Informatika UMPO?
-              </h2>
-              <p className="mx-auto mt-5 max-w-xl text-lg text-[#c9dcff]">
-                Mulai perjalananmu bersama Informatika UMPO dan ciptakan inovasi teknologi yang bermakna bagi bangsa dan umat.
-              </p>
-              <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-                <a
-                  href="https://spmb.umpo.ac.id/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full bg-white px-7 py-4 font-bold text-[#124bb8] shadow-xl transition hover:-translate-y-1"
-                >
-                  Daftar Sekarang (spmb.umpo.ac.id)
-                </a>
-                <button
-                  onClick={() => setModalType("download")}
-                  className="rounded-full border border-white/30 px-7 py-4 font-bold text-white transition hover:bg-white/10"
-                >
-                  Unduh Panduan & Template
-                </button>
+        <section id="admissions" className="bg-[#FFFBF5] px-5 pb-16 lg:px-8">
+          <Reveal>
+            <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#1E6FD9] via-[#155fc2] to-[#0B3A8C] px-6 py-16 text-center text-white md:px-16 md:py-24 shadow-[0_24px_60px_-15px_rgba(11,58,140,0.3)]">
+              {/* Background ambient accents */}
+              <div className="absolute -left-20 -top-20 size-72 rounded-full border-[3rem] border-white/5 pointer-events-none" />
+              <div className="absolute -bottom-36 -right-20 size-96 rounded-full border-[4rem] border-white/5 pointer-events-none" />
+              <div className="absolute right-1/4 top-1/4 size-48 rounded-full bg-[#FFB84D]/20 blur-3xl pointer-events-none" />
+
+              <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#FFE8CC] backdrop-blur-md border border-white/20 mb-4">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> PMB TA 2025/2026
+                </div>
+                <h2 className="mx-auto mt-2 max-w-3xl font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.04em] text-white leading-tight">
+                  Siap menjadi bagian dari Teknik Informatika UMPO?
+                </h2>
+                <p className="mx-auto mt-5 max-w-xl text-base md:text-lg text-[#D5E3FF] leading-relaxed">
+                  Mulai perjalananmu bersama Informatika UMPO dan ciptakan inovasi teknologi yang bermakna bagi bangsa dan umat.
+                </p>
+                <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+                  <a
+                    href="https://spmb.umpo.ac.id/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-[#0B3A8C] shadow-xl transition hover:-translate-y-1 hover:bg-[#FFE8CC] hover:text-[#0F2A4A]"
+                  >
+                    Daftar Sekarang (spmb.umpo.ac.id) <ArrowRight className="size-4" />
+                  </a>
+                  <button
+                    onClick={() => setModalType("download")}
+                    className="rounded-full border border-white/30 bg-white/10 px-8 py-4 font-bold text-white transition hover:bg-white/20 hover:-translate-y-0.5"
+                  >
+                    Unduh Panduan & Template
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
       )}
