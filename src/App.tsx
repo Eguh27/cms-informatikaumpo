@@ -391,6 +391,114 @@ const getWhatsAppUrl = (lecturerName: string) => {
   return `https://wa.me/6282267868648?text=${encodeURIComponent(text)}`;
 };
 
+// Animated Number Counter on Viewport Entry
+function AnimatedCounter({ end, duration = 1200, suffix = "" }: { end: number; duration?: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasStarted) {
+          setHasStarted(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [hasStarted]);
+
+  useEffect(() => {
+    if (!hasStarted) return;
+    let startTime: number | null = null;
+    let frameId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(ease * end));
+
+      if (progress < 1) {
+        frameId = requestAnimationFrame(step);
+      } else {
+        setCount(end);
+      }
+    };
+    frameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frameId);
+  }, [hasStarted, end, duration]);
+
+  return <span ref={ref}>{count.toLocaleString("id-ID")}{suffix}</span>;
+}
+
+// Reveal Wrapper Component for Scroll Animations
+function Reveal({
+  children,
+  className = "",
+  delayClass = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delayClass?: string;
+}) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActive(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`reveal-init ${active ? "reveal-active" : ""} ${delayClass} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+// Organic SVG Wave Divider
+function WaveDivider({
+  fill = "#FFFFFF",
+  className = "",
+  flip = false,
+}: {
+  fill?: string;
+  className?: string;
+  flip?: boolean;
+}) {
+  return (
+    <div className={`w-full overflow-hidden leading-none ${className}`} aria-hidden="true">
+      <svg
+        viewBox="0 0 1440 84"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`w-full h-10 md:h-16 lg:h-20 ${flip ? "rotate-180" : ""}`}
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,24 C320,72 640,-12 960,36 C1200,72 1360,28 1440,24 L1440,84 L0,84 Z"
+          fill={fill}
+        />
+      </svg>
+    </div>
+  );
+}
+
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -961,71 +1069,85 @@ export default function App() {
         {/* ============================================================== */}
         {/* 3. PROFIL & TENTANG KAMI DENGAN KONTEN RESMI TI.UMPO.AC.ID    */}
         {/* ============================================================== */}
-        <section id="profil" className="relative overflow-hidden py-24 lg:py-36">
-          <div className="orb absolute -left-32 top-32 size-80 rounded-full bg-[#d9e7ff] blur-3xl pointer-events-none" />
+        <section id="profil" className="relative overflow-hidden bg-[#FFFBF5] py-24 lg:py-32">
+          {/* Subtle warm glow orb */}
+          <div className="orb absolute -left-32 top-32 size-80 rounded-full bg-[#FFE8CC]/40 blur-3xl pointer-events-none" />
+          <div className="orb absolute right-0 top-1/2 size-96 rounded-full bg-[#EAF4FF]/60 blur-3xl pointer-events-none" />
+
           <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
-            <div className="relative">
-              <div className="overflow-hidden rounded-[2.5rem] shadow-[0_32px_80px_rgba(14,58,146,.18)]">
+            <Reveal className="relative">
+              <div className="overflow-hidden rounded-[2.5rem] border border-[#1E6FD9]/15 bg-white p-2 shadow-[0_20px_60px_-15px_rgba(15,42,74,0.12)]">
                 <img
-                  src="https://ti.umpo.ac.id/wp-content/uploads/2026/09/gedung-ti-1024x820.webp"
+                  src="/assets/hero/gedung-cerah.webp"
                   alt="Gedung Fakultas Teknik dan Program Studi Teknik Informatika UMPO"
-                  className="aspect-[4/3.2] w-full object-cover transition duration-700 hover:scale-105"
+                  className="aspect-[4/3.2] w-full rounded-[2rem] object-cover object-center transition duration-700 hover:scale-105"
                 />
               </div>
-              <div className="absolute -bottom-8 -right-4 max-w-72 rounded-3xl border border-white/50 bg-white/90 p-5 shadow-2xl backdrop-blur-xl md:right-8">
+              <div className="absolute -bottom-8 -right-4 max-w-72 rounded-3xl border border-white/80 bg-white/95 p-5 shadow-[0_16px_36px_rgba(11,58,140,0.12)] backdrop-blur-xl md:right-6">
                 <div className="flex items-center gap-3">
-                  <div className="grid size-10 place-items-center rounded-2xl bg-[#1453d6] text-white">
+                  <div className="grid size-11 place-items-center rounded-2xl bg-[#1E6FD9] text-white shadow-md shadow-blue-500/25">
                     <GraduationCap className="size-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#08235b]">Gelar Kelulusan</div>
-                    <div className="font-display text-base font-extrabold text-[#2f6dff]">S.Kom. (Sarjana Komputer)</div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-[#4B6B94]">Gelar Kelulusan</div>
+                    <div className="font-display text-base font-extrabold text-[#0B3A8C]">S.Kom. (Sarjana Komputer)</div>
                   </div>
                 </div>
-                <p className="mt-2 text-xs leading-relaxed text-[#59709b]">
-                  “Membangun talenta digital berkarakter Islami untuk masa depan yang lebih baik.”
+                <p className="mt-2.5 text-xs leading-relaxed text-[#4B6B94]">
+                  &ldquo;Membangun talenta digital berkarakter Islami untuk masa depan yang lebih baik.&rdquo;
                 </p>
               </div>
-            </div>
+            </Reveal>
 
-            <div className="lg:pl-10">
-              <div className="section-label">Profil Program Studi</div>
-              <h2 className="mt-5 font-display text-4xl font-semibold leading-tight tracking-[-.04em] text-[#09275e] md:text-6xl">
+            <Reveal delayClass="reveal-delay-2" className="lg:pl-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20">
+                <Sparkles className="size-3.5 text-[#FFB84D]" /> Profil Program Studi
+              </div>
+              <h2 className="mt-5 font-display text-4xl font-extrabold leading-tight tracking-[-.04em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
                 Teknik Informatika UMPO
               </h2>
-              <p className="mt-6 text-lg leading-relaxed text-[#59709b]">
+              <p className="mt-6 text-base md:text-lg leading-relaxed text-[#4B6B94]">
                 Program studi Teknik Informatika merupakan salah satu prodi jenjang S1 unggulan di kalangan
                 Universitas Muhammadiyah Ponorogo yang berdiri pada tahun 2005 dengan izin penyelenggaraan berdasarkan{" "}
-                <strong className="text-[#09275e]">SK Ditjen DIKTI No. 378/D/T/2005</strong>. Telah terakreditasi BAN-PT{" "}
-                <strong className="text-[#09275e]">No. 0206/SKB/BAN-PT/Akred/S/I/2017</strong> dengan Peringkat B.
+                <strong className="text-[#0B3A8C]">SK Ditjen DIKTI No. 378/D/T/2005</strong>. Telah terakreditasi BAN-PT{" "}
+                <strong className="text-[#0B3A8C]">No. 0206/SKB/BAN-PT/Akred/S/I/2017</strong> dengan Peringkat B.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <button
                   onClick={() => navigateTo("profil", "sejarah")}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-[#0f44b3]"
+                  className="inline-flex items-center gap-2.5 rounded-full bg-[#1E6FD9] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:-translate-y-0.5 hover:bg-[#0B3A8C] hover:shadow-xl"
                 >
                   <BookOpen className="size-4" /> Baca Sejarah Prodi
                 </button>
                 <button
                   onClick={() => navigateTo("profil", "visimisi")}
-                  className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-6 py-3.5 text-sm font-bold text-[#1453d6] transition hover:-translate-y-0.5 hover:border-[#1453d6]"
+                  className="inline-flex items-center gap-2.5 rounded-full border-1.5 border-[#1E6FD9]/30 bg-[#FFFBF5] px-7 py-3.5 text-sm font-bold text-[#0B3A8C] transition-all hover:-translate-y-0.5 hover:border-[#1E6FD9] hover:bg-[#EAF4FF]"
                 >
-                  <Award className="size-4" /> Visi, Misi & Roadmap
+                  <Award className="size-4 text-[#FFB84D]" /> Visi, Misi & Roadmap
                 </button>
               </div>
 
               <div className="mt-9 grid grid-cols-2 gap-5">
-                <div className="rounded-3xl bg-white p-6 shadow-[0_16px_40px_rgba(22,62,135,.08)]">
-                  <div className="font-display text-4xl font-bold text-[#1453d6]">2</div>
-                  <div className="mt-2 text-sm font-semibold">Laboratorium Terpadu</div>
+                <div className="rounded-3xl border border-[#1E6FD9]/10 bg-white p-6 shadow-[0_12px_32px_rgba(15,42,74,0.06)]">
+                  <div className="font-display text-4xl font-extrabold text-[#1E6FD9]">
+                    <AnimatedCounter end={2} />
+                  </div>
+                  <div className="mt-2 text-sm font-bold text-[#0F2A4A]">Laboratorium Terpadu</div>
+                  <div className="mt-0.5 text-xs text-[#4B6B94]">Lab Jaringan IoT & Lab RPL</div>
                 </div>
-                <div className="rounded-3xl bg-[#1453d6] p-6 text-white shadow-[0_16px_40px_rgba(20,83,214,.22)]">
-                  <div className="font-display text-4xl font-bold">1:18</div>
-                  <div className="mt-2 text-sm font-medium text-white/75">Rasio Dosen dan Mahasiswa</div>
+                <div className="rounded-3xl border border-[#FFB84D]/30 bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C] p-6 text-white shadow-[0_16px_36px_rgba(30,111,217,0.25)]">
+                  <div className="font-display text-4xl font-extrabold text-[#FFE8CC]">1:18</div>
+                  <div className="mt-2 text-sm font-bold">Rasio Dosen & Mahasiswa</div>
+                  <div className="mt-0.5 text-xs text-white/80">Pendampingan intensif & fokus</div>
                 </div>
               </div>
-            </div>
+            </Reveal>
+          </div>
+
+          {/* Organic Wave Divider into next section */}
+          <div className="mt-20">
+            <WaveDivider fill="#EAF4FF" />
           </div>
         </section>
 
