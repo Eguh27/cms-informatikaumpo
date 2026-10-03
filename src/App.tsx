@@ -1244,6 +1244,127 @@ export default function App() {
         </section>
 
         {/* ============================================================== */}
+        {/* PINNED SECTION: PERJALANAN 4 TAHUN MAHASISWA (STORYTELLING PIN) */}
+        {/* ============================================================== */}
+        <section className="relative bg-[#FFFBF5] py-20 lg:py-28 overflow-hidden">
+          <div className="mx-auto max-w-7xl px-5 lg:px-8">
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+              
+              {/* Left Column: Pinned Storytelling Header & Navigation */}
+              <div className="lg:col-span-5 lg:sticky lg:top-28">
+                <Reveal>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                    <Sparkles className="size-3.5 text-[#FFB84D]" /> Roadmap Mahasiswa
+                  </div>
+                  <h2 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-[-.035em] text-[#0B3A8C] leading-[1.15]">
+                    Transformasi 4 Tahun: Dari Nol Menuju Tech Leader.
+                  </h2>
+                  <p className="mt-5 text-base leading-relaxed text-[#4B6B94]">
+                    Setiap tahun akademik di Teknik Informatika UMPO dirancang berjenjang dan terstruktur—menghubungkan teori logika, praktikum intensif, hingga portofolio industri nyata.
+                  </p>
+                </Reveal>
+
+                {/* Micro Visual Highlight Card */}
+                <Reveal delayClass="reveal-delay-2" className="mt-8 hidden sm:block">
+                  <div className="rounded-3xl border border-[#1E6FD9]/15 bg-white p-6 shadow-[0_12px_32px_rgba(15,42,74,0.06)]">
+                    <div className="flex items-center gap-3">
+                      <div className="grid size-10 place-items-center rounded-2xl bg-[#FFE8CC] text-[#0F2A4A]">
+                        <CheckCircle2 className="size-5 text-[#FFB84D]" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-[#0B3A8C]">Kurikulum Berbasis Capaian (OBE)</div>
+                        <div className="text-xs text-[#4B6B94]">144 SKS • 8 Semester • Siap Kerja</div>
+                      </div>
+                    </div>
+                    <div className="mt-4 border-t border-slate-100 pt-3 flex items-center justify-between text-xs text-[#1E6FD9] font-bold">
+                      <span>Akreditasi B BAN-PT</span>
+                      <span className="text-[#FFB84D]">★ Unggulan Kampus</span>
+                    </div>
+                  </div>
+                </Reveal>
+              </div>
+
+              {/* Right Column: Progressive Step Cards */}
+              <div className="lg:col-span-7 space-y-8">
+                {[
+                  {
+                    step: "01",
+                    year: "Tahun 1 (Semester 1 - 2)",
+                    title: "Fondasi Komputasi & Pemrograman Dasar",
+                    desc: "Membangun fondasi logika berpikir algorithmic problem solving, matematika diskrit, arsitektur komputer, serta penguasaan bahasa pemrograman fundamental seperti C++, Python, dan dasar rekayasa sistem.",
+                    tags: ["Algoritma & Pemrograman", "Struktur Data", "Matematika Diskrit", "Etika Profesi"],
+                    highlight: "Pengenalan Ekosistem Lab & Coding Camp HIMATIF",
+                  },
+                  {
+                    step: "02",
+                    year: "Tahun 2 (Semester 3 - 4)",
+                    title: "Eksplorasi Peminatan & Praktikum Laboratorium",
+                    desc: "Mendalami arsitektur perangkat lunak modern, basis data relasional & non-relasional, jaringan komputer TCP/IP, dan pemrograman berorientasi objek di Lab Jaringan & Lab Rekayasa Perangkat Lunak.",
+                    tags: ["Pemrograman Berorientasi Objek", "Basis Data Lanjut", "Jaringan Komputer", "Sistem Operasi"],
+                    highlight: "Praktikum Langsung di 2 Lab Terpadu UMPO",
+                  },
+                  {
+                    step: "03",
+                    year: "Tahun 3 (Semester 5 - 6)",
+                    title: "Riset Terapan, MBKM & Magang Industri",
+                    desc: "Mahasiswa berkesempatan mengikuti program Magang Bersertifikat Kampus Merdeka (MSIB), Studi Independen, penelitian bersama dosen, serta pengembangan produk perangkat lunak skala komersial.",
+                    tags: ["Machine Learning & AI", "Cloud Computing", "Cyber Security", "Mobile Development"],
+                    highlight: "Kerjasama 40+ Mitra Industri & Double Track Certification",
+                  },
+                  {
+                    step: "04",
+                    year: "Tahun 4 (Semester 7 - 8)",
+                    title: "Capstone Project, Skripsi & Siap Karir",
+                    desc: "Puncak perjalanan akademik: perancangan sistem solusi nyata melalui Capstone Project, Skripsi yang terpublikasi di jurnal ilmiah terakreditasi, sertifikasi kompetensi keahlian, dan bursa kerja alumni.",
+                    tags: ["Tugas Akhir / Skripsi", "Uji Kompetensi", "Publikasi Ilmiah", "Tracer Study & Karir"],
+                    highlight: "Gelar S.Kom. & Masa Tunggu Kerja Rata-rata < 6 Bulan",
+                  },
+                ].map((item, idx) => (
+                  <Reveal key={item.step} delayClass={idx % 2 === 0 ? "reveal-delay-1" : "reveal-delay-2"}>
+                    <article className="group relative overflow-hidden rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-7 md:p-9 shadow-[0_12px_36px_rgba(15,42,74,0.06)] transition-all duration-500 hover:-translate-y-1.5 hover:border-[#1E6FD9]/50 hover:shadow-[0_24px_48px_rgba(30,111,217,0.12)]">
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-3.5 py-1 text-xs font-bold text-[#1E6FD9]">
+                          <span className="font-mono text-sm">{item.step}</span>
+                          <span>•</span>
+                          <span>{item.year}</span>
+                        </span>
+                        <div className="grid size-10 place-items-center rounded-2xl bg-[#FFFBF5] border border-[#1E6FD9]/15 text-[#1E6FD9] group-hover:bg-[#1E6FD9] group-hover:text-white transition-colors">
+                          <ArrowRight className="size-4" />
+                        </div>
+                      </div>
+
+                      <h3 className="mt-5 font-display text-2xl font-bold text-[#0B3A8C] transition-colors group-hover:text-[#1E6FD9]">
+                        {item.title}
+                      </h3>
+                      <p className="mt-3 text-sm md:text-base leading-relaxed text-[#4B6B94]">
+                        {item.desc}
+                      </p>
+
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {item.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-[#FFFBF5] border border-[#1E6FD9]/10 px-3 py-1 text-xs font-semibold text-[#0F2A4A]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="mt-6 flex items-center gap-2.5 rounded-2xl bg-[#EAF4FF]/60 px-4 py-2.5 text-xs font-bold text-[#0B3A8C] border border-[#1E6FD9]/10">
+                        <Sparkles className="size-3.5 text-[#FFB84D] shrink-0" />
+                        <span>Fokus Capaian: {item.highlight}</span>
+                      </div>
+                    </article>
+                  </Reveal>
+                ))}
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================================== */}
         {/* 5. DOSEN & PENELITI (21 DOSEN ASLI TI UMPO)                    */}
         {/* ============================================================== */}
         <section id="dosen" className="relative overflow-hidden bg-slate-50/50 py-24 lg:py-32">
