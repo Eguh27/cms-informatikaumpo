@@ -1998,65 +1998,93 @@ export default function App() {
         {/* ============================================================== */}
         {/* 7. FASILITAS LABORATORIUM                                      */}
         {/* ============================================================== */}
-        <section id="fasilitas" className="bg-[#f0f4fc] py-24 lg:py-32">
+        <section id="fasilitas" className="relative overflow-hidden bg-[#FFFBF5] py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <div className="text-center">
-              <div className="section-label">Sarana & Prasarana</div>
-              <h2 className="mt-4 font-display text-4xl font-semibold tracking-[-.04em] text-[#09275e] md:text-5xl">
+            <Reveal className="text-center">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                <Sparkles className="size-3.5 text-[#FFB84D]" /> Sarana & Prasarana
+              </div>
+              <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold tracking-[-.04em] text-[#0B3A8C]">
                 Laboratorium Komputer Terpadu
               </h2>
-              <p className="mx-auto mt-4 max-w-xl text-[#59709b]">
+              <p className="mx-auto mt-4 max-w-xl text-base text-[#4B6B94] leading-relaxed">
                 Infrastruktur praktikum modern untuk menunjang riset rekayasa perangkat lunak, kecerdasan buatan, dan jaringan komputer.
               </p>
+            </Reveal>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              <Reveal delayClass="reveal-delay-1">
+                <div className="flex h-full flex-col justify-between rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-8 shadow-[0_12px_36px_rgba(15,42,74,0.06)] transition-all duration-300 hover:-translate-y-2 hover:border-[#1E6FD9]/50 hover:shadow-xl">
+                  <div>
+                    <div className="grid size-14 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] shadow-xs">
+                      <Network className="size-7" />
+                    </div>
+                    <h3 className="mt-6 font-display text-xl font-bold text-[#0B3A8C]">Lab Jaringan & IoT</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#4B6B94]">
+                      Pusat simulasi jaringan enterprise, perangkat router/switch Cisco & Mikrotik, IoT kit, dan cyber security.
+                    </p>
+                  </div>
+                  <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9]">
+                    Ka. Lab: Angga Prasetyo, S.T., M.Kom.
+                  </div>
+                </div>
+              </Reveal>
+
+              <Reveal delayClass="reveal-delay-2">
+                <div className="flex h-full flex-col justify-between rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-8 shadow-[0_12px_36px_rgba(15,42,74,0.06)] transition-all duration-300 hover:-translate-y-2 hover:border-[#1E6FD9]/50 hover:shadow-xl">
+                  <div>
+                    <div className="grid size-14 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] shadow-xs">
+                      <Code2 className="size-7" />
+                    </div>
+                    <h3 className="mt-6 font-display text-xl font-bold text-[#0B3A8C]">Lab Rekayasa Perangkat Lunak</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#4B6B94]">
+                      Fasilitas komputasi untuk pengembangan web, mobile apps, database architecture, dan sistem informasi enterprise.
+                    </p>
+                  </div>
+                  <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9]">
+                    Ka. Lab: Ir. Moh. Bhanu Setyawan, S.T., M.Kom.
+                  </div>
+                </div>
+              </Reveal>
+
+              <Reveal delayClass="reveal-delay-3">
+                <div className="flex h-full flex-col justify-between rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-8 shadow-[0_12px_36px_rgba(15,42,74,0.06)] transition-all duration-300 hover:-translate-y-2 hover:border-[#1E6FD9]/50 hover:shadow-xl">
+                  <div>
+                    <div className="grid size-14 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] shadow-xs">
+                      <BookOpen className="size-7" />
+                    </div>
+                    <h3 className="mt-6 font-display text-xl font-bold text-[#0B3A8C]">Perpustakaan Pusat UMPO</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#4B6B94]">
+                      Akses ribuan literatur buku TIK, jurnal internasional bereputasi (IEEE, ScienceDirect), e-library, dan ruang kolaborasi.
+                    </p>
+                  </div>
+                  <div className="mt-6 border-t border-slate-100 pt-4">
+                    <a
+                      href="https://library.umpo.ac.id/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E6FD9] hover:underline"
+                    >
+                      Buka Perpustakaan UMPO <ExternalLink className="size-3.5" />
+                    </a>
+                  </div>
+                </div>
+              </Reveal>
             </div>
 
-            <div className="mt-14 grid gap-8 md:grid-cols-3">
-              <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-[0_16px_40px_rgba(22,62,135,.06)]">
-                <div className="grid size-14 place-items-center rounded-2xl bg-[#eaf0fc] text-[#1453d6]">
-                  <Network className="size-7" />
-                </div>
-                <h3 className="mt-6 font-display text-xl font-bold text-[#09275e]">Lab Jaringan & IoT</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#59709b]">
-                  Pusat simulasi jaringan enterprise, perangkat router/switch Cisco & Mikrotik, IoT kit, dan cyber security.
-                </p>
-                <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-semibold text-[#1453d6]">
-                  Ka. Lab: Angga Prasetyo, S.T., M.Kom.
-                </div>
-              </div>
+            <Reveal delayClass="reveal-delay-4" className="mt-12 text-center">
+              <button
+                onClick={() => navigateTo("fasilitas")}
+                className="inline-flex items-center gap-2 rounded-full border border-[#1E6FD9]/30 bg-white px-7 py-3 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] shadow-xs transition-all hover:bg-[#EAF4FF] hover:border-[#1E6FD9]"
+              >
+                Lihat Seluruh Fasilitas Kampus & Lab <ArrowRight className="size-3.5" />
+              </button>
+            </Reveal>
+          </div>
 
-              <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-[0_16px_40px_rgba(22,62,135,.06)]">
-                <div className="grid size-14 place-items-center rounded-2xl bg-[#eaf0fc] text-[#1453d6]">
-                  <Code2 className="size-7" />
-                </div>
-                <h3 className="mt-6 font-display text-xl font-bold text-[#09275e]">Lab Rekayasa Perangkat Lunak</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#59709b]">
-                  Fasilitas komputasi untuk pengembangan web, mobile apps, database architecture, dan sistem informasi enterprise.
-                </p>
-                <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-semibold text-[#1453d6]">
-                  Ka. Lab: Ir. Moh. Bhanu Setyawan, S.T., M.Kom.
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-[0_16px_40px_rgba(22,62,135,.06)]">
-                <div className="grid size-14 place-items-center rounded-2xl bg-[#eaf0fc] text-[#1453d6]">
-                  <BookOpen className="size-7" />
-                </div>
-                <h3 className="mt-6 font-display text-xl font-bold text-[#09275e]">Perpustakaan Pusat UMPO</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#59709b]">
-                  Akses ribuan literatur buku TIK, jurnal internasional bereputasi (IEEE, ScienceDirect), e-library, dan ruang kolaborasi.
-                </p>
-                <div className="mt-6 border-t border-slate-100 pt-4">
-                  <a
-                    href="https://library.umpo.ac.id/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1453d6] hover:underline"
-                  >
-                    Buka Perpustakaan UMPO <ExternalLink className="size-3" />
-                  </a>
-                </div>
-              </div>
-            </div>
+          {/* Organic Wave Divider into Mitra section */}
+          <div className="mt-20">
+            <WaveDivider fill="#FFFFFF" />
           </div>
         </section>
 
