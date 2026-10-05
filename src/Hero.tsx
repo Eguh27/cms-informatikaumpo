@@ -1,4 +1,4 @@
-import type { PageId } from "./App";
+import type { PageId } from "@/types/navigation";
 import useHeroScroll from "./useHeroScroll";
 import "./hero.css";
 

@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { PageId } from "../App";
+import type { PageId } from "@/types/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 

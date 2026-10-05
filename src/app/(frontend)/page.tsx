@@ -360,7 +360,7 @@ export default async function HomePage() {
         <div className="px-banner-lines" aria-hidden="true" />
         <div className="relative mx-auto w-full max-w-7xl px-5 py-24 lg:px-8 lg:py-32">
           <div data-reveal-item className="max-w-2xl text-white">
-            <SectionTag light>Kehidupan Mahasiswa &amp; HIMATIF</SectionTag>
+            <SectionTag intent="light">Kehidupan Mahasiswa &amp; HIMATIF</SectionTag>
             <h2 id="himatif-title" data-split-reveal className="mt-5 font-display text-5xl font-extrabold leading-[1.05] tracking-[-.045em] md:text-7xl">
               Eksperimen. Kolaborasi. Bertumbuh.
             </h2>
