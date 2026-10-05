@@ -11,7 +11,7 @@ import {
 
 export default function FasilitasPage() {
   return (
-    <div className="min-h-screen bg-[#FFFBF5] pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
         category="Sarana & Prasarana"

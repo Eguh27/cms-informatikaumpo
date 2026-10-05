@@ -71,7 +71,7 @@ export default function AkademikPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFBF5] pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
         category="Kurikulum & Standar Kompetensi"
@@ -240,7 +240,7 @@ export default function AkademikPage() {
                   className="flex items-center justify-between p-4 hover:bg-blue-50/30 transition text-xs md:text-sm"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs font-bold text-slate-400 w-16">{c.code}</span>
+                    <span className="font-mono text-xs font-bold text-slate-500 w-16">{c.code}</span>
                     <span className="font-semibold text-slate-800">{c.name}</span>
                   </div>
                   <div className="flex items-center gap-3">

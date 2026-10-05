@@ -32,7 +32,7 @@ const CHANNELS = [
   },
   {
     icon: WhatsAppIcon,
-    tint: "bg-emerald-50 text-[#25D366]",
+    tint: "bg-emerald-50 text-[#15803D]",
     title: "WhatsApp Hotline",
     lines: ["0822-6786-8648", "Respon jam layanan"],
     action: { label: "Chat Sekarang", href: `https://wa.me/${WA_NUMBER}` },
@@ -98,7 +98,7 @@ ${formData.message || "Halo Admin, saya ingin berkonsultasi seputar Program Stud
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFBF5] pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       <PageBanner
         category="Pusat Komunikasi & Layanan"
         title="Kontak & Layanan Mahasiswa"
@@ -180,7 +180,7 @@ ${formData.message || "Halo Admin, saya ingin berkonsultasi seputar Program Stud
 
           <div className="lg:col-span-5 flex flex-col gap-4">
             <div className="rounded-3xl bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C] p-7 text-white shadow-[0_16px_36px_rgba(30,111,217,0.25)]">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#9fc0ff]">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white">
                 <Phone className="size-3.5" aria-hidden="true" /> Hotline Sekretariat Prodi
               </div>
               <p className="mt-2 font-display text-3xl font-extrabold tracking-tight">
@@ -193,7 +193,7 @@ ${formData.message || "Halo Admin, saya ingin berkonsultasi seputar Program Stud
                 href={`https://wa.me/${WA_NUMBER}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 text-xs font-bold text-white shadow-lg transition hover:bg-[#1ebd59]"
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#15803D] py-3 text-xs font-bold text-white shadow-lg transition hover:bg-[#166534]"
               >
                 <WhatsAppIcon className="size-4" /> Chat WhatsApp Sekarang
               </a>
@@ -319,7 +319,7 @@ ${formData.message || "Halo Admin, saya ingin berkonsultasi seputar Program Stud
 
               <button
                 type="submit"
-                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-3.5 text-sm font-bold text-white shadow-md shadow-emerald-500/20 transition hover:bg-[#1ebd59]"
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#15803D] py-3.5 text-sm font-bold text-white shadow-md shadow-emerald-500/20 transition hover:bg-[#166534]"
               >
                 <Send className="size-4" aria-hidden="true" /> Buka WhatsApp &amp; Kirim Pesan
               </button>

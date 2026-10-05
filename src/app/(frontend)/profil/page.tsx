@@ -65,7 +65,7 @@ export default function ProfilPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFBF5] pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
         category="Identitas & Legalitas"
@@ -105,7 +105,7 @@ export default function ProfilPage() {
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => selectTab(tab.id as ProfilTab)}
                 onKeyDown={(e) => onTabKeyDown(e, index)}
-                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9] ${
+                className={`inline-flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9] ${
                   isActive
                     ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -180,17 +180,17 @@ export default function ProfilPage() {
                   <h3 className="mt-2 font-display text-lg font-bold text-[#08235b]">SK & Akreditasi Resmi</h3>
                   <div className="mt-4 space-y-3 text-xs">
                     <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
-                      <div className="text-slate-400 font-medium">SK Pendirian DIKTI</div>
+                      <div className="text-slate-500 font-medium">SK Pendirian DIKTI</div>
                       <div className="font-bold text-slate-800 mt-0.5">378/D/T/2005</div>
                       <div className="text-[10px] text-slate-500 mt-1">Tanggal 12 September 2005</div>
                     </div>
                     <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
-                      <div className="text-slate-400 font-medium">Akreditasi BAN-PT</div>
+                      <div className="text-slate-500 font-medium">Akreditasi BAN-PT</div>
                       <div className="font-bold text-[#1453d6] mt-0.5">Peringkat B</div>
                       <div className="text-[10px] text-slate-500 mt-1">SK No. 3418/SK/BAN-PT/Akred/S/IX/2019</div>
                     </div>
                     <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
-                      <div className="text-slate-400 font-medium">Gelar Lulusan</div>
+                      <div className="text-slate-500 font-medium">Gelar Lulusan</div>
                       <div className="font-bold text-slate-800 mt-0.5">Sarjana Komputer (S.Kom.)</div>
                       <div className="text-[10px] text-slate-500 mt-1">Beban Studi 144 SKS (8 Semester)</div>
                     </div>
@@ -351,7 +351,7 @@ export default function ProfilPage() {
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
                       Ismail Abdurrazzaq Zulkarnain, S.Kom., M.Kom.
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 mt-1">NIDN: 0728078805</div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0728078805</div>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
@@ -359,7 +359,7 @@ export default function ProfilPage() {
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
                       Tim Penjaminan Mutu Akademik Prodi
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1">Audit & Pengendalian Standar SPMI</div>
+                    <div className="text-[11px] text-slate-500 mt-1">Audit & Pengendalian Standar SPMI</div>
                   </div>
                 </div>
 
@@ -370,7 +370,7 @@ export default function ProfilPage() {
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
                       Angga Prasetyo, S.T., M.Kom.
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 mt-1">NIDN: 0719088202</div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0719088202</div>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 text-center">
@@ -378,7 +378,7 @@ export default function ProfilPage() {
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
                       Ir. Moh. Bhanu Setyawan, S.T., M.Kom.
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 mt-1">NIDN: 0725028002</div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0725028002</div>
                   </div>
                 </div>
 

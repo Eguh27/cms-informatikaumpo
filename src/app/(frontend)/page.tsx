@@ -85,7 +85,7 @@ export default async function HomePage() {
       : FALLBACK_TRACKS
 
   return (
-    <main className="px-canvas">
+    <main className="px-canvas" id="konten-utama">
       <ParallaxEffects />
       <ParallaxHero />
 
@@ -300,7 +300,7 @@ export default async function HomePage() {
                 >
                   <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-blue-50/70 via-slate-100/50 to-white/90">
                     <div className="absolute left-3.5 top-3.5 z-10">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/40 bg-amber-500/90 px-3 py-1 text-[11px] font-bold capitalize text-white shadow-md backdrop-blur-md">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/40 bg-[#B45309] px-3 py-1 text-[11px] font-bold capitalize text-white shadow-md backdrop-blur-md">
                         <Award className="size-3.5" aria-hidden="true" /> {lecturer.category}
                       </span>
                     </div>
@@ -505,7 +505,7 @@ export default async function HomePage() {
                       </div>
                     )}
                     <div className="pt-5">
-                      <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-[#7386a8]">
+                      <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-[#4B6B94]">
                         <Calendar className="size-3.5" aria-hidden="true" />
                         <span>{dateStr}</span>
                         <span aria-hidden="true">•</span>
@@ -514,7 +514,7 @@ export default async function HomePage() {
                       <h3 className="mt-2.5 line-clamp-2 font-display text-lg font-semibold leading-snug text-[#0b2b66] transition group-hover:text-[#1E6FD9]">
                         {item.title}
                       </h3>
-                      <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[#64789c]">{item.excerpt}</p>
+                      <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[#4B6B94]">{item.excerpt}</p>
                     </div>
                   </div>
                   <div className="mt-4 border-t border-slate-100 pt-4">

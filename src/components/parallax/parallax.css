@@ -442,6 +442,16 @@
 }
 
 /* ---------- misc ---------- */
+.px-canvas ::selection {
+  background: #1e6fd9;
+  color: #ffffff;
+}
+
+.px-canvas :focus-visible {
+  outline: 3px solid #ffb84d;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
 .px-chip {
   display: inline-flex;
   align-items: center;

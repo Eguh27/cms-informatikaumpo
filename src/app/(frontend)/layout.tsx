@@ -34,6 +34,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
 
+          <a
+            href="#konten-utama"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#0B3A8C] focus:px-5 focus:py-2.5 focus:text-sm focus:font-bold focus:text-white"
+          >
+            Lewati ke konten utama
+          </a>
           <SiteHeader />
           {children}
           <SiteFooter />

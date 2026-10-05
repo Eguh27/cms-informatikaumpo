@@ -29,6 +29,7 @@ export function SiteHeader() {
 
   return (
     <nav
+      aria-label="Navigasi utama"
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrollY > 40
           ? 'bg-white/95 py-3 shadow-[0_12px_40px_rgba(15,56,130,.10)] backdrop-blur-xl border-b border-blue-50'
@@ -112,7 +113,7 @@ export function SiteHeader() {
 
         {/* Desktop Right CTA */}
         <div className="hidden items-center gap-3 lg:flex">
-          <Link href="/search" aria-label="Cari di website" className="grid size-10 place-items-center rounded-full transition bg-[#eaf0ff] text-[#1453d6] hover:bg-blue-100">
+          <Link href="/search" aria-label="Cari di website" className="grid size-11 place-items-center rounded-full transition bg-[#eaf0ff] text-[#1453d6] hover:bg-blue-100">
             <Search className="size-4" />
           </Link>
           <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="rounded-full px-6 py-3 text-sm font-bold transition-all hover:-translate-y-0.5 bg-[#1453d6] text-white shadow-[0_10px_24px_rgba(20,83,214,.25)] hover:bg-[#0f44b3]">
@@ -122,7 +123,7 @@ export function SiteHeader() {
 
         {/* Mobile Menu Button */}
         <div className="flex items-center gap-2 lg:hidden">
-          <Link href="/search" aria-label="Cari" className="grid size-10 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6]">
+          <Link href="/search" aria-label="Cari" className="grid size-11 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6]">
             <Search className="size-4" />
           </Link>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Buka menu" className="grid size-11 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6]">

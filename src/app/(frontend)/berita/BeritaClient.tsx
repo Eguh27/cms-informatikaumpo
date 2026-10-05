@@ -32,7 +32,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
   }, [filter, search, initialNews]);
 
   return (
-    <div className="min-h-screen bg-[#FFFBF5] pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
         category="Warta & Informasi"
@@ -52,7 +52,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 min-h-[44px] inline-flex items-center ${
                   filter === tab
                     ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -64,7 +64,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
           </div>
 
           <div className="relative w-full md:w-72">
-            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               value={search}
@@ -76,7 +76,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
               >
                 <X className="size-3.5" />
               </button>
@@ -118,7 +118,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
 
                     {/* Content */}
                     <div className="p-6">
-                      <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
+                      <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
                         <span className="flex items-center gap-1 font-medium">
                           <Calendar className="size-3.5" /> {dateStr}
                         </span>

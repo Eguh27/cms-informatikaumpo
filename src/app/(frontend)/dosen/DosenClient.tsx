@@ -81,7 +81,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFBF5] pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       <PageBanner
         category="Tenaga Pendidik & Peneliti"
         title="Dosen & Peneliti Profesional"
@@ -106,7 +106,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
               <button
                 key={tab.key}
                 onClick={() => setCategory(tab.key as any)}
-                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                className={`inline-flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
                   category === tab.key
                     ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -126,7 +126,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
 
           {/* Search Field */}
           <div className="relative w-full lg:w-80">
-            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               value={search}
@@ -138,7 +138,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
               >
                 <X className="size-4" />
               </button>
@@ -183,12 +183,12 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
                   {/* Floating Category Badge with Glass Effect */}
                   <div className="absolute left-3.5 top-3.5 z-10">
                     {lecturer.category === "pimpinan" && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/90 px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-amber-500/20 backdrop-blur-md border border-amber-300/40">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#B45309] px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-amber-500/20 backdrop-blur-md border border-amber-300/40">
                         <Award className="size-3.5" /> Pimpinan
                       </span>
                     )}
                     {lecturer.category === "lab" && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-600/90 px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-teal-600/20 backdrop-blur-md border border-teal-300/40">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0F766E] px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-teal-600/20 backdrop-blur-md border border-teal-300/40">
                         <Cpu className="size-3.5" /> Ka. Lab
                       </span>
                     )}
@@ -246,18 +246,18 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
 
                     <div className="mt-2.5 flex items-center justify-between">
                       <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/90 px-2.5 py-1 font-mono text-[11px] font-semibold text-slate-700 shadow-xs backdrop-blur-sm">
-                        <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-slate-500">
                           NIDN
                         </span>
                         {lecturer.nidn || "-"}
                       </span>
-                      <span className="text-[11px] font-medium text-slate-400">S1 TI UMPO</span>
+                      <span className="text-[11px] font-medium text-slate-500">S1 TI UMPO</span>
                     </div>
 
                     {lecturer.focus && (
                       <div className="mt-3 rounded-xl border border-blue-100/80 bg-gradient-to-br from-blue-50/70 via-indigo-50/30 to-white/50 p-3 backdrop-blur-sm transition-all duration-300 group-hover:border-blue-200 group-hover:bg-blue-50/80">
-                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 transition-colors group-hover:text-blue-600">
-                          <Sparkles className="size-3 text-amber-500 animate-pulse" /> Bidang Riset & Fokus
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-colors group-hover:text-blue-600">
+                          <Sparkles className="size-3 text-amber-500 motion-safe:animate-pulse" /> Bidang Riset & Fokus
                         </div>
                         <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-slate-600" title={lecturer.focus}>
                           {lecturer.focus}
@@ -283,7 +283,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       title={`Chat WhatsApp dengan ${lecturer.name}`}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-emerald-500/20 transition-all hover:bg-[#1ebd59] hover:shadow-md hover:shadow-emerald-500/30 hover:scale-105 active:scale-95"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#15803D] px-3.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-emerald-500/20 transition-all hover:bg-[#166534] hover:shadow-md hover:shadow-emerald-500/30 hover:scale-105 active:scale-95"
                     >
                       <WhatsAppIcon className="size-3.5" />
                       <span>WhatsApp</span>
@@ -344,12 +344,12 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
                 data-dialog-close
                 onClick={() => setSelected(null)}
                 aria-label="Tutup profil dosen"
-                className="absolute right-4 top-4 grid size-9 place-items-center rounded-full bg-white/90 text-slate-700 shadow-md transition hover:bg-white hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFB84D]"
+                className="absolute right-4 top-4 grid size-11 place-items-center rounded-full bg-white/90 text-slate-700 shadow-md transition hover:bg-white hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFB84D]"
               >
                 <X className="size-4" aria-hidden="true" />
               </button>
               <div className="absolute bottom-4 left-6 right-6">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-[#9fc0ff]">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-white">
                   {selected.role}
                 </div>
                 <h2 id="dosen-dialog-title" className="mt-1 font-display text-xl font-bold leading-snug text-white">
@@ -388,7 +388,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
                   href={getWhatsAppUrl(selected.name)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#1ebd59]"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#15803D] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#166534]"
                 >
                   <WhatsAppIcon className="size-4" />
                   <span>Konsultasi via WhatsApp</span>
@@ -401,7 +401,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
                   Tutup
                 </button>
               </div>
-              <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
+              <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
                 <Phone className="size-3" aria-hidden="true" /> Sekretariat Prodi: +62 822-6786-8648
               </p>
             </div>
