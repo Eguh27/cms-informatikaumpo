@@ -14,8 +14,8 @@ html {
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: #f6f9ff;
-  color: #08235b;
+  background: #FFFBF5;
+  color: #0F2A4A;
   overflow-x: hidden;
 }
 
@@ -37,14 +37,14 @@ button {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #06183d;
+  background: #FFFBF5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1453d6;
+  background: #1E6FD9;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2f6dff;
+  background: #0B3A8C;
 }
 
 .text-outline {
@@ -83,7 +83,7 @@ button {
 }
 
 .cloud-main {
-  fill: #f6f9ff;
+  fill: #FFFBF5;
 }
 
 .parallax-lines {
@@ -179,6 +179,32 @@ button {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+/* Scroll Reveal & Stagger System (0.6s-1.2s smooth easing) */
+.reveal-init {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 120ms; }
+.reveal-delay-2 { transition-delay: 240ms; }
+.reveal-delay-3 { transition-delay: 360ms; }
+.reveal-delay-4 { transition-delay: 480ms; }
+.reveal-delay-5 { transition-delay: 600ms; }
+
+/* Building detail crop styling */
+.building-detail-crop {
+  background-image: url('/assets/hero/gedung-cerah.webp');
+  background-size: cover;
+  background-position: center;
 }
 
 @media (prefers-reduced-motion: reduce) {

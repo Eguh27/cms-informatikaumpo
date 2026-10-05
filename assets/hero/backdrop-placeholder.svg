@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 800" fill="none" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+  <defs>
+    <!-- Sky & Atmospheric Blends -->
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8ec5fc" stop-opacity="0.5"/>
+      <stop offset="45%" stop-color="#b8dcfe" stop-opacity="0.6"/>
+      <stop offset="85%" stop-color="#e2f0fd" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#fffbf5" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <!-- Distant Mountains Grad (Ponorogo Highlands) -->
+    <linearGradient id="mountainFar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a7eb8" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#8bb7e8" stop-opacity="0.12"/>
+    </linearGradient>
+
+    <!-- Mid-distance Mountains Grad -->
+    <linearGradient id="mountainMid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b6ea8" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#7daee4" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Near Horizon Campus & Tree Ridge -->
+    <linearGradient id="nearHorizon" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2d5e97" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#5a8ec6" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#eaf4ff" stop-opacity="0.1"/>
+    </linearGradient>
+
+    <!-- Sun Glow on Horizon -->
+    <radialGradient id="sunGlow" cx="68%" cy="40%" r="45%">
+      <stop offset="0%" stop-color="#FFB84D" stop-opacity="0.35"/>
+      <stop offset="35%" stop-color="#FFE8CC" stop-opacity="0.18"/>
+      <stop offset="70%" stop-color="#FFFBF5" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#FFFBF5" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky Base Fill -->
+  <rect width="1920" height="800" fill="url(#skyGrad)"/>
+
+  <!-- Morning Sun Glow (East Horizon / Ponorogo Sunrise) -->
+  <circle cx="1300" cy="300" r="420" fill="url(#sunGlow)"/>
+
+  <!-- Far Distant Mountain Ridges (Gunung Wilis / Klotok Silhouette) -->
+  <path d="M0 480 Q 220 380, 480 430 T 960 410 T 1440 370 T 1920 440 L 1920 800 L 0 800 Z" fill="url(#mountainFar)"/>
+
+  <!-- Mid Range Mountain Ridges -->
+  <path d="M0 520 Q 320 440, 680 480 T 1280 450 T 1720 470 T 1920 510 L 1920 800 L 0 800 Z" fill="url(#mountainMid)"/>
+
+  <!-- Subtle Campus Tree Line & Architectural Horizon Silhouette -->
+  <path d="M0 580 
+           C 120 575, 180 565, 260 572
+           C 340 579, 410 560, 520 568
+           C 610 574, 700 558, 810 564
+           C 920 570, 990 555, 1100 560
+           C 1220 566, 1310 550, 1420 558
+           C 1540 566, 1660 552, 1780 562
+           C 1850 568, 1890 574, 1920 578
+           L 1920 800 L 0 800 Z" fill="url(#nearHorizon)"/>
+
+  <!-- Soft Mist Overlay across lower third to blend with foreground -->
+  <rect y="600" width="1920" height="200" fill="url(#skyGrad)" opacity="0.6"/>
+</svg>

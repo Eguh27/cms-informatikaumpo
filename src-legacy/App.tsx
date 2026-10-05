@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   Search,
   Menu,
@@ -33,7 +33,13 @@ import {
   Eye,
   Copy,
   Check,
+  Terminal,
+  Rocket,
+  Database,
 } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 import ProfilPage from "./pages/ProfilPage";
 import AkademikPage from "./pages/AkademikPage";
 import DosenPage from "./pages/DosenPage";
@@ -41,6 +47,9 @@ import FasilitasPage from "./pages/FasilitasPage";
 import BeritaPage from "./pages/BeritaPage";
 import DownloadPage from "./pages/DownloadPage";
 import KontakPage from "./pages/KontakPage";
+import Hero from "./Hero";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // --- TYPES ---
 export type PageId =
@@ -391,10 +400,124 @@ const getWhatsAppUrl = (lecturerName: string) => {
   return `https://wa.me/6282267868648?text=${encodeURIComponent(text)}`;
 };
 
+// Animated Number Counter on Viewport Entry
+function AnimatedCounter({ end, duration = 1200, suffix = "" }: { end: number; duration?: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasStarted) {
+          setHasStarted(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [hasStarted]);
+
+  useEffect(() => {
+    if (!hasStarted) return;
+    let startTime: number | null = null;
+    let frameId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(ease * end));
+
+      if (progress < 1) {
+        frameId = requestAnimationFrame(step);
+      } else {
+        setCount(end);
+      }
+    };
+    frameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frameId);
+  }, [hasStarted, end, duration]);
+
+  return <span ref={ref}>{count.toLocaleString("id-ID")}{suffix}</span>;
+}
+
+// Reveal Wrapper Component for Scroll Animations
+function Reveal({
+  children,
+  className = "",
+  delayClass = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delayClass?: string;
+}) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActive(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.05, rootMargin: "0px 0px -30px 0px" }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`reveal-init ${active ? "reveal-active" : ""} ${delayClass} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+// Organic SVG Wave Divider
+function WaveDivider({
+  fill = "#FFFFFF",
+  className = "",
+  flip = false,
+}: {
+  fill?: string;
+  className?: string;
+  flip?: boolean;
+}) {
+  return (
+    <div className={`w-full overflow-hidden leading-none ${className}`} aria-hidden="true">
+      <svg
+        viewBox="0 0 1440 84"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`w-full h-10 md:h-16 lg:h-20 ${flip ? "rotate-180" : ""}`}
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,24 C320,72 640,-12 960,36 C1200,72 1360,28 1440,24 L1440,84 L0,84 Z"
+          fill={fill}
+        />
+      </svg>
+    </div>
+  );
+}
+
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
+  const [navLoaded, setNavLoaded] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setNavLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Dedicated Pages Routing State
   const [currentPage, setCurrentPage] = useState<PageId>("home");
@@ -438,11 +561,43 @@ export default function App() {
     return () => window.removeEventListener("hashchange", handleHash);
   }, []);
 
+  // Close lecturer modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedLecturer(null);
+      }
+    };
+    if (selectedLecturer) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedLecturer]);
+
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Lenis smooth scroll — single instance at app level
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      smoothWheel: true,
+    });
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    const tickerCb = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(tickerCb);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(tickerCb);
+      lenis.destroy();
+    };
   }, []);
 
   const scrollTo = (id: string) => {
@@ -572,19 +727,19 @@ export default function App() {
       {/* 1. NAVBAR DENGAN GAYA ELEGAN SEBELUMNYA                        */}
       {/* ============================================================== */}
       <nav
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-700 ease-out ${
+          navLoaded ? "translate-y-0 opacity-100" : "-translate-y-8 opacity-0"
+        } ${
           scrollY > 40
-            ? "bg-white/95 py-3 shadow-[0_12px_40px_rgba(15,56,130,.10)] backdrop-blur-xl border-b border-blue-50"
-            : "bg-transparent py-5"
+            ? "bg-white/95 py-2.5 shadow-[0_12px_40px_rgba(15,56,130,.10)] backdrop-blur-2xl border-b border-blue-100"
+            : "bg-transparent py-4 md:py-5 border-b border-transparent"
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 lg:px-8">
           {/* Logo & Identity */}
           <button onClick={() => navigateTo("home")} className="group flex items-center gap-3 text-left focus:outline-none">
             <span
-              className={`grid size-11 place-items-center rounded-2xl p-1.5 transition-colors ${
-                scrollY > 40 ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/20" : "bg-white text-[#1453d6] shadow-lg shadow-black/20"
-              }`}
+              className="grid size-11 place-items-center rounded-2xl bg-[#1453d6] p-1.5 text-white shadow-md shadow-blue-600/20 transition-transform duration-300 group-hover:scale-105"
             >
               <img
                 src="https://ti.umpo.ac.id/wp-content/uploads/2026/09/LOGO-UNMUH-150x150.png"
@@ -593,21 +748,21 @@ export default function App() {
               />
             </span>
             <span
-              className={`font-display text-lg font-bold leading-none tracking-tight transition-colors ${
-                scrollY > 40 ? "text-[#08235b]" : "text-white"
-              }`}
+              className="font-display text-lg font-bold leading-none tracking-tight text-[#08235b]"
             >
               Informatika<br />
-              <span className={scrollY > 40 ? "text-[#2f6dff]" : "text-[#bcd1ff]"}>UMPO</span>
+              <span className="text-[#1453d6]">UMPO</span>
             </span>
           </button>
 
-          {/* Desktop Navigation Links */}
-          <div className={`hidden items-center gap-6 lg:flex ${scrollY > 40 ? "text-[#365080]" : "text-white/90"}`}>
+          {/* Desktop Navigation Links — high-contrast crisp text */}
+          <div className="hidden items-center gap-2 lg:flex text-[#203f6b]">
             <button
               onClick={() => navigateTo("home")}
-              className={`nav-link text-sm font-semibold transition ${
-                currentPage === "home" ? (scrollY > 40 ? "text-[#1453d6] font-bold" : "text-white font-bold") : ""
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                currentPage === "home"
+                  ? "bg-[#eaf4ff] text-[#1453d6] font-bold shadow-sm shadow-blue-500/10"
+                  : "text-[#203f6b] hover:bg-blue-50/80 hover:text-[#1453d6]"
               }`}
             >
               Beranda
@@ -621,8 +776,10 @@ export default function App() {
             >
               <button
                 onClick={() => navigateTo("profil")}
-                className={`nav-link flex items-center gap-1 text-sm font-semibold transition ${
-                  currentPage === "profil" ? (scrollY > 40 ? "text-[#1453d6] font-bold" : "text-white font-bold") : ""
+                className={`flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                  currentPage === "profil"
+                    ? "bg-[#eaf4ff] text-[#1453d6] font-bold shadow-sm shadow-blue-500/10"
+                    : "text-[#203f6b] hover:bg-blue-50/80 hover:text-[#1453d6]"
                 }`}
               >
                 Profil <ChevronDown className="size-3.5 opacity-70" />
@@ -667,8 +824,10 @@ export default function App() {
             >
               <button
                 onClick={() => navigateTo("akademik")}
-                className={`nav-link flex items-center gap-1 text-sm font-semibold transition ${
-                  currentPage === "akademik" ? (scrollY > 40 ? "text-[#1453d6] font-bold" : "text-white font-bold") : ""
+                className={`flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                  currentPage === "akademik"
+                    ? "bg-[#eaf4ff] text-[#1453d6] font-bold shadow-sm shadow-blue-500/10"
+                    : "text-[#203f6b] hover:bg-blue-50/80 hover:text-[#1453d6]"
                 }`}
               >
                 Akademik <ChevronDown className="size-3.5 opacity-70" />
@@ -704,8 +863,10 @@ export default function App() {
             {/* Dosen & Tendik */}
             <button
               onClick={() => navigateTo("dosen")}
-              className={`nav-link text-sm font-semibold transition ${
-                currentPage === "dosen" ? (scrollY > 40 ? "text-[#1453d6] font-bold" : "text-white font-bold") : ""
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                currentPage === "dosen"
+                  ? "bg-[#eaf4ff] text-[#1453d6] font-bold shadow-sm shadow-blue-500/10"
+                  : "text-[#203f6b] hover:bg-blue-50/80 hover:text-[#1453d6]"
               }`}
             >
               Dosen
@@ -714,8 +875,10 @@ export default function App() {
             {/* Fasilitas */}
             <button
               onClick={() => navigateTo("fasilitas")}
-              className={`nav-link text-sm font-semibold transition ${
-                currentPage === "fasilitas" ? (scrollY > 40 ? "text-[#1453d6] font-bold" : "text-white font-bold") : ""
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                currentPage === "fasilitas"
+                  ? "bg-[#eaf4ff] text-[#1453d6] font-bold shadow-sm shadow-blue-500/10"
+                  : "text-[#203f6b] hover:bg-blue-50/80 hover:text-[#1453d6]"
               }`}
             >
               Fasilitas
@@ -724,8 +887,10 @@ export default function App() {
             {/* Berita */}
             <button
               onClick={() => navigateTo("berita")}
-              className={`nav-link text-sm font-semibold transition ${
-                currentPage === "berita" ? (scrollY > 40 ? "text-[#1453d6] font-bold" : "text-white font-bold") : ""
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                currentPage === "berita"
+                  ? "bg-[#eaf4ff] text-[#1453d6] font-bold shadow-sm shadow-blue-500/10"
+                  : "text-[#203f6b] hover:bg-blue-50/80 hover:text-[#1453d6]"
               }`}
             >
               Berita
@@ -734,8 +899,10 @@ export default function App() {
             {/* Download */}
             <button
               onClick={() => navigateTo("download")}
-              className={`nav-link text-sm font-semibold transition ${
-                currentPage === "download" ? (scrollY > 40 ? "text-[#1453d6] font-bold" : "text-white font-bold") : ""
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                currentPage === "download"
+                  ? "bg-[#eaf4ff] text-[#1453d6] font-bold shadow-sm shadow-blue-500/10"
+                  : "text-[#203f6b] hover:bg-blue-50/80 hover:text-[#1453d6]"
               }`}
             >
               Unduhan
@@ -744,8 +911,10 @@ export default function App() {
             {/* Kontak */}
             <button
               onClick={() => navigateTo("kontak")}
-              className={`nav-link text-sm font-semibold transition ${
-                currentPage === "kontak" ? (scrollY > 40 ? "text-[#1453d6] font-bold" : "text-white font-bold") : ""
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                currentPage === "kontak"
+                  ? "bg-[#eaf4ff] text-[#1453d6] font-bold shadow-sm shadow-blue-500/10"
+                  : "text-[#203f6b] hover:bg-blue-50/80 hover:text-[#1453d6]"
               }`}
             >
               Kontak
@@ -757,9 +926,7 @@ export default function App() {
             <button
               onClick={() => setModalType("search")}
               aria-label="Cari di website"
-              className={`grid size-10 place-items-center rounded-full transition ${
-                scrollY > 40 ? "bg-[#eaf0ff] text-[#1453d6] hover:bg-blue-100" : "bg-white/15 text-white hover:bg-white/25"
-              }`}
+              className="grid size-10 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6] transition-all hover:bg-blue-100 hover:scale-105"
             >
               <Search className="size-4" />
             </button>
@@ -767,13 +934,10 @@ export default function App() {
               href="https://spmb.umpo.ac.id/"
               target="_blank"
               rel="noopener noreferrer"
-              className={`rounded-full px-6 py-3 text-sm font-bold transition-all hover:-translate-y-0.5 ${
-                scrollY > 40
-                  ? "bg-[#1453d6] text-white shadow-[0_10px_24px_rgba(20,83,214,.25)] hover:bg-[#0f44b3]"
-                  : "bg-white text-[#1147b5] shadow-lg shadow-black/15 hover:bg-blue-50"
-              }`}
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[#1453d6] px-6 py-2.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(20,83,214,.25)] transition-all hover:-translate-y-0.5 hover:bg-[#0f44b3] hover:shadow-[0_14px_28px_rgba(20,83,214,.35)] active:translate-y-0"
             >
-              Pendaftaran PMB
+              <span>Pendaftaran PMB</span>
+              <span className="size-2 rounded-full bg-[#FFB84D] animate-ping" />
             </a>
           </div>
 
@@ -782,17 +946,13 @@ export default function App() {
             <button
               onClick={() => setModalType("search")}
               aria-label="Cari"
-              className={`grid size-10 place-items-center rounded-full ${
-                scrollY > 40 ? "bg-[#eaf0ff] text-[#1453d6]" : "bg-white/15 text-white"
-              }`}
+              className="grid size-10 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6]"
             >
               <Search className="size-4" />
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`grid size-11 place-items-center rounded-full ${
-                scrollY > 40 ? "bg-[#eaf0ff] text-[#1453d6]" : "bg-white/15 text-white backdrop-blur-md"
-              }`}
+              className="grid size-11 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6]"
               aria-label="Buka menu"
             >
               {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -868,236 +1028,453 @@ export default function App() {
       </nav>
 
       {/* ============================================================== */}
-      {/* 2. HERO SECTION ASLI YANG DISUKAI USER ("BAGUSAN SEBELUMNYA")  */}
+      {/* 2. HERO SECTION — Multi-layer Parallax Baru                    */}
       {/* ============================================================== */}
       {currentPage === "home" && (
         <main>
-          <section id="home" className="relative min-h-[96vh] overflow-hidden bg-[#07328d]">
-          {/* Parallax full-bleed background */}
-          <div
-            className="absolute inset-0 scale-110 bg-cover bg-center will-change-transform"
-            style={{
-              backgroundImage:
-                "linear-gradient(100deg, rgba(3,27,81,.94) 8%, rgba(8,53,143,.76) 50%, rgba(3,29,89,.32) 100%), url('https://images.unsplash.com/photo-1576495199011-eb94736d05d6?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=90&w=1800')",
-              transform: `translateY(${Math.min(scrollY * 0.24, 160)}px) scale(1.1)`,
-            }}
-          />
-          <div className="absolute inset-0 hero-grid opacity-25" />
-          <div className="absolute -right-32 -top-40 size-[36rem] rounded-full border border-white/15 pointer-events-none" />
-          <div className="absolute -right-16 -top-24 size-[26rem] rounded-full border border-white/15 pointer-events-none" />
-
-          {/* Hero text & headline */}
-          <div className="relative mx-auto flex min-h-[96vh] max-w-7xl items-center px-5 pb-20 pt-32 lg:px-8">
-            <div className="max-w-4xl">
-              <h1 className="font-display text-[clamp(3.2rem,8vw,7.8rem)] font-semibold leading-[.9] tracking-[-.055em] text-white">
-                Code the future.<br />
-                <span className="text-outline">Shape the world.</span>
-              </h1>
-
-              <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#d5e3ff] md:text-xl">
-                Program Studi Teknik Informatika Universitas Muhammadiyah Ponorogo yang menghubungkan teknologi,
-                kreativitas, dan dampak nyata untuk masa depan Indonesia berbasis nilai-nilai keislaman.
-              </p>
-
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <button
-                  onClick={() => navigateTo("akademik")}
-                  className="group inline-flex items-center justify-center gap-3 rounded-full bg-white px-7 py-4 font-bold text-[#0b43b0] shadow-[0_16px_36px_rgba(0,0,0,.18)] transition-all hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,.25)]"
-                >
-                  Eksplorasi Kurikulum & Program
-                  <span className="grid size-8 place-items-center rounded-full bg-[#e7eeff] text-[#1453d6] transition-transform group-hover:translate-x-1">
-                    <ArrowRight className="size-4" />
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => navigateTo("profil")}
-                  className="group inline-flex items-center justify-center gap-3 rounded-full border border-white/30 bg-white/10 px-7 py-4 font-bold text-white backdrop-blur-md transition-all hover:bg-white/20 hover:-translate-y-1"
-                >
-                  Profil & Visi Keilmuan
-                  <ChevronRight className="size-4 opacity-70 transition-transform group-hover:translate-x-1" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom dock statistics */}
-          <div className="absolute bottom-0 left-0 right-0">
-            <div className="mx-auto flex max-w-7xl items-end justify-between px-5 lg:px-8">
-              <div className="relative z-10 hidden pb-8 text-xs font-semibold uppercase tracking-[.25em] text-white/60 md:block">
-                Gulir untuk menjelajah
-              </div>
-              <div className="relative z-10 flex overflow-hidden rounded-t-[2rem] bg-[#0b3b9a]/65 text-white shadow-2xl backdrop-blur-xl">
-                {[
-                  ["B", "Akreditasi BAN-PT"],
-                  ["800+", "Mahasiswa Aktif"],
-                  ["30+", "Dosen & Tendik"],
-                  ["1.800+", "Alumni"]
-                ].map(([value, label]) => (
-                  <div key={label} className="border-r border-white/15 px-5 py-5 last:border-0 sm:px-8">
-                    <div className="font-display text-2xl font-bold">{value}</div>
-                    <div className="mt-1 text-[.65rem] text-white/65 sm:text-xs">{label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Cloud divider */}
-          <div className="cloud-divider" aria-hidden="true">
-            <svg viewBox="0 0 1440 180" preserveAspectRatio="none">
-              <path
-                className="cloud-shadow"
-                d="M0 116C102 73 174 104 246 117c79 14 115-55 208-43 75 9 91 62 167 46 71-15 111-81 213-54 56 15 67 70 148 58 98-15 108-79 210-60 79 14 101 62 178 39 29-9 52-17 70-18v95H0Z"
-              />
-              <path
-                className="cloud-main"
-                d="M0 134c93-1 117-53 204-49 80 4 111 68 202 43 74-20 94-67 177-64 92 3 111 81 211 55 77-20 93-67 179-58 76 8 94 69 189 56 84-11 132-64 278-35v98H0Z"
-              />
-            </svg>
-          </div>
-        </section>
+          <Hero navigateTo={navigateTo} />
 
         {/* ============================================================== */}
         {/* 3. PROFIL & TENTANG KAMI DENGAN KONTEN RESMI TI.UMPO.AC.ID    */}
         {/* ============================================================== */}
-        <section id="profil" className="relative overflow-hidden py-24 lg:py-36">
-          <div className="orb absolute -left-32 top-32 size-80 rounded-full bg-[#d9e7ff] blur-3xl pointer-events-none" />
+        <section id="profil" className="relative overflow-hidden bg-[#FFFBF5] py-24 lg:py-32">
+          {/* Subtle warm glow orb */}
+          <div className="orb absolute -left-32 top-32 size-80 rounded-full bg-[#FFE8CC]/40 blur-3xl pointer-events-none" />
+          <div className="orb absolute right-0 top-1/2 size-96 rounded-full bg-[#EAF4FF]/60 blur-3xl pointer-events-none" />
+
           <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
-            <div className="relative">
-              <div className="overflow-hidden rounded-[2.5rem] shadow-[0_32px_80px_rgba(14,58,146,.18)]">
+            <Reveal className="relative">
+              <div className="overflow-hidden rounded-[2.5rem] border border-[#1E6FD9]/15 bg-white p-2 shadow-[0_20px_60px_-15px_rgba(15,42,74,0.12)]">
                 <img
-                  src="https://ti.umpo.ac.id/wp-content/uploads/2026/09/gedung-ti-1024x820.webp"
+                  src="/assets/hero/gedung-cerah.webp"
                   alt="Gedung Fakultas Teknik dan Program Studi Teknik Informatika UMPO"
-                  className="aspect-[4/3.2] w-full object-cover transition duration-700 hover:scale-105"
+                  className="aspect-[4/3.2] w-full rounded-[2rem] object-cover object-center transition duration-700 hover:scale-105"
                 />
               </div>
-              <div className="absolute -bottom-8 -right-4 max-w-72 rounded-3xl border border-white/50 bg-white/90 p-5 shadow-2xl backdrop-blur-xl md:right-8">
+              <div className="absolute -bottom-8 -right-4 max-w-72 rounded-3xl border border-white/80 bg-white/95 p-5 shadow-[0_16px_36px_rgba(11,58,140,0.12)] backdrop-blur-xl md:right-6">
                 <div className="flex items-center gap-3">
-                  <div className="grid size-10 place-items-center rounded-2xl bg-[#1453d6] text-white">
+                  <div className="grid size-11 place-items-center rounded-2xl bg-[#1E6FD9] text-white shadow-md shadow-blue-500/25">
                     <GraduationCap className="size-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#08235b]">Gelar Kelulusan</div>
-                    <div className="font-display text-base font-extrabold text-[#2f6dff]">S.Kom. (Sarjana Komputer)</div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-[#4B6B94]">Gelar Kelulusan</div>
+                    <div className="font-display text-base font-extrabold text-[#0B3A8C]">S.Kom. (Sarjana Komputer)</div>
                   </div>
                 </div>
-                <p className="mt-2 text-xs leading-relaxed text-[#59709b]">
-                  “Membangun talenta digital berkarakter Islami untuk masa depan yang lebih baik.”
+                <p className="mt-2.5 text-xs leading-relaxed text-[#4B6B94]">
+                  &ldquo;Membangun talenta digital berkarakter Islami untuk masa depan yang lebih baik.&rdquo;
                 </p>
               </div>
-            </div>
+            </Reveal>
 
-            <div className="lg:pl-10">
-              <div className="section-label">Profil Program Studi</div>
-              <h2 className="mt-5 font-display text-4xl font-semibold leading-tight tracking-[-.04em] text-[#09275e] md:text-6xl">
+            <Reveal delayClass="reveal-delay-2" className="lg:pl-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20">
+                <Sparkles className="size-3.5 text-[#FFB84D]" /> Profil Program Studi
+              </div>
+              <h2 className="mt-5 font-display text-4xl font-extrabold leading-tight tracking-[-.04em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
                 Teknik Informatika UMPO
               </h2>
-              <p className="mt-6 text-lg leading-relaxed text-[#59709b]">
+              <p className="mt-6 text-base md:text-lg leading-relaxed text-[#4B6B94]">
                 Program studi Teknik Informatika merupakan salah satu prodi jenjang S1 unggulan di kalangan
                 Universitas Muhammadiyah Ponorogo yang berdiri pada tahun 2005 dengan izin penyelenggaraan berdasarkan{" "}
-                <strong className="text-[#09275e]">SK Ditjen DIKTI No. 378/D/T/2005</strong>. Telah terakreditasi BAN-PT{" "}
-                <strong className="text-[#09275e]">No. 0206/SKB/BAN-PT/Akred/S/I/2017</strong> dengan Peringkat B.
+                <strong className="text-[#0B3A8C]">SK Ditjen DIKTI No. 378/D/T/2005</strong>. Telah terakreditasi BAN-PT{" "}
+                <strong className="text-[#0B3A8C]">No. 0206/SKB/BAN-PT/Akred/S/I/2017</strong> dengan Peringkat B.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <button
                   onClick={() => navigateTo("profil", "sejarah")}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-[#0f44b3]"
+                  className="inline-flex items-center gap-2.5 rounded-full bg-[#1E6FD9] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:-translate-y-0.5 hover:bg-[#0B3A8C] hover:shadow-xl"
                 >
                   <BookOpen className="size-4" /> Baca Sejarah Prodi
                 </button>
                 <button
                   onClick={() => navigateTo("profil", "visimisi")}
-                  className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-6 py-3.5 text-sm font-bold text-[#1453d6] transition hover:-translate-y-0.5 hover:border-[#1453d6]"
+                  className="inline-flex items-center gap-2.5 rounded-full border-1.5 border-[#1E6FD9]/30 bg-[#FFFBF5] px-7 py-3.5 text-sm font-bold text-[#0B3A8C] transition-all hover:-translate-y-0.5 hover:border-[#1E6FD9] hover:bg-[#EAF4FF]"
                 >
-                  <Award className="size-4" /> Visi, Misi & Roadmap
+                  <Award className="size-4 text-[#FFB84D]" /> Visi, Misi & Roadmap
                 </button>
               </div>
 
               <div className="mt-9 grid grid-cols-2 gap-5">
-                <div className="rounded-3xl bg-white p-6 shadow-[0_16px_40px_rgba(22,62,135,.08)]">
-                  <div className="font-display text-4xl font-bold text-[#1453d6]">2</div>
-                  <div className="mt-2 text-sm font-semibold">Laboratorium Terpadu</div>
+                <div className="rounded-3xl border border-[#1E6FD9]/10 bg-white p-6 shadow-[0_12px_32px_rgba(15,42,74,0.06)]">
+                  <div className="font-display text-4xl font-extrabold text-[#1E6FD9]">
+                    <AnimatedCounter end={2} />
+                  </div>
+                  <div className="mt-2 text-sm font-bold text-[#0F2A4A]">Laboratorium Terpadu</div>
+                  <div className="mt-0.5 text-xs text-[#4B6B94]">Lab Jaringan IoT & Lab RPL</div>
                 </div>
-                <div className="rounded-3xl bg-[#1453d6] p-6 text-white shadow-[0_16px_40px_rgba(20,83,214,.22)]">
-                  <div className="font-display text-4xl font-bold">1:18</div>
-                  <div className="mt-2 text-sm font-medium text-white/75">Rasio Dosen dan Mahasiswa</div>
+                <div className="rounded-3xl border border-[#FFB84D]/30 bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C] p-6 text-white shadow-[0_16px_36px_rgba(30,111,217,0.25)]">
+                  <div className="font-display text-4xl font-extrabold text-[#FFE8CC]">1:18</div>
+                  <div className="mt-2 text-sm font-bold">Rasio Dosen & Mahasiswa</div>
+                  <div className="mt-0.5 text-xs text-white/80">Pendampingan intensif & fokus</div>
                 </div>
               </div>
-            </div>
+            </Reveal>
+          </div>
+
+          {/* Organic Wave Divider into next section */}
+          <div className="mt-20">
+            <WaveDivider fill="#EAF4FF" />
           </div>
         </section>
 
         {/* ============================================================== */}
         {/* 4. KURIKULUM & ROADMAP KEILMUAN                                 */}
         {/* ============================================================== */}
-        <section id="kurikulum" className="bg-[#061d4e] py-24 text-white lg:py-32">
+        <section id="kurikulum" className="relative bg-[#EAF4FF]/70 py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+            <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <div className="section-label section-label-light">Kurikulum Masa Depan</div>
-                <h2 className="mt-5 max-w-2xl font-display text-4xl font-semibold tracking-[-.04em] md:text-6xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> Kurikulum Masa Depan
+                </div>
+                <h2 className="mt-4 max-w-2xl font-display text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.04em] text-[#0B3A8C]">
                   Pilih fokusmu. Ciptakan terobosanmu.
                 </h2>
               </div>
-              <p className="max-w-sm leading-relaxed text-[#9eb5df]">
-                Tiga rumpun kompetensi keilmuan yang dirancang bersama industri agar kompetensimu selalu relevan.
+              <p className="max-w-md text-base leading-relaxed text-[#4B6B94]">
+                Tiga rumpun kompetensi keilmuan yang dirancang bersama industri agar kompetensimu selalu relevan dengan standar global.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="mt-14 grid gap-5 lg:grid-cols-3">
-              {CURRICULUM_TRACKS.map((program) => {
+            <div className="mt-12 grid gap-6 lg:grid-cols-3">
+              {CURRICULUM_TRACKS.map((program, idx) => {
                 const IconComp = program.icon;
+                const delayClass = idx === 0 ? "reveal-delay-1" : idx === 1 ? "reveal-delay-2" : "reveal-delay-3";
                 return (
-                  <article
-                    key={program.title}
-                    className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[.06] p-7 transition-all duration-500 hover:-translate-y-2 hover:border-[#5590ff]/60 hover:bg-[#1047ad] md:p-8"
-                  >
-                    <div className="flex items-start justify-between">
-                      <span className="grid size-14 place-items-center rounded-2xl bg-white/10 text-[#82aeff] transition group-hover:bg-white group-hover:text-[#1453d6]">
-                        <IconComp className="size-7" />
-                      </span>
-                      <span className="font-display text-sm text-white/30">{program.number}</span>
-                    </div>
-                    <h3 className="mt-10 font-display text-2xl font-semibold">{program.title}</h3>
-                    <p className="mt-4 leading-relaxed text-[#aebfe1] transition group-hover:text-white/75">
-                      {program.copy}
-                    </p>
-                    <div className="mt-8 flex flex-wrap gap-2">
-                      {program.tags.map((tag) => (
-                        <span key={tag} className="rounded-full border border-white/15 px-3 py-1.5 text-xs text-white/70">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-8 border-t border-white/10 pt-4 text-xs font-semibold text-[#8ab3ff]">
-                      Prospek: {program.prospects}
-                    </div>
-                  </article>
+                  <Reveal key={program.title} delayClass={delayClass}>
+                    <article
+                      className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-[#1E6FD9]/15 bg-white p-7 shadow-[0_10px_30px_rgba(15,42,74,0.05)] transition-all duration-500 hover:-translate-y-2 hover:border-[#1E6FD9]/50 hover:shadow-[0_20px_40px_rgba(30,111,217,0.12)] md:p-8"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between">
+                          <span className="grid size-14 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] transition-colors group-hover:bg-[#1E6FD9] group-hover:text-white shadow-xs">
+                            <IconComp className="size-7" />
+                          </span>
+                          <span className="font-mono text-sm font-bold text-[#1E6FD9]/40">{program.number}</span>
+                        </div>
+                        <h3 className="mt-7 font-display text-2xl font-bold text-[#0B3A8C] transition-colors group-hover:text-[#1E6FD9]">
+                          {program.title}
+                        </h3>
+                        <p className="mt-3.5 leading-relaxed text-[#4B6B94] text-sm md:text-base">
+                          {program.copy}
+                        </p>
+                        <div className="mt-6 flex flex-wrap gap-2">
+                          {program.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full bg-[#FFFBF5] border border-[#1E6FD9]/15 px-3 py-1 text-xs font-semibold text-[#0F2A4A]"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mt-8 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9] flex items-center justify-between">
+                        <span>Prospek: {program.prospects}</span>
+                        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                      </div>
+                    </article>
+                  </Reveal>
                 );
               })}
             </div>
 
             {/* Direct Google Drive link from ti.umpo.ac.id */}
-            <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md sm:flex-row sm:px-8">
-              <div className="flex items-center gap-4">
-                <div className="grid size-12 place-items-center rounded-2xl bg-white/10 text-[#6edbff]">
-                  <FileText className="size-6" />
+            <Reveal delayClass="reveal-delay-4" className="mt-10">
+              <div className="flex flex-col items-center justify-between gap-4 rounded-3xl border border-[#1E6FD9]/20 bg-white p-6 shadow-[0_12px_32px_rgba(15,42,74,0.06)] sm:flex-row sm:px-8">
+                <div className="flex items-center gap-4">
+                  <div className="grid size-12 place-items-center rounded-2xl bg-[#FFE8CC] text-[#0F2A4A] shadow-xs">
+                    <FileText className="size-6 text-[#FFB84D]" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-[#0B3A8C] text-base">Struktur Kurikulum & Silabus Mata Kuliah</div>
+                    <div className="text-xs text-[#4B6B94]">Unduh dokumen kurikulum lengkap berformat PDF dari Google Drive resmi prodi</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-bold text-white">Struktur Kurikulum & Silabus Mata Kuliah</div>
-                  <div className="text-xs text-[#9eb5df]">Unduh dokumen kurikulum lengkap berformat PDF dari Google Drive resmi</div>
+                <a
+                  href="https://drive.google.com/file/d/1MBJ4e8JyA6YZPJl39maTZMhMiZ1B58SN/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#1E6FD9] px-6 py-3 text-xs font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:bg-[#0B3A8C] hover:shadow-lg"
+                >
+                  Unduh Kurikulum (Drive) <ExternalLink className="size-3.5" />
+                </a>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Organic Wave Divider into next section */}
+          <div className="mt-16">
+            <WaveDivider fill="#FFFBF5" />
+          </div>
+        </section>
+
+        {/* ============================================================== */}
+        {/* PINNED SECTION: PERJALANAN 4 TAHUN MAHASISWA (TIMELINE ROADMAP) */}
+        {/* ============================================================== */}
+        <section className="relative bg-[#FFFBF5] py-20 lg:py-28 overflow-hidden">
+          <div className="mx-auto max-w-7xl px-5 lg:px-8">
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+              
+              {/* Left Column: Pinned Storytelling Header & Navigation */}
+              <div className="lg:col-span-5 lg:sticky lg:top-28">
+                <Reveal>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                    <Sparkles className="size-3.5 text-[#FFB84D]" /> Roadmap Mahasiswa
+                  </div>
+                  <h2 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-[-.035em] text-[#0B3A8C] leading-[1.15]">
+                    Transformasi 4 Tahun: Dari Nol Menuju Tech Leader.
+                  </h2>
+                  <p className="mt-5 text-base leading-relaxed text-[#4B6B94]">
+                    Setiap tahun akademik di Teknik Informatika UMPO dirancang berjenjang dan terstruktur—menghubungkan teori logika, praktikum intensif di laboratorium, hingga portofolio industri nyata.
+                  </p>
+                </Reveal>
+
+                {/* Interactive Year Quick Stepper */}
+                <Reveal delayClass="reveal-delay-1" className="mt-8 hidden sm:block">
+                  <div className="space-y-2">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#4B6B94]">
+                      Lompat Cepat ke Tahapan:
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { step: "01", label: "Tahun 1: Fondasi", target: "roadmap-tahun-1", color: "text-[#1E6FD9] bg-blue-50 border-blue-200 hover:bg-blue-100" },
+                        { step: "02", label: "Tahun 2: Lab Riset", target: "roadmap-tahun-2", color: "text-[#4338CA] bg-indigo-50 border-indigo-200 hover:bg-indigo-100" },
+                        { step: "03", label: "Tahun 3: MBKM & AI", target: "roadmap-tahun-3", color: "text-[#D97706] bg-amber-50 border-amber-200 hover:bg-amber-100" },
+                        { step: "04", label: "Tahun 4: Skripsi", target: "roadmap-tahun-4", color: "text-[#0D9488] bg-teal-50 border-teal-200 hover:bg-teal-100" },
+                      ].map((btn) => (
+                        <button
+                          key={btn.step}
+                          onClick={() => {
+                            const el = document.getElementById(btn.target);
+                            el?.scrollIntoView({ behavior: "smooth", block: "center" });
+                          }}
+                          className={`flex items-center gap-2 rounded-2xl border px-3 py-2.5 text-left text-xs font-bold transition shadow-xs ${btn.color}`}
+                        >
+                          <span className="font-mono text-xs opacity-80">{btn.step}.</span>
+                          <span className="truncate">{btn.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </Reveal>
+
+                {/* Micro Visual Highlight Card */}
+                <Reveal delayClass="reveal-delay-2" className="mt-6 hidden sm:block">
+                  <div className="rounded-3xl border border-[#1E6FD9]/15 bg-white p-6 shadow-[0_12px_32px_rgba(15,42,74,0.06)]">
+                    <div className="flex items-center gap-3">
+                      <div className="grid size-11 place-items-center rounded-2xl bg-[#FFE8CC] text-[#0F2A4A] shrink-0">
+                        <CheckCircle2 className="size-6 text-[#FFB84D]" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-[#0B3A8C]">Kurikulum Berbasis Capaian (OBE)</div>
+                        <div className="text-xs text-[#4B6B94]">Sistematis • Berstandar BAN-PT • Link &amp; Match</div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-3 gap-2 border-t border-slate-100 pt-3 text-center">
+                      <div className="rounded-xl bg-[#FFFBF5] border border-slate-100 p-2">
+                        <div className="font-display text-base font-bold text-[#1E6FD9]">144</div>
+                        <div className="text-[10px] text-[#4B6B94] font-medium">Beban SKS</div>
+                      </div>
+                      <div className="rounded-xl bg-[#FFFBF5] border border-slate-100 p-2">
+                        <div className="font-display text-base font-bold text-[#1E6FD9]">8</div>
+                        <div className="text-[10px] text-[#4B6B94] font-medium">Semester</div>
+                      </div>
+                      <div className="rounded-xl bg-[#FFFBF5] border border-slate-100 p-2">
+                        <div className="font-display text-base font-bold text-[#D97706]">S.Kom.</div>
+                        <div className="text-[10px] text-[#4B6B94] font-medium">Gelar Lulusan</div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between text-xs text-[#1E6FD9] font-bold border-t border-slate-100 pt-3">
+                      <button
+                        onClick={() => navigateTo("akademik")}
+                        className="inline-flex items-center gap-1.5 hover:underline"
+                      >
+                        <span>Eksplorasi Kurikulum Lengkap</span>
+                        <ArrowRight className="size-3.5" />
+                      </button>
+                      <span className="text-[#D97706]">★ Akreditasi B</span>
+                    </div>
+                  </div>
+                </Reveal>
+              </div>
+
+              {/* Right Column: Timeline Spine & Progressive Step Cards */}
+              <div className="relative lg:col-span-7">
+                {/* Continuous Connecting Timeline Spine (Desktop & Tablet) */}
+                <div
+                  className="absolute left-6 md:left-7 top-10 bottom-14 w-0.5 bg-gradient-to-b from-[#1E6FD9] via-[#4338CA] via-[#D97706] to-[#0D9488] rounded-full hidden md:block pointer-events-none"
+                  aria-hidden="true"
+                />
+
+                <div className="space-y-8 md:space-y-10">
+                  {[
+                    {
+                      step: "01",
+                      id: "roadmap-tahun-1",
+                      yearNum: "Tahun 1",
+                      semesters: "Semester 1 – 2",
+                      phaseBadge: "Level 1: Fundamentals",
+                      title: "Fondasi Komputasi & Pemrograman Dasar",
+                      desc: "Membangun fondasi logika berpikir algorithmic problem solving, matematika diskrit, arsitektur komputer, serta penguasaan bahasa pemrograman fundamental seperti C++, Python, dan dasar rekayasa sistem.",
+                      icon: <Terminal className="size-4" />,
+                      theme: {
+                        nodeGradient: "bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C]",
+                        nodeRing: "ring-[#1E6FD9]/20",
+                        strip: "from-[#1E6FD9] via-blue-400 to-transparent",
+                        badge: "bg-blue-50 text-[#1E6FD9] border-blue-200",
+                        banner: "bg-blue-50/70 border-blue-100 text-[#0B3A8C]",
+                        bannerIcon: "text-[#1E6FD9]",
+                      },
+                      tags: ["Algoritma & Pemrograman", "Struktur Data", "Matematika Diskrit", "Etika Profesi IT"],
+                      highlight: "Menguasai Pemecahan Masalah Algoritmik & Ekosistem Coding Camp HIMATIF",
+                    },
+                    {
+                      step: "02",
+                      id: "roadmap-tahun-2",
+                      yearNum: "Tahun 2",
+                      semesters: "Semester 3 – 4",
+                      phaseBadge: "Level 2: Specialization",
+                      title: "Eksplorasi Peminatan & Praktikum Laboratorium",
+                      desc: "Mendalami arsitektur perangkat lunak modern, basis data relasional & non-relasional, jaringan komputer TCP/IP, dan pemrograman berorientasi objek di Lab Jaringan & Lab Rekayasa Perangkat Lunak.",
+                      icon: <Cpu className="size-4" />,
+                      theme: {
+                        nodeGradient: "bg-gradient-to-br from-[#4338CA] to-[#1E1B4B]",
+                        nodeRing: "ring-[#4338CA]/20",
+                        strip: "from-[#4338CA] via-indigo-400 to-transparent",
+                        badge: "bg-indigo-50 text-[#4338CA] border-indigo-200",
+                        banner: "bg-indigo-50/70 border-indigo-100 text-[#1E1B4B]",
+                        bannerIcon: "text-[#4338CA]",
+                      },
+                      tags: ["Pemrograman Berorientasi Objek", "Basis Data Lanjut", "Jaringan Komputer", "Sistem Operasi"],
+                      highlight: "Praktikum Intensif Langsung di 2 Lab Terpadu UMPO & Portofolio Database",
+                    },
+                    {
+                      step: "03",
+                      id: "roadmap-tahun-3",
+                      yearNum: "Tahun 3",
+                      semesters: "Semester 5 – 6",
+                      phaseBadge: "Level 3: Industry & Research",
+                      title: "Riset Terapan, MBKM & Magang Industri",
+                      desc: "Mahasiswa berkesempatan mengikuti program Magang Bersertifikat Kampus Merdeka (MSIB), Studi Independen, penelitian bersama dosen, serta pengembangan produk perangkat lunak skala komersial.",
+                      icon: <Rocket className="size-4" />,
+                      theme: {
+                        nodeGradient: "bg-gradient-to-br from-[#D97706] to-[#78350F]",
+                        nodeRing: "ring-[#D97706]/20",
+                        strip: "from-[#D97706] via-amber-400 to-transparent",
+                        badge: "bg-amber-50 text-[#D97706] border-amber-200",
+                        banner: "bg-amber-50/70 border-amber-100 text-[#78350F]",
+                        bannerIcon: "text-[#D97706]",
+                      },
+                      tags: ["Machine Learning & AI", "Cloud Computing", "Cyber Security", "Mobile Development"],
+                      highlight: "Kerjasama 40+ Mitra Industri, MBKM Bersertifikat & Double Track Certification",
+                    },
+                    {
+                      step: "04",
+                      id: "roadmap-tahun-4",
+                      yearNum: "Tahun 4",
+                      semesters: "Semester 7 – 8",
+                      phaseBadge: "Level 4: Graduation & Career",
+                      title: "Capstone Project, Skripsi & Siap Karir",
+                      desc: "Puncak perjalanan akademik: perancangan sistem solusi nyata melalui Capstone Project, Skripsi yang terpublikasi di jurnal ilmiah terakreditasi, sertifikasi kompetensi keahlian, dan bursa kerja alumni.",
+                      icon: <GraduationCap className="size-4" />,
+                      theme: {
+                        nodeGradient: "bg-gradient-to-br from-[#0D9488] to-[#134E4A]",
+                        nodeRing: "ring-[#0D9488]/20",
+                        strip: "from-[#0D9488] via-teal-400 to-transparent",
+                        badge: "bg-teal-50 text-[#0D9488] border-teal-200",
+                        banner: "bg-teal-50/70 border-teal-100 text-[#134E4A]",
+                        bannerIcon: "text-[#0D9488]",
+                      },
+                      tags: ["Tugas Akhir / Skripsi", "Uji Kompetensi BNSP", "Publikasi Ilmiah", "Tracer Study & Karir"],
+                      highlight: "Gelar Sarjana Komputer (S.Kom.), Sertifikasi Profesi & Masa Tunggu Kerja < 6 Bulan",
+                    },
+                  ].map((item, idx) => (
+                    <Reveal key={item.step} delayClass={idx % 2 === 0 ? "reveal-delay-1" : "reveal-delay-2"}>
+                      <div id={item.id} className="relative md:pl-16">
+                        {/* Timeline Node on the Left Spine */}
+                        <div
+                          className={`absolute left-0 top-6 hidden md:flex size-14 items-center justify-center rounded-2xl ${item.theme.nodeGradient} text-white shadow-lg ring-4 ring-[#FFFBF5] transition-transform duration-300 hover:scale-105 z-10`}
+                          aria-hidden="true"
+                        >
+                          <div className="flex flex-col items-center leading-none">
+                            <span className="mb-0.5">{item.icon}</span>
+                            <span className="font-mono text-[10px] font-extrabold tracking-wider">{item.step}</span>
+                          </div>
+                        </div>
+
+                        {/* Roadmap Card */}
+                        <article className="group relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_24px_rgba(15,42,74,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_16px_36px_rgba(15,42,74,0.09)]">
+                          {/* Accent Top Strip */}
+                          <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${item.theme.strip}`} />
+
+                          {/* Card Header */}
+                          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                            <div className="flex items-center gap-2.5">
+                              {/* Mobile-only node icon */}
+                              <span className={`grid size-7 place-items-center rounded-lg ${item.theme.nodeGradient} text-white md:hidden`}>
+                                {item.icon}
+                              </span>
+                              <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${item.theme.badge}`}>
+                                <span className="font-mono">{item.step}</span>
+                                <span>•</span>
+                                <span>{item.yearNum}</span>
+                              </span>
+                              <span className="text-xs font-semibold text-[#4B6B94]">{item.semesters}</span>
+                            </div>
+                            <span className="rounded-full bg-slate-100 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                              {item.phaseBadge}
+                            </span>
+                          </div>
+
+                          {/* Title & Description */}
+                          <h3 className="mt-4 font-display text-xl sm:text-2xl font-bold text-[#0B3A8C] transition-colors group-hover:text-[#1E6FD9]">
+                            {item.title}
+                          </h3>
+                          <p className="mt-2.5 text-sm sm:text-base leading-relaxed text-[#4B6B94]">
+                            {item.desc}
+                          </p>
+
+                          {/* Courses & Practice Tags */}
+                          <div className="mt-5 border-t border-slate-100 pt-4">
+                            <div className="mb-2.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#4B6B94]">
+                              <Layers className="size-3.5 text-[#1E6FD9]" />
+                              <span>Mata Kuliah &amp; Praktikum Inti:</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {item.tags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-[#0F2A4A] transition-colors hover:border-blue-300 hover:bg-blue-50/60 hover:text-[#1E6FD9]"
+                                >
+                                  <span className="size-1.5 rounded-full bg-[#1E6FD9]/40" />
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Year Achievement Output Ribbon */}
+                          <div className={`mt-5 flex items-center gap-3 rounded-2xl border p-3.5 sm:p-4 text-xs font-bold transition-transform duration-200 group-hover:scale-[1.01] ${item.theme.banner}`}>
+                            <div className="grid size-8 place-items-center rounded-xl bg-white shadow-xs shrink-0">
+                              <Sparkles className={`size-4 ${item.theme.bannerIcon}`} />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-[10px] uppercase tracking-wider font-semibold opacity-75">Target Capaian Portofolio:</div>
+                              <div className="text-xs sm:text-sm font-bold">{item.highlight}</div>
+                            </div>
+                          </div>
+                        </article>
+                      </div>
+                    </Reveal>
+                  ))}
                 </div>
               </div>
-              <a
-                href="https://drive.google.com/file/d/1MBJ4e8JyA6YZPJl39maTZMhMiZ1B58SN/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-bold text-[#061d4e] transition hover:bg-[#6edbff]"
-              >
-                Unduh Kurikulum (Drive) <ExternalLink className="size-3.5" />
-              </a>
+
             </div>
           </div>
         </section>
@@ -1105,41 +1482,44 @@ export default function App() {
         {/* ============================================================== */}
         {/* 5. DOSEN & PENELITI (21 DOSEN ASLI TI UMPO)                    */}
         {/* ============================================================== */}
-        <section id="dosen" className="relative overflow-hidden bg-slate-50/50 py-24 lg:py-32">
-          {/* Ambient Lighting & Glow */}
-          <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full bg-gradient-to-br from-blue-200/40 via-indigo-100/30 to-transparent blur-3xl pointer-events-none" />
-          <div className="absolute right-0 top-1/3 size-96 rounded-full bg-cyan-100/30 blur-3xl pointer-events-none" />
+        <section id="dosen" className="relative overflow-hidden bg-[#FFFBF5] py-24 lg:py-32">
+          {/* Subtle warm lighting orb */}
+          <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full bg-gradient-to-br from-[#EAF4FF] via-[#FFE8CC]/40 to-transparent blur-3xl pointer-events-none" />
+          <div className="absolute right-0 top-1/3 size-96 rounded-full bg-[#EAF4FF]/50 blur-3xl pointer-events-none" />
 
           <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
             {/* Header */}
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <div className="section-label">Tenaga Pendidik & Peneliti</div>
-                <h2 className="mt-4 max-w-2xl font-display text-4xl font-semibold tracking-[-.04em] text-[#09275e] md:text-5xl lg:text-6xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> Tenaga Pendidik & Peneliti
+                </div>
+                <h2 className="mt-4 max-w-2xl font-display text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.04em] text-[#0B3A8C]">
                   Dosen & Pakar Teknologi Berdedikasi.
                 </h2>
               </div>
               <div className="max-w-md">
-                <p className="text-sm md:text-base leading-relaxed text-[#64789c]">
+                <p className="text-sm md:text-base leading-relaxed text-[#4B6B94]">
                   21 akademisi & praktisi S2/S3 Fakultas Teknik UMPO yang aktif membimbing, meneliti, dan membawa teknologi industri mutakhir langsung ke ruang kelas.
                 </p>
-                {/* Micro stats */}
-                <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 border border-slate-200 shadow-xs">
-                    <Award className="size-3.5 text-amber-500" /> 21 Dosen Tetap
+                {/* Micro stats with AnimatedCounter */}
+                <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-[#0F2A4A]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 border border-[#1E6FD9]/15 shadow-xs">
+                    <Award className="size-3.5 text-[#FFB84D]" />
+                    <span className="font-bold text-[#1E6FD9]"><AnimatedCounter end={21} /></span> Dosen Tetap
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 border border-slate-200 shadow-xs">
-                    <BadgeCheck className="size-3.5 text-emerald-500" /> 100% Ber-NIDN
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 border border-[#1E6FD9]/15 shadow-xs">
+                    <BadgeCheck className="size-3.5 text-emerald-600" /> 100% Ber-NIDN
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 border border-slate-200 shadow-xs">
-                    <Cpu className="size-3.5 text-blue-500" /> Riset AI, RPL & IoT
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 border border-[#1E6FD9]/15 shadow-xs">
+                    <Cpu className="size-3.5 text-[#1E6FD9]" /> Riset AI, RPL & IoT
                   </span>
                 </div>
               </div>
-            </div>
+            </Reveal>
 
             {/* Filter Tabs, Style Switcher & Search Bar */}
-            <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-sm">
+            <Reveal delayClass="reveal-delay-1" className="mt-10 flex flex-col gap-4 rounded-3xl border border-[#1E6FD9]/15 bg-white p-4 shadow-sm">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 {/* Category Tabs */}
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -1154,10 +1534,10 @@ export default function App() {
                       onClick={() => {
                         setLecturerCategory(tab.key as any);
                       }}
-                      className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all duration-200 ${
+                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
                         lecturerCategory === tab.key
-                          ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
-                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                          ? "bg-[#1E6FD9] text-white shadow-md shadow-blue-600/25"
+                          : "text-[#4B6B94] hover:bg-[#EAF4FF] hover:text-[#0B3A8C]"
                       }`}
                     >
                       <span>{tab.label}</span>
@@ -1165,7 +1545,7 @@ export default function App() {
                         className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold ${
                           lecturerCategory === tab.key
                             ? "bg-white/20 text-white"
-                            : "bg-slate-100 text-slate-500"
+                            : "bg-[#FFFBF5] text-[#4B6B94]"
                         }`}
                       >
                         {tab.count}
@@ -1174,47 +1554,11 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Right controls: Style Switcher & Search */}
+                {/* Right controls: Info & Search */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                  {/* Style Switcher */}
-                  <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200/80 self-start sm:self-auto">
-                    <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Gaya:
-                    </span>
-                    <button
-                      onClick={() => setCardStyle("modern")}
-                      className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
-                        cardStyle === "modern"
-                          ? "bg-white text-[#1453d6] shadow-xs"
-                          : "text-slate-600 hover:text-slate-900"
-                      }`}
-                      title="Gaya Kartu Modern Studio"
-                    >
-                      Grid Modern
-                    </button>
-                    <button
-                      onClick={() => setCardStyle("badge")}
-                      className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
-                        cardStyle === "badge"
-                          ? "bg-white text-[#1453d6] shadow-xs"
-                          : "text-slate-600 hover:text-slate-900"
-                      }`}
-                      title="Gaya ID Badge / Horizontal"
-                    >
-                      ID Badge
-                    </button>
-                    <button
-                      onClick={() => setCardStyle("cyber")}
-                      className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
-                        cardStyle === "cyber"
-                          ? "bg-[#06183d] text-cyan-300 shadow-xs"
-                          : "text-slate-600 hover:text-slate-900"
-                      }`}
-                      title="Gaya Dark Cyber Glass"
-                    >
-                      Cyber Glass
-                    </button>
-                  </div>
+                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#4B6B94] font-medium">
+                    <Sparkles className="size-3.5 text-[#FFB84D]" /> Klik kartu untuk animasi detail profil
+                  </span>
 
                   {/* Search Field */}
                   <div className="relative w-full sm:w-64">
@@ -1237,7 +1581,7 @@ export default function App() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
 
             {/* Active search / filter status counter */}
             {(lecturerSearch.trim() || lecturerCategory !== "semua") && (
@@ -1258,334 +1602,133 @@ export default function App() {
               </div>
             )}
 
-            {/* Lecturers Grid with selected style */}
-            <div
-              className={`mt-8 grid gap-6 ${
-                cardStyle === "badge"
-                  ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                  : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-              }`}
-            >
-              {visibleLecturers.map((lecturer) => {
-                // Style 1: Modern Grid (Vertical studio)
-                if (cardStyle === "modern") {
-                  return (
-                    <article
-                      key={lecturer.name}
-                      onClick={() => setSelectedLecturer(lecturer)}
-                      className="glass-card group relative flex flex-col overflow-hidden rounded-[2rem] border border-white/80 bg-white/85 shadow-[0_10px_30px_-5px_rgba(9,45,116,0.06)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-2.5 hover:border-[#1453d6]/40 hover:bg-white/95 hover:shadow-[0_24px_50px_-10px_rgba(20,83,214,0.2)] cursor-pointer"
-                    >
-                      {/* Portrait Frame */}
-                      <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-blue-50/70 via-slate-100/50 to-white/90">
-                        <div className="absolute inset-0 lecturer-avatar-backdrop opacity-70" />
-                        <div className="absolute inset-0 lecturer-dot-pattern opacity-40" />
+            {/* Lecturers Grid — Fluid, Modern & Harmonious Cards */}
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {visibleLecturers.map((lecturer) => (
+                <article
+                  key={lecturer.name}
+                  onClick={() => setSelectedLecturer(lecturer)}
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#1E6FD9]/15 bg-white/95 backdrop-blur-sm shadow-[0_10px_30px_rgba(11,58,140,0.05)] transition-all duration-300 hover:-translate-y-2 hover:border-[#1E6FD9]/40 hover:shadow-[0_22px_45px_rgba(11,58,140,0.12)] cursor-pointer active:scale-[0.98]"
+                >
+                  {/* Portrait Container — Seamless top flow with warm aura */}
+                  <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-[#EAF4FF] via-blue-50/30 to-white">
+                    {/* Background glow aura */}
+                    <div
+                      className={`absolute inset-0 opacity-40 transition-opacity duration-300 group-hover:opacity-75 ${
+                        lecturer.category === "pimpinan"
+                          ? "bg-[radial-gradient(ellipse_at_top,#FFB84D_0%,transparent_70%)]"
+                          : lecturer.category === "lab"
+                          ? "bg-[radial-gradient(ellipse_at_top,#0D9488_0%,transparent_70%)]"
+                          : "bg-[radial-gradient(ellipse_at_top,#1E6FD9_0%,transparent_70%)]"
+                      }`}
+                    />
 
-                        {/* Floating Category Badge with Glass Effect */}
-                        <div className="absolute left-3.5 top-3.5 z-10">
-                          {lecturer.category === "pimpinan" && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/90 px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-amber-500/20 backdrop-blur-md border border-amber-300/40">
-                              <Award className="size-3.5" /> Pimpinan
-                            </span>
-                          )}
-                          {lecturer.category === "lab" && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-600/90 px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-teal-600/20 backdrop-blur-md border border-teal-300/40">
-                              <Cpu className="size-3.5" /> Ka. Lab
-                            </span>
-                          )}
-                          {lecturer.category === "dosen" && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1453d6]/90 px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-blue-600/20 backdrop-blur-md border border-blue-300/40">
-                              <GraduationCap className="size-3.5" /> Dosen
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Verified Badge */}
-                        <div className="absolute right-3.5 top-3.5 z-10">
-                          <span
-                            className="grid size-7 place-items-center rounded-full bg-white/90 text-emerald-600 shadow-sm backdrop-blur-md transition-transform duration-300 group-hover:scale-110 border border-white"
-                            title="Dosen Tetap Terverifikasi PDDIKTI"
-                          >
-                            <BadgeCheck className="size-4" />
-                          </span>
-                        </div>
-
-                        <img
-                          src={lecturer.image}
-                          alt={lecturer.name}
-                          className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
-                          onError={(e) => {
-                            (e.target as HTMLElement).setAttribute(
-                              "src",
-                              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-                            );
-                          }}
-                        />
-                        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white/90 via-white/50 to-transparent" />
-
-                        {/* Hover Overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-slate-950/20 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100">
-                          <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-[#08235b] shadow-xl transition-transform duration-300 hover:scale-105 border border-white">
-                            <Eye className="size-3.5 text-[#1453d6]" /> Lihat Profil
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Content Area */}
-                      <div className="flex flex-1 flex-col justify-between p-5 pt-3">
-                        <div>
-                          <div className="text-[11px] font-bold uppercase tracking-wider text-[#1453d6]">
-                            {lecturer.role}
-                          </div>
-                          <h3
-                            className="mt-1 font-display text-[15px] font-bold leading-snug text-[#08235b] transition-colors group-hover:text-[#1453d6] line-clamp-2"
-                            title={lecturer.name}
-                          >
-                            {lecturer.name}
-                          </h3>
-
-                          <div className="mt-2.5 flex items-center justify-between">
-                            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/90 px-2.5 py-1 font-mono text-[11px] font-semibold text-slate-700 shadow-xs backdrop-blur-sm">
-                              <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                NIDN
-                              </span>
-                              {lecturer.nidn}
-                            </span>
-                            <span className="text-[11px] font-medium text-slate-400">S1 TI UMPO</span>
-                          </div>
-
-                          <div className="mt-3 rounded-xl border border-blue-100/80 bg-gradient-to-br from-blue-50/70 via-indigo-50/30 to-white/50 p-3 backdrop-blur-sm transition-all duration-300 group-hover:border-blue-200 group-hover:bg-blue-50/80">
-                            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 transition-colors group-hover:text-blue-600">
-                              <Sparkles className="size-3 text-amber-500 animate-pulse" /> Bidang Riset & Fokus
-                            </div>
-                            <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-slate-600" title={lecturer.focus}>
-                              {lecturer.focus}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Footer: Detail CTA + WhatsApp CTA */}
-                        <div className="mt-4 flex items-center justify-between border-t border-slate-100/80 pt-3">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1453d6] transition-colors group-hover:text-[#08235b]">
-                            Detail Lengkap{" "}
-                            <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5" />
-                          </span>
-                          <a
-                            href={getWhatsAppUrl(lecturer.name)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            title={`Chat WhatsApp dengan ${lecturer.name}`}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-emerald-500/20 transition-all hover:bg-[#1ebd59] hover:shadow-md hover:shadow-emerald-500/30 hover:scale-105 active:scale-95"
-                          >
-                            <WhatsAppIcon className="size-3.5" />
-                            <span>WhatsApp</span>
-                          </a>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                }
-
-                // Style 2: ID Badge (Horizontal Smart Card)
-                if (cardStyle === "badge") {
-                  return (
-                    <article
-                      key={lecturer.name}
-                      onClick={() => setSelectedLecturer(lecturer)}
-                      className="group relative flex flex-col justify-between overflow-hidden rounded-[1.75rem] border border-slate-200/90 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#1453d6]/40 hover:shadow-[0_20px_40px_-15px_rgba(20,83,214,0.14)] cursor-pointer"
-                    >
-                      <div>
-                        {/* ID Badge Header Bar */}
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                          <span className="flex items-center gap-1.5">
-                            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-                            Dosen Tetap TI UMPO
-                          </span>
-                          <span className="font-mono text-slate-500">ID #{lecturer.nidn.slice(-4)}</span>
-                        </div>
-
-                        {/* Main Info with Horizontal Layout */}
-                        <div className="mt-4 flex items-start gap-4">
-                          {/* Portrait Left */}
-                          <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border-2 border-slate-100 bg-slate-50 shadow-inner">
-                            <img
-                              src={lecturer.image}
-                              alt={lecturer.name}
-                              className="size-full object-cover object-top transition duration-500 group-hover:scale-105"
-                              onError={(e) => {
-                                (e.target as HTMLElement).setAttribute(
-                                  "src",
-                                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-                                );
-                              }}
-                            />
-                            <div className="absolute bottom-1 right-1 grid size-5 place-items-center rounded-full bg-emerald-600 text-white shadow-xs">
-                              <BadgeCheck className="size-3" />
-                            </div>
-                          </div>
-
-                          {/* Details Right */}
-                          <div className="min-w-0 flex-1">
-                            <div className="flex flex-wrap items-center gap-1.5">
-                              {lecturer.category === "pimpinan" && (
-                                <span className="rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200">
-                                  Pimpinan
-                                </span>
-                              )}
-                              {lecturer.category === "lab" && (
-                                <span className="rounded-md bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-700 border border-teal-200">
-                                  Ka. Lab
-                                </span>
-                              )}
-                              {lecturer.category === "dosen" && (
-                                <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-[#1453d6] border border-blue-200">
-                                  Dosen
-                                </span>
-                              )}
-                              <span className="font-mono text-[10px] text-slate-400">NIDN {lecturer.nidn}</span>
-                            </div>
-
-                            <h3 className="mt-1.5 font-display text-[15px] font-bold leading-snug text-[#09275e] group-hover:text-[#1453d6] transition-colors line-clamp-2">
-                              {lecturer.name}
-                            </h3>
-                            <p className="mt-0.5 text-[11px] font-medium text-slate-500 line-clamp-1">{lecturer.role}</p>
-                          </div>
-                        </div>
-
-                        {/* Research Focus */}
-                        <div className="mt-3.5 rounded-xl bg-slate-50/80 p-2.5 border border-slate-100 text-xs">
-                          <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            <Sparkles className="size-3 text-amber-500" /> Fokus Riset
-                          </div>
-                          <p className="mt-0.5 line-clamp-1 text-[11px] font-medium text-slate-600">{lecturer.focus}</p>
-                        </div>
-                      </div>
-
-                      {/* Card Footer */}
-                      <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-                        <span className="inline-flex items-center gap-1 text-xs font-bold text-[#1453d6]">
-                          Lihat Detail <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                    {/* Category Badge */}
+                    <div className="absolute left-3.5 top-3.5 z-10">
+                      {lecturer.category === "pimpinan" && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/95 px-3 py-1 text-[11px] font-bold text-white shadow-sm shadow-amber-500/25 backdrop-blur-md border border-amber-300/40">
+                          <Award className="size-3.5" /> Pimpinan
                         </span>
-                        <a
-                          href={getWhatsAppUrl(lecturer.name)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-[#1ebd59] transition"
-                          title={`Chat WhatsApp dengan ${lecturer.name}`}
-                        >
-                          <WhatsAppIcon className="size-3.5" /> WhatsApp
-                        </a>
-                      </div>
-                    </article>
-                  );
-                }
-
-                // Style 3: Cyber Glass (Futuristic Dark Navy)
-                return (
-                  <article
-                    key={lecturer.name}
-                    onClick={() => setSelectedLecturer(lecturer)}
-                    className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-blue-900/60 bg-gradient-to-b from-[#081b3d] to-[#040e22] text-white shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/50 hover:shadow-[0_20px_45px_-10px_rgba(6,182,212,0.18)] cursor-pointer"
-                  >
-                    {/* Top Portrait */}
-                    <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-[#0e2a5e] to-[#081b3d]">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(110,219,255,0.2),transparent_70%)]" />
-
-                      {/* Badges */}
-                      <div className="absolute left-3.5 top-3.5 z-10">
-                        {lecturer.category === "pimpinan" && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
-                            <Award className="size-3.5" /> Pimpinan
-                          </span>
-                        )}
-                        {lecturer.category === "lab" && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-500/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
-                            <Cpu className="size-3.5" /> Ka. Lab
-                          </span>
-                        )}
-                        {lecturer.category === "dosen" && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
-                            <GraduationCap className="size-3.5" /> Dosen
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="absolute right-3.5 top-3.5 z-10">
-                        <span className="grid size-7 place-items-center rounded-full bg-black/40 text-cyan-300 backdrop-blur-md border border-cyan-400/30">
-                          <BadgeCheck className="size-4" />
+                      )}
+                      {lecturer.category === "lab" && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-600/95 px-3 py-1 text-[11px] font-bold text-white shadow-sm shadow-teal-600/25 backdrop-blur-md border border-teal-300/40">
+                          <Cpu className="size-3.5" /> Ka. Lab
                         </span>
+                      )}
+                      {lecturer.category === "dosen" && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1E6FD9]/95 px-3 py-1 text-[11px] font-bold text-white shadow-sm shadow-blue-600/25 backdrop-blur-md border border-blue-300/40">
+                          <GraduationCap className="size-3.5" /> Dosen
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Verified PDDIKTI Badge */}
+                    <div className="absolute right-3.5 top-3.5 z-10">
+                      <span
+                        className="grid size-7.5 place-items-center rounded-full bg-white/95 text-emerald-600 shadow-xs backdrop-blur-md transition-transform duration-300 group-hover:scale-110 border border-white"
+                        title="Dosen Tetap Terverifikasi PDDIKTI"
+                      >
+                        <BadgeCheck className="size-4" />
+                      </span>
+                    </div>
+
+                    {/* Portrait Photo */}
+                    <img
+                      src={lecturer.image}
+                      alt={lecturer.name}
+                      className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
+                      onError={(e) => {
+                        (e.target as HTMLElement).setAttribute(
+                          "src",
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
+                        );
+                      }}
+                    />
+
+                    {/* Soft gradient bottom fade */}
+                    <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/60 to-transparent" />
+
+                    {/* Interactive Hover Pill */}
+                    <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0B3A8C]/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-white shadow-lg shadow-blue-950/25 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 border border-white/20">
+                        <Eye className="size-3.5 text-[#FFB84D]" /> Lihat Detail
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Content Area */}
+                  <div className="flex flex-1 flex-col justify-between p-5 pt-3">
+                    <div>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-[#1E6FD9] line-clamp-1">
+                        {lecturer.role}
+                      </div>
+                      <h3
+                        className="mt-1 font-display text-base font-bold leading-snug text-[#0B3A8C] transition-colors group-hover:text-[#1E6FD9] line-clamp-2 min-h-[44px]"
+                        title={lecturer.name}
+                      >
+                        {lecturer.name}
+                      </h3>
+
+                      <div className="mt-2.5 flex items-center justify-between text-xs text-[#4B6B94]">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#1E6FD9]/15 bg-[#EAF4FF]/60 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-[#0B3A8C]">
+                          <span className="text-[10px] font-bold uppercase text-[#1E6FD9]">NIDN</span>
+                          {lecturer.nidn}
+                        </span>
+                        <span className="text-[11px] font-medium text-[#4B6B94]">FT UMPO</span>
                       </div>
 
-                      <img
-                        src={lecturer.image}
-                        alt={lecturer.name}
-                        className="size-full object-cover object-top transition duration-500 group-hover:scale-105"
-                        onError={(e) => {
-                          (e.target as HTMLElement).setAttribute(
-                            "src",
-                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-                          );
-                        }}
-                      />
-                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#081b3d] to-transparent" />
-
-                      {/* Hover pill */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-cyan-400 px-4 py-2 text-xs font-bold text-[#06183d] shadow-xl">
-                          <Eye className="size-3.5 text-[#06183d]" /> Lihat Profil
-                        </span>
+                      {/* Research Focus — Harmonious with parent's warm ivory palette */}
+                      <div className="mt-3.5 rounded-2xl border border-[#1E6FD9]/12 bg-[#FFFBF5] p-3 transition-colors group-hover:border-[#1E6FD9]/25">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#4B6B94]">
+                          <Sparkles className="size-3 text-[#FFB84D]" /> Riset &amp; Keahlian
+                        </div>
+                        <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-[#0F2A4A]" title={lecturer.focus}>
+                          {lecturer.focus}
+                        </p>
                       </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="flex flex-1 flex-col justify-between p-5 pt-3">
-                      <div>
-                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-300">
-                          {lecturer.role}
-                        </div>
-                        <h3 className="mt-1 font-display text-[15px] font-bold leading-snug text-white group-hover:text-cyan-200 transition-colors line-clamp-2">
-                          {lecturer.name}
-                        </h3>
-
-                        <div className="mt-2.5 flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1.5 rounded-lg border border-blue-800/80 bg-blue-950/80 px-2.5 py-1 font-mono text-[11px] font-semibold text-blue-200">
-                            <span className="font-sans text-[10px] font-bold text-blue-400">NIDN</span>
-                            {lecturer.nidn}
-                          </span>
-                          <span className="text-[10px] font-mono text-cyan-400/80">INFORMATIKA</span>
-                        </div>
-
-                        <div className="mt-3 rounded-xl border border-blue-900/60 bg-blue-950/40 p-3">
-                          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300/80">
-                            <Sparkles className="size-3 text-amber-400" /> Bidang Riset & Fokus
-                          </div>
-                          <p className="mt-1 line-clamp-2 text-xs font-medium text-slate-300 leading-relaxed">
-                            {lecturer.focus}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex items-center justify-between border-t border-blue-900/60 pt-3">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300 group-hover:text-cyan-200 transition-colors">
-                          Detail Lengkap <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
-                        </span>
-                        <a
-                          href={getWhatsAppUrl(lecturer.name)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-[#1ebd59] shadow-md shadow-emerald-500/20"
-                          title={`Chat WhatsApp dengan ${lecturer.name}`}
-                        >
-                          <WhatsAppIcon className="size-3.5" />
-                          <span>WhatsApp</span>
-                        </a>
-                      </div>
+                    {/* Card Actions */}
+                    <div className="mt-4 flex items-center justify-between border-t border-slate-100/90 pt-3">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E6FD9] transition-colors group-hover:text-[#0B3A8C]">
+                        <span>Buka Profil</span>
+                        <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                      </span>
+                      <a
+                        href={getWhatsAppUrl(lecturer.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        title={`Konsultasi via WhatsApp dengan ${lecturer.name}`}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition-all hover:bg-[#1ebd59] hover:shadow-md hover:scale-105 active:scale-95"
+                      >
+                        <WhatsAppIcon className="size-3.5" />
+                        <span>WhatsApp</span>
+                      </a>
                     </div>
-                  </article>
-                );
-              })}
+                  </div>
+                </article>
+              ))}
 
               {filteredLecturers.length === 0 && (
                 <div className="col-span-full rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs">
@@ -1599,7 +1742,7 @@ export default function App() {
                       setLecturerSearch("");
                       setLecturerCategory("semua");
                     }}
-                    className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#071c4a]"
+                    className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#1E6FD9] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#0B3A8C]"
                   >
                     Reset Pencarian
                   </button>
@@ -1611,7 +1754,7 @@ export default function App() {
             <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
                 onClick={() => navigateTo("dosen")}
-                className="group inline-flex items-center gap-3 rounded-full bg-[#1453d6] px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-[#0e3ea6]"
+                className="group inline-flex items-center gap-3 rounded-full bg-[#1E6FD9] px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-[#0B3A8C]"
               >
                 Buka Direktori Lengkap 21 Dosen TI UMPO
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
@@ -1619,7 +1762,7 @@ export default function App() {
               {lecturerCategory === "semua" && !lecturerSearch && filteredLecturers.length > 8 && (
                 <button
                   onClick={() => setShowAllLecturers(!showAllLecturers)}
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#1E6FD9]/20 bg-white px-6 py-3.5 text-xs font-bold text-[#0B3A8C] transition hover:bg-[#EAF4FF]"
                 >
                   {showAllLecturers ? "Ringkas Tampilan" : "Buka Semua di Halaman Ini"}
                   <ChevronDown className={`size-3.5 transition-transform ${showAllLecturers ? "rotate-180" : ""}`} />
@@ -1627,127 +1770,222 @@ export default function App() {
               )}
             </div>
           </div>
+
+          {/* Organic Wave Divider into next section */}
+          <div className="mt-20">
+            <WaveDivider fill="#EAF4FF" />
+          </div>
         </section>
 
         {/* ============================================================== */}
-        {/* 6. KEHIDUPAN MAHASISWA & HIMATIF UMPO (PARALLAX BANNER ASLI)   */}
+        {/* 6. KEHIDUPAN MAHASISWA & HIMATIF UMPO                          */}
         {/* ============================================================== */}
-        <section
-          id="himatif"
-          className="relative min-h-[38rem] overflow-hidden bg-fixed bg-center bg-cover"
-          style={{
-            backgroundImage:
-              "linear-gradient(90deg,rgba(4,28,82,.9),rgba(8,53,143,.32)),url('https://images.unsplash.com/photo-1663162551013-8bb8ab151e11?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=90&w=1800')",
-          }}
-        >
-          <div className="absolute inset-0 parallax-lines opacity-30" />
-          <div className="relative mx-auto flex min-h-[38rem] max-w-7xl items-center px-5 lg:px-8">
-            <div className="max-w-2xl text-white">
-              <div className="section-label section-label-light">Kehidupan Mahasiswa & HIMATIF</div>
-              <h2 className="mt-5 font-display text-5xl font-semibold leading-[1.05] tracking-[-.045em] md:text-7xl">
-                Eksperimen. Kolaborasi. Bertumbuh.
-              </h2>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#d3e1ff]">
-                Dari Himpunan Mahasiswa Teknik Informatika (HIMATIF), coding bootcamp, hackathon, kompetisi nasional,
-                hingga riset pengabdian masyarakat, pengalaman belajarmu jauh melampaui ruang kelas.
-              </p>
-              <div className="mt-9 flex flex-wrap gap-4">
-                <a
-                  href="https://instagram.com/informatika.umpo"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 rounded-full bg-white px-7 py-3.5 font-bold text-[#134dbf] shadow-lg transition hover:-translate-y-1 hover:bg-[#e7eeff]"
-                >
-                  Lihat Instagram @informatika.umpo <ArrowRight className="size-4" />
-                </a>
+        <section id="himatif" className="relative overflow-hidden bg-[#FFFBF5] py-20 lg:py-28">
+          <div className="mx-auto max-w-7xl px-5 lg:px-8">
+            {/* Main Feature Banner */}
+            <Reveal className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#1E6FD9] via-[#1258b8] to-[#0B3A8C] p-8 md:p-14 lg:p-16 text-white shadow-[0_24px_60px_-15px_rgba(11,58,140,0.3)]">
+              {/* Background Glow & Circuit Lines */}
+              <div className="absolute -right-24 -top-24 size-96 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+              <div className="absolute -left-20 -bottom-20 size-80 rounded-full bg-[#FFB84D]/15 blur-3xl pointer-events-none" />
+              <div className="absolute inset-0 hero-grid opacity-15 pointer-events-none" />
+
+              <div className="relative z-10 max-w-3xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#FFE8CC] backdrop-blur-md border border-white/20">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> Kehidupan Mahasiswa & HIMATIF
+                </div>
+                <h2 className="mt-5 font-display text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.08] tracking-[-.04em] text-white">
+                  Eksperimen. Kolaborasi. Bertumbuh.
+                </h2>
+                <p className="mt-5 text-base md:text-lg leading-relaxed text-[#D5E3FF]">
+                  Dari Himpunan Mahasiswa Teknik Informatika (HIMATIF), coding bootcamp, hackathon, kompetisi nasional,
+                  hingga riset pengabdian masyarakat, pengalaman belajarmu jauh melampaui ruang kelas.
+                </p>
+
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <a
+                    href="https://instagram.com/informatika.umpo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2.5 rounded-full bg-white px-7 py-3.5 font-bold text-[#0B3A8C] shadow-lg shadow-black/10 transition-all hover:-translate-y-1 hover:bg-[#FFE8CC] hover:text-[#0F2A4A]"
+                  >
+                    Lihat Instagram @informatika.umpo <ArrowRight className="size-4" />
+                  </a>
+                  <button
+                    onClick={() => navigateTo("berita")}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3.5 font-bold text-white backdrop-blur-md transition-all hover:bg-white/20 hover:-translate-y-0.5"
+                  >
+                    Galeri & Berita Kegiatan
+                  </button>
+                </div>
               </div>
+            </Reveal>
+
+            {/* 3 Activity Pillars */}
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  icon: Code2,
+                  title: "Coding Bootcamp & Workshop",
+                  desc: "Sesi intensif penguasaan teknologi stack modern: React, Python, Cloud, dan AI bersama alumni serta instruktur industri.",
+                  tag: "Komunitas Belajar",
+                },
+                {
+                  icon: Award,
+                  title: "Informatics Hackathon & Expo",
+                  desc: "Ajang tahunan unjuk kebolehan inovasi digital, pameran produk software mahasiswa, dan kompetisi pemecahan masalah nyata.",
+                  tag: "Kompetisi & Prestasi",
+                },
+                {
+                  icon: Users,
+                  title: "Pengabdian Masyarakat Digital",
+                  desc: "Pemberdayaan UMKM lokal dan literasi teknologi sekolah pedesaan di Ponorogo dan sekitarnya melalui KKN tematik digital.",
+                  tag: "Dampak Sosial",
+                },
+              ].map((act, idx) => {
+                const IconC = act.icon;
+                const delay = idx === 0 ? "reveal-delay-1" : idx === 1 ? "reveal-delay-2" : "reveal-delay-3";
+                return (
+                  <Reveal key={act.title} delayClass={delay}>
+                    <div className="h-full rounded-3xl border border-[#1E6FD9]/15 bg-white p-7 shadow-[0_10px_30px_rgba(15,42,74,0.05)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#1E6FD9]/40 hover:shadow-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="grid size-12 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] shadow-xs">
+                          <IconC className="size-6" />
+                        </div>
+                        <span className="rounded-full bg-[#FFFBF5] border border-[#1E6FD9]/15 px-3 py-1 text-[11px] font-bold text-[#1E6FD9]">
+                          {act.tag}
+                        </span>
+                      </div>
+                      <h3 className="mt-5 font-display text-lg font-bold text-[#0B3A8C]">{act.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-[#4B6B94]">{act.desc}</p>
+                    </div>
+                  </Reveal>
+                );
+              })}
             </div>
+          </div>
+
+          {/* Organic Wave Divider into Fasilitas section */}
+          <div className="mt-20">
+            <WaveDivider fill="#F0F4FC" />
           </div>
         </section>
 
         {/* ============================================================== */}
         {/* 7. FASILITAS LABORATORIUM                                      */}
         {/* ============================================================== */}
-        <section id="fasilitas" className="bg-[#f0f4fc] py-24 lg:py-32">
+        <section id="fasilitas" className="relative overflow-hidden bg-[#FFFBF5] py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <div className="text-center">
-              <div className="section-label">Sarana & Prasarana</div>
-              <h2 className="mt-4 font-display text-4xl font-semibold tracking-[-.04em] text-[#09275e] md:text-5xl">
+            <Reveal className="text-center">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                <Sparkles className="size-3.5 text-[#FFB84D]" /> Sarana & Prasarana
+              </div>
+              <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold tracking-[-.04em] text-[#0B3A8C]">
                 Laboratorium Komputer Terpadu
               </h2>
-              <p className="mx-auto mt-4 max-w-xl text-[#59709b]">
+              <p className="mx-auto mt-4 max-w-xl text-base text-[#4B6B94] leading-relaxed">
                 Infrastruktur praktikum modern untuk menunjang riset rekayasa perangkat lunak, kecerdasan buatan, dan jaringan komputer.
               </p>
+            </Reveal>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              <Reveal delayClass="reveal-delay-1">
+                <div className="flex h-full flex-col justify-between rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-8 shadow-[0_12px_36px_rgba(15,42,74,0.06)] transition-all duration-300 hover:-translate-y-2 hover:border-[#1E6FD9]/50 hover:shadow-xl">
+                  <div>
+                    <div className="grid size-14 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] shadow-xs">
+                      <Network className="size-7" />
+                    </div>
+                    <h3 className="mt-6 font-display text-xl font-bold text-[#0B3A8C]">Lab Jaringan & IoT</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#4B6B94]">
+                      Pusat simulasi jaringan enterprise, perangkat router/switch Cisco & Mikrotik, IoT kit, dan cyber security.
+                    </p>
+                  </div>
+                  <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9]">
+                    Ka. Lab: Angga Prasetyo, S.T., M.Kom.
+                  </div>
+                </div>
+              </Reveal>
+
+              <Reveal delayClass="reveal-delay-2">
+                <div className="flex h-full flex-col justify-between rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-8 shadow-[0_12px_36px_rgba(15,42,74,0.06)] transition-all duration-300 hover:-translate-y-2 hover:border-[#1E6FD9]/50 hover:shadow-xl">
+                  <div>
+                    <div className="grid size-14 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] shadow-xs">
+                      <Code2 className="size-7" />
+                    </div>
+                    <h3 className="mt-6 font-display text-xl font-bold text-[#0B3A8C]">Lab Rekayasa Perangkat Lunak</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#4B6B94]">
+                      Fasilitas komputasi untuk pengembangan web, mobile apps, database architecture, dan sistem informasi enterprise.
+                    </p>
+                  </div>
+                  <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9]">
+                    Ka. Lab: Ir. Moh. Bhanu Setyawan, S.T., M.Kom.
+                  </div>
+                </div>
+              </Reveal>
+
+              <Reveal delayClass="reveal-delay-3">
+                <div className="flex h-full flex-col justify-between rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-8 shadow-[0_12px_36px_rgba(15,42,74,0.06)] transition-all duration-300 hover:-translate-y-2 hover:border-[#1E6FD9]/50 hover:shadow-xl">
+                  <div>
+                    <div className="grid size-14 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] shadow-xs">
+                      <BookOpen className="size-7" />
+                    </div>
+                    <h3 className="mt-6 font-display text-xl font-bold text-[#0B3A8C]">Perpustakaan Pusat UMPO</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#4B6B94]">
+                      Akses ribuan literatur buku TIK, jurnal internasional bereputasi (IEEE, ScienceDirect), e-library, dan ruang kolaborasi.
+                    </p>
+                  </div>
+                  <div className="mt-6 border-t border-slate-100 pt-4">
+                    <a
+                      href="https://library.umpo.ac.id/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E6FD9] hover:underline"
+                    >
+                      Buka Perpustakaan UMPO <ExternalLink className="size-3.5" />
+                    </a>
+                  </div>
+                </div>
+              </Reveal>
             </div>
 
-            <div className="mt-14 grid gap-8 md:grid-cols-3">
-              <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-[0_16px_40px_rgba(22,62,135,.06)]">
-                <div className="grid size-14 place-items-center rounded-2xl bg-[#eaf0fc] text-[#1453d6]">
-                  <Network className="size-7" />
-                </div>
-                <h3 className="mt-6 font-display text-xl font-bold text-[#09275e]">Lab Jaringan & IoT</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#59709b]">
-                  Pusat simulasi jaringan enterprise, perangkat router/switch Cisco & Mikrotik, IoT kit, dan cyber security.
-                </p>
-                <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-semibold text-[#1453d6]">
-                  Ka. Lab: Angga Prasetyo, S.T., M.Kom.
-                </div>
-              </div>
+            <Reveal delayClass="reveal-delay-4" className="mt-12 text-center">
+              <button
+                onClick={() => navigateTo("fasilitas")}
+                className="inline-flex items-center gap-2 rounded-full border border-[#1E6FD9]/30 bg-white px-7 py-3 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] shadow-xs transition-all hover:bg-[#EAF4FF] hover:border-[#1E6FD9]"
+              >
+                Lihat Seluruh Fasilitas Kampus & Lab <ArrowRight className="size-3.5" />
+              </button>
+            </Reveal>
+          </div>
 
-              <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-[0_16px_40px_rgba(22,62,135,.06)]">
-                <div className="grid size-14 place-items-center rounded-2xl bg-[#eaf0fc] text-[#1453d6]">
-                  <Code2 className="size-7" />
-                </div>
-                <h3 className="mt-6 font-display text-xl font-bold text-[#09275e]">Lab Rekayasa Perangkat Lunak</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#59709b]">
-                  Fasilitas komputasi untuk pengembangan web, mobile apps, database architecture, dan sistem informasi enterprise.
-                </p>
-                <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-semibold text-[#1453d6]">
-                  Ka. Lab: Ir. Moh. Bhanu Setyawan, S.T., M.Kom.
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-[0_16px_40px_rgba(22,62,135,.06)]">
-                <div className="grid size-14 place-items-center rounded-2xl bg-[#eaf0fc] text-[#1453d6]">
-                  <BookOpen className="size-7" />
-                </div>
-                <h3 className="mt-6 font-display text-xl font-bold text-[#09275e]">Perpustakaan Pusat UMPO</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#59709b]">
-                  Akses ribuan literatur buku TIK, jurnal internasional bereputasi (IEEE, ScienceDirect), e-library, dan ruang kolaborasi.
-                </p>
-                <div className="mt-6 border-t border-slate-100 pt-4">
-                  <a
-                    href="https://library.umpo.ac.id/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1453d6] hover:underline"
-                  >
-                    Buka Perpustakaan UMPO <ExternalLink className="size-3" />
-                  </a>
-                </div>
-              </div>
-            </div>
+          {/* Organic Wave Divider into Mitra section */}
+          <div className="mt-20">
+            <WaveDivider fill="#FFFFFF" />
           </div>
         </section>
 
         {/* ============================================================== */}
         {/* 8. MITRA RESMI KAMPUS                                          */}
         {/* ============================================================== */}
-        <section className="border-y border-slate-200 bg-white py-14">
+        <section className="relative border-y border-[#1E6FD9]/15 bg-white py-16">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <div className="text-center">
-              <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Our Strategic Partners</div>
-              <h3 className="mt-2 font-display text-2xl font-bold text-[#09275e]">Kemitraan Industri & Teknologi Global</h3>
-            </div>
+            <Reveal className="text-center">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20">
+                <Sparkles className="size-3 text-[#FFB84D]" /> Strategic Partners
+              </div>
+              <h3 className="mt-3 font-display text-2xl md:text-3xl font-bold text-[#0B3A8C]">
+                Kemitraan Industri & Teknologi Global
+              </h3>
+            </Reveal>
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {PARTNERS.map((partner) => (
-                <div
-                  key={partner.name}
-                  className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center transition hover:-translate-y-1 hover:border-[#1453d6] hover:bg-white hover:shadow-md"
-                >
-                  <div className="font-display text-base font-bold text-[#09275e]">{partner.name}</div>
-                  <div className="mt-1 text-[11px] text-[#59709b]">{partner.label}</div>
-                </div>
+              {PARTNERS.map((partner, idx) => (
+                <Reveal key={partner.name} delayClass={`reveal-delay-${(idx % 4) + 1}`}>
+                  <div
+                    className="flex flex-col justify-between rounded-2xl border border-[#1E6FD9]/15 bg-[#FFFBF5] p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[#1E6FD9] hover:bg-white hover:shadow-md"
+                  >
+                    <div className="font-display text-base font-bold text-[#0B3A8C]">{partner.name}</div>
+                    <div className="mt-1 text-[11px] font-semibold text-[#4B6B94]">{partner.label}</div>
+                  </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -1756,12 +1994,14 @@ export default function App() {
         {/* ============================================================== */}
         {/* 9. BERITA TERBARU (KONTEN ASLI TI.UMPO.AC.ID)                  */}
         {/* ============================================================== */}
-        <section id="berita" className="py-24 lg:py-32">
+        <section id="berita" className="relative bg-[#FFFBF5] py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <div className="section-label">Cerita & Pengumuman</div>
-                <h2 className="mt-5 font-display text-4xl font-semibold tracking-[-.04em] text-[#09275e] md:text-6xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF4FF] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] border border-[#1E6FD9]/20 shadow-xs">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> Cerita & Pengumuman
+                </div>
+                <h2 className="mt-4 font-display text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.04em] text-[#0B3A8C]">
                   Yang sedang terjadi.
                 </h2>
               </div>
@@ -1770,65 +2010,71 @@ export default function App() {
                   <button
                     key={cat}
                     onClick={() => setNewsFilter(cat)}
-                    className={`rounded-full px-4 py-2 text-xs font-bold transition ${
+                    className={`rounded-full px-5 py-2 text-xs font-bold transition-all duration-200 ${
                       newsFilter === cat
-                        ? "bg-[#1453d6] text-white"
-                        : "border border-slate-200 bg-white text-slate-600 hover:border-slate-400"
+                        ? "bg-[#1E6FD9] text-white shadow-md shadow-blue-500/25"
+                        : "border border-[#1E6FD9]/20 bg-white text-[#4B6B94] hover:bg-[#EAF4FF] hover:text-[#0B3A8C]"
                     }`}
                   >
                     {cat}
                   </button>
                 ))}
               </div>
-            </div>
+            </Reveal>
 
-            <div className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
-              {filteredNews.map((item) => (
-                <article key={item.id} className="group flex flex-col justify-between rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm transition duration-500 hover:-translate-y-1.5 hover:shadow-xl">
-                  <div>
-                    {item.image ? (
-                      <div className="relative overflow-hidden rounded-2xl bg-slate-100">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-105"
-                        />
-                        <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#1453d6] backdrop-blur">
-                          {item.category}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="flex aspect-[16/6] items-center justify-between rounded-2xl bg-[#09275e] p-6 text-white">
-                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{item.category}</span>
-                        <Bookmark className="size-5 text-white/50" />
-                      </div>
-                    )}
+            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredNews.map((item, idx) => (
+                <Reveal key={item.id} delayClass={`reveal-delay-${(idx % 3) + 1}`}>
+                  <article className="group flex h-full flex-col justify-between rounded-[2.2rem] border border-[#1E6FD9]/15 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#1E6FD9]/40 hover:shadow-xl">
+                    <div>
+                      {item.image ? (
+                        <div className="relative overflow-hidden rounded-2xl bg-[#EAF4FF]">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-105"
+                            onError={(e) => {
+                              // Safe fallback to building crop without breaking rules
+                              (e.target as HTMLElement).setAttribute("src", "/assets/hero/gedung-cerah.webp");
+                            }}
+                          />
+                          <span className="absolute left-3.5 top-3.5 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#1E6FD9] shadow-sm backdrop-blur">
+                            {item.category}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex aspect-[16/6] items-center justify-between rounded-2xl bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C] p-6 text-white shadow-inner">
+                          <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{item.category}</span>
+                          <Bookmark className="size-5 text-white/70" />
+                        </div>
+                      )}
 
-                    <div className="pt-5">
-                      <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-[#7386a8]">
-                        <Calendar className="size-3.5" />
-                        <span>{item.date}</span>
-                        <span>•</span>
-                        <span>{item.readTime}</span>
+                      <div className="pt-5">
+                        <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-[#4B6B94]">
+                          <Calendar className="size-3.5 text-[#1E6FD9]" />
+                          <span>{item.date}</span>
+                          <span>•</span>
+                          <span>{item.readTime}</span>
+                        </div>
+                        <h3 className="mt-2.5 font-display text-lg font-bold leading-snug text-[#0B3A8C] transition group-hover:text-[#1E6FD9]">
+                          {item.title}
+                        </h3>
+                        <p className="mt-2 text-xs leading-relaxed text-[#4B6B94]">{item.excerpt}</p>
                       </div>
-                      <h3 className="mt-2.5 font-display text-lg font-semibold leading-snug text-[#0b2b66] transition group-hover:text-[#2f6dff]">
-                        {item.title}
-                      </h3>
-                      <p className="mt-2 text-xs leading-relaxed text-[#64789c]">{item.excerpt}</p>
                     </div>
-                  </div>
 
-                  <div className="pt-4 border-t border-slate-100 mt-4">
-                    <a
-                      href="https://ti.umpo.ac.id/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1453d6] hover:text-[#2f6dff]"
-                    >
-                      Baca Selengkapnya di Portal <ArrowUpRight className="size-3.5" />
-                    </a>
-                  </div>
-                </article>
+                    <div className="pt-4 border-t border-slate-100 mt-4">
+                      <a
+                        href="https://ti.umpo.ac.id/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E6FD9] hover:text-[#0B3A8C]"
+                      >
+                        Baca Selengkapnya di Portal <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </a>
+                    </div>
+                  </article>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -1837,36 +2083,43 @@ export default function App() {
         {/* ============================================================== */}
         {/* 10. PENDAFTARAN MAHASISWA BARU (BANNER ASLI)                   */}
         {/* ============================================================== */}
-        <section id="admissions" className="px-5 pb-10 lg:px-8">
-          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-[#1453d6] px-6 py-16 text-center text-white md:px-16 md:py-24">
-            <div className="absolute -left-20 -top-20 size-72 rounded-full border-[3rem] border-white/5 pointer-events-none" />
-            <div className="absolute -bottom-36 -right-20 size-96 rounded-full border-[4rem] border-white/5 pointer-events-none" />
-            <div className="relative">
-              <Sparkles className="mx-auto size-10 text-[#9fc0ff]" />
-              <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-semibold tracking-[-.045em] md:text-6xl">
-                Siap menjadi bagian dari Teknik Informatika UMPO?
-              </h2>
-              <p className="mx-auto mt-5 max-w-xl text-lg text-[#c9dcff]">
-                Mulai perjalananmu bersama Informatika UMPO dan ciptakan inovasi teknologi yang bermakna bagi bangsa dan umat.
-              </p>
-              <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-                <a
-                  href="https://spmb.umpo.ac.id/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full bg-white px-7 py-4 font-bold text-[#124bb8] shadow-xl transition hover:-translate-y-1"
-                >
-                  Daftar Sekarang (spmb.umpo.ac.id)
-                </a>
-                <button
-                  onClick={() => setModalType("download")}
-                  className="rounded-full border border-white/30 px-7 py-4 font-bold text-white transition hover:bg-white/10"
-                >
-                  Unduh Panduan & Template
-                </button>
+        <section id="admissions" className="bg-[#FFFBF5] px-5 pb-16 lg:px-8">
+          <Reveal>
+            <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#1E6FD9] via-[#155fc2] to-[#0B3A8C] px-6 py-16 text-center text-white md:px-16 md:py-24 shadow-[0_24px_60px_-15px_rgba(11,58,140,0.3)]">
+              {/* Background ambient accents */}
+              <div className="absolute -left-20 -top-20 size-72 rounded-full border-[3rem] border-white/5 pointer-events-none" />
+              <div className="absolute -bottom-36 -right-20 size-96 rounded-full border-[4rem] border-white/5 pointer-events-none" />
+              <div className="absolute right-1/4 top-1/4 size-48 rounded-full bg-[#FFB84D]/20 blur-3xl pointer-events-none" />
+
+              <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#FFE8CC] backdrop-blur-md border border-white/20 mb-4">
+                  <Sparkles className="size-3.5 text-[#FFB84D]" /> PMB TA 2025/2026
+                </div>
+                <h2 className="mx-auto mt-2 max-w-3xl font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.04em] text-white leading-tight">
+                  Siap menjadi bagian dari Teknik Informatika UMPO?
+                </h2>
+                <p className="mx-auto mt-5 max-w-xl text-base md:text-lg text-[#D5E3FF] leading-relaxed">
+                  Mulai perjalananmu bersama Informatika UMPO dan ciptakan inovasi teknologi yang bermakna bagi bangsa dan umat.
+                </p>
+                <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+                  <a
+                    href="https://spmb.umpo.ac.id/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-[#0B3A8C] shadow-xl transition hover:-translate-y-1 hover:bg-[#FFE8CC] hover:text-[#0F2A4A]"
+                  >
+                    Daftar Sekarang (spmb.umpo.ac.id) <ArrowRight className="size-4" />
+                  </a>
+                  <button
+                    onClick={() => setModalType("download")}
+                    className="rounded-full border border-white/30 bg-white/10 px-8 py-4 font-bold text-white transition hover:bg-white/20 hover:-translate-y-0.5"
+                  >
+                    Unduh Panduan & Template
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
       )}
@@ -1911,13 +2164,13 @@ export default function App() {
       {/* ============================================================== */}
       {/* 11. FOOTER DENGAN KONTEN ASLI TI.UMPO.AC.ID                     */}
       {/* ============================================================== */}
-      <footer id="kontak" className="bg-[#041333] px-5 pb-10 pt-20 text-white lg:px-8">
+      <footer id="kontak" className="relative bg-gradient-to-b from-[#0B3A8C] to-[#062459] px-5 pb-10 pt-20 text-white lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 border-b border-white/10 pb-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div className="grid gap-12 border-b border-white/15 pb-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
             {/* Identity & Address */}
             <div>
               <div className="flex items-center gap-3">
-                <span className="grid size-11 place-items-center rounded-2xl bg-white text-[#1453d6] p-1.5">
+                <span className="grid size-11 place-items-center rounded-2xl bg-white text-[#1E6FD9] p-1.5 shadow-sm">
                   <img
                     src="https://ti.umpo.ac.id/wp-content/uploads/2026/09/LOGO-UNMUH-150x150.png"
                     alt="Logo UMPO"
@@ -1926,10 +2179,10 @@ export default function App() {
                 </span>
                 <span className="font-display text-xl font-bold">Teknik Informatika UMPO</span>
               </div>
-              <p className="mt-5 max-w-sm leading-relaxed text-[#859ac2] text-xs">
+              <p className="mt-5 max-w-sm leading-relaxed text-[#D5E3FF] text-xs">
                 Program Studi S1 Teknik Informatika, Fakultas Teknik Universitas Muhammadiyah Ponorogo. Membangun talenta digital berkarakter Islami.
               </p>
-              <div className="mt-4 text-xs text-[#a3b8e0] space-y-1">
+              <div className="mt-4 text-xs text-[#FFE8CC] space-y-1 font-medium">
                 <div>SK Ditjen DIKTI No. 378/D/T/2005</div>
                 <div>Akreditasi B BAN-PT (SK No. 0206/SKB/BAN-PT/Akred/S/I/2017)</div>
               </div>
@@ -1937,8 +2190,8 @@ export default function App() {
 
             {/* Menu Akademik */}
             <div>
-              <div className="font-display font-semibold">Jelajahi</div>
-              <div className="mt-5 grid gap-3 text-sm text-[#859ac2]">
+              <div className="font-display font-bold text-white">Jelajahi</div>
+              <div className="mt-5 grid gap-3 text-sm text-[#D5E3FF]">
                 <button onClick={() => navigateTo("profil", "sejarah")} className="text-left hover:text-white transition">
                   Sejarah Prodi
                 </button>
@@ -1965,24 +2218,24 @@ export default function App() {
 
             {/* Tautan Layanan Kampus */}
             <div>
-              <div className="font-display font-semibold">Layanan Kampus</div>
-              <div className="mt-5 grid gap-3 text-sm text-[#859ac2]">
-                <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+              <div className="font-display font-bold text-white">Layanan Kampus</div>
+              <div className="mt-5 grid gap-3 text-sm text-[#D5E3FF]">
+                <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   SPMB UMPO
                 </a>
-                <a href="https://simtik.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://simtik.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   SIMTIK (SIAKAD)
                 </a>
-                <a href="https://siskrip.simakumpo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://siskrip.simakumpo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   SISKRIP (Skripsi)
                 </a>
-                <a href="https://giat.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://giat.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   KKN GIAT UMPO
                 </a>
-                <a href="https://library.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://library.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   Perpustakaan
                 </a>
-                <a href="https://tracer.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                <a href="https://tracer.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                   Tracer Study
                 </a>
               </div>
@@ -1990,8 +2243,8 @@ export default function App() {
 
             {/* Kontak Resmi */}
             <div>
-              <div className="font-display font-semibold">Hubungi Kami</div>
-              <div className="mt-5 grid gap-3 text-xs text-[#859ac2] leading-relaxed">
+              <div className="font-display font-bold text-white">Hubungi Kami</div>
+              <div className="mt-5 grid gap-3 text-xs text-[#D5E3FF] leading-relaxed">
                 <span>Jl. Budi Utomo No.10, Ronowijayan, Kec. Siman, Kab. Ponorogo, Jawa Timur 63471</span>
                 <span>Telp. (0352) 481124, 487662 (psw 2211)</span>
                 <span>Fax : (0352) 461796</span>
@@ -2001,14 +2254,14 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between gap-3 pt-7 text-xs text-[#687da5] md:flex-row">
+          <div className="flex flex-col justify-between gap-3 pt-7 text-xs text-[#D5E3FF]/75 md:flex-row">
             <span>© 2026 Program Studi Teknik Informatika Universitas Muhammadiyah Ponorogo.</span>
             <div className="flex gap-4">
-              <a href="https://instagram.com/informatika.umpo" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+              <a href="https://instagram.com/informatika.umpo" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                 Instagram: @informatika.umpo
               </a>
               <span>•</span>
-              <a href="https://ti.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+              <a href="https://ti.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                 ti.umpo.ac.id
               </a>
             </div>
@@ -2344,167 +2597,204 @@ export default function App() {
         </div>
       )}
 
+      {/* ============================================================== */}
+      {/* POP-UP MODAL: DETAIL PROFIL DOSEN (TEKS ANIMASI DARI SAMPING)  */}
+      {/* ============================================================== */}
       {selectedLecturer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative max-h-[92vh] w-full max-w-xl overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-2xl">
-            {/* Header Banner */}
-            <div className="relative bg-gradient-to-r from-[#06183d] via-[#0d348a] to-[#1453d6] px-6 py-5 text-white">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-[#8eb3ff]">
-                Program Studi S1 Teknik Informatika · Fakultas Teknik UMPO
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-lecturer-title"
+        >
+          {/* Frosted Backdrop Overlay */}
+          <div
+            className="fixed inset-0 bg-[#06183d]/65 backdrop-blur-md transition-opacity duration-300 animate-in fade-in"
+            onClick={() => setSelectedLecturer(null)}
+          />
+
+          {/* Modal Box with Scale-In Animation */}
+          <div className="dosen-modal-in relative z-10 w-full max-w-3xl overflow-hidden rounded-[2.5rem] border border-[#1E6FD9]/20 bg-white shadow-[0_25px_70px_rgba(6,24,61,0.25)] my-auto max-h-[92vh] flex flex-col">
+            {/* Top Header Bar */}
+            <div className="relative flex items-center justify-between border-b border-blue-900/10 bg-gradient-to-r from-[#06183d] via-[#0B3A8C] to-[#1E6FD9] px-6 py-4 text-white shadow-sm shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="grid size-8 place-items-center rounded-xl bg-white/15 backdrop-blur-sm text-white">
+                  <GraduationCap className="size-4 text-[#FFE8CC]" />
+                </div>
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-[#FFE8CC]">
+                    S1 Teknik Informatika · Fakultas Teknik UMPO
+                  </div>
+                  <div className="text-sm font-bold text-white">Profil Lengkap Dosen &amp; Peneliti</div>
+                </div>
               </div>
-              <div className="mt-1 flex items-center justify-between">
-                <span className="text-sm font-semibold text-white/90">Profil Dosen & Peneliti</span>
-                <button
-                  onClick={() => setSelectedLecturer(null)}
-                  className="grid size-8 place-items-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/25"
-                  title="Tutup"
-                >
-                  <X className="size-4" />
-                </button>
-              </div>
+              <button
+                onClick={() => setSelectedLecturer(null)}
+                className="grid size-9 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/30 hover:scale-105 active:scale-95"
+                title="Tutup (Esc)"
+                aria-label="Tutup pop up"
+              >
+                <X className="size-4" />
+              </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="max-h-[calc(92vh-80px)] overflow-y-auto p-6 md:p-7">
-              <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-                {/* Photo with verified badge */}
-                <div className="relative mx-auto size-36 shrink-0 overflow-hidden rounded-2xl border-4 border-slate-100 bg-slate-100 shadow-lg sm:mx-0">
-                  <img
-                    src={selectedLecturer.image}
-                    alt={selectedLecturer.name}
-                    className="size-full object-cover object-top"
-                    onError={(e) => {
-                      (e.target as HTMLElement).setAttribute(
-                        "src",
-                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-                      );
-                    }}
-                  />
-                  <div className="absolute bottom-2 right-2 grid size-7 place-items-center rounded-full bg-emerald-600 text-white shadow-md" title="Terverifikasi PDDIKTI">
-                    <BadgeCheck className="size-4" />
+            {/* Modal Content Scrollable Area */}
+            <div className="overflow-y-auto p-6 md:p-8">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
+                {/* Left Column: Portrait & Action */}
+                <div className="md:col-span-5 flex flex-col items-center sm:items-start text-center sm:text-left">
+                  <div className="relative aspect-[4/4.5] w-full max-w-[220px] md:max-w-full mx-auto overflow-hidden rounded-3xl border-4 border-white bg-gradient-to-b from-[#EAF4FF] to-slate-100 shadow-md">
+                    <img
+                      src={selectedLecturer.image}
+                      alt={selectedLecturer.name}
+                      className="size-full object-cover object-top"
+                      onError={(e) => {
+                        (e.target as HTMLElement).setAttribute(
+                          "src",
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
+                        );
+                      }}
+                    />
+                    <div className="absolute bottom-2.5 right-2.5 grid size-7 place-items-center rounded-full bg-emerald-600 text-white shadow-md border-2 border-white" title="Terverifikasi PDDIKTI">
+                      <BadgeCheck className="size-4" />
+                    </div>
                   </div>
-                </div>
 
-                {/* Main details */}
-                <div className="flex-1 text-center sm:text-left">
-                  <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+                  {/* Category & Status Badges */}
+                  <div className="mt-4 flex flex-wrap gap-2 justify-center sm:justify-start w-full">
                     {selectedLecturer.category === "pimpinan" && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-3 py-0.5 text-xs font-bold text-amber-700 border border-amber-300">
-                        <Award className="size-3.5" /> Pimpinan Prodi
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-800 border border-amber-300">
+                        <Award className="size-3.5 text-amber-600" /> Pimpinan Prodi
                       </span>
                     )}
                     {selectedLecturer.category === "lab" && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-500/15 px-3 py-0.5 text-xs font-bold text-teal-700 border border-teal-300">
-                        <Cpu className="size-3.5" /> Ka. Laboratorium
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-500/15 px-3 py-1 text-xs font-bold text-teal-800 border border-teal-300">
+                        <Cpu className="size-3.5 text-teal-600" /> Ka. Lab
                       </span>
                     )}
                     {selectedLecturer.category === "dosen" && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-3 py-0.5 text-xs font-bold text-[#1453d6] border border-blue-200">
-                        <GraduationCap className="size-3.5" /> Dosen & Peneliti
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-3 py-1 text-xs font-bold text-[#1E6FD9] border border-blue-200">
+                        <GraduationCap className="size-3.5 text-[#1E6FD9]" /> Dosen Tetap
                       </span>
                     )}
-                    <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 border border-emerald-200">
-                      Aktif Mengajar
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 border border-emerald-200">
+                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> Aktif Mengajar
                     </span>
                   </div>
 
-                  <h3 className="mt-2 font-display text-xl font-bold leading-tight text-[#06183d]">
-                    {selectedLecturer.name}
-                  </h3>
-                  <p className="mt-1 text-xs font-semibold text-slate-500">{selectedLecturer.role}</p>
-                </div>
-              </div>
-
-              {/* Identification Grid */}
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Nomor Induk Dosen (NIDN)</div>
-                    <div className="font-mono text-sm font-bold text-slate-800">{selectedLecturer.nidn}</div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(selectedLecturer.nidn);
-                      setCopiedNidn(true);
-                      setTimeout(() => setCopiedNidn(false), 2000);
-                    }}
-                    className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600 transition hover:border-[#1453d6] hover:text-[#1453d6]"
-                    title="Salin NIDN"
+                  {/* WhatsApp Direct CTA Button under photo */}
+                  <a
+                    href={getWhatsAppUrl(selectedLecturer.name)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#25D366] py-3 px-4 text-xs font-bold text-white shadow-md shadow-emerald-500/20 transition hover:bg-[#1ebd59] hover:shadow-emerald-500/35 hover:-translate-y-0.5"
                   >
-                    {copiedNidn ? (
-                      <>
-                        <Check className="size-3 text-emerald-600" /> Disalin!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="size-3" /> Salin
-                      </>
-                    )}
-                  </button>
+                    <WhatsAppIcon className="size-4" />
+                    <span>Konsultasi WhatsApp</span>
+                  </a>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Nomor Induk Karyawan (NIK)</div>
-                  <div className="font-mono text-sm font-bold text-slate-800">{selectedLecturer.nik}</div>
-                </div>
-              </div>
-
-              {/* Research Focus */}
-              <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1453d6]">
-                  <Sparkles className="size-4 text-amber-500" /> Bidang Fokus Riset & Kepakaran
-                </div>
-                <p className="mt-1.5 text-xs font-semibold leading-relaxed text-[#072464]">
-                  {selectedLecturer.focus}
-                </p>
-              </div>
-
-              {/* Layanan Akademik */}
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Layanan & Bimbingan Akademik
-                </div>
-                <div className="mt-2.5 grid grid-cols-1 gap-2 text-xs text-slate-600 sm:grid-cols-3">
-                  <div className="flex items-center gap-2 rounded-lg bg-white p-2 border border-slate-100">
-                    <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
-                    <span>Bimbingan Skripsi</span>
+                {/* Right Column: Teks Detail yang Muncul dari Samping (Staggered Animation) */}
+                <div className="md:col-span-7 flex flex-col gap-4">
+                  {/* 1. Name & Academic Role (modal-stagger-1) */}
+                  <div className="modal-stagger-1 rounded-2xl bg-[#FFFBF5] border border-[#1E6FD9]/15 p-5 shadow-xs">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#1E6FD9]">
+                      {selectedLecturer.role}
+                    </div>
+                    <h3 id="modal-lecturer-title" className="mt-1 font-display text-xl sm:text-2xl font-bold leading-snug text-[#0B3A8C]">
+                      {selectedLecturer.name}
+                    </h3>
+                    <p className="mt-1 text-xs text-[#4B6B94]">
+                      Program Studi S1 Teknik Informatika · Fakultas Teknik, Universitas Muhammadiyah Ponorogo
+                    </p>
                   </div>
-                  <div className="flex items-center gap-2 rounded-lg bg-white p-2 border border-slate-100">
-                    <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
-                    <span>Dosen PA / KRS</span>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-lg bg-white p-2 border border-slate-100">
-                    <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
-                    <span>Riset Mahasiswa</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* CTAs */}
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={getWhatsAppUrl(selectedLecturer.name)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex flex-1 items-center justify-center gap-2.5 rounded-full bg-[#25D366] py-3.5 text-xs font-bold text-white shadow-lg shadow-emerald-500/25 transition hover:bg-[#1ebd59] hover:shadow-emerald-500/40"
-                >
-                  <WhatsAppIcon className="size-4" /> Hubungi via WhatsApp
-                </a>
-                <a
-                  href={`mailto:informatika@umpo.ac.id?subject=Konsultasi Akademik: ${encodeURIComponent(selectedLecturer.name)}`}
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-3.5 text-xs font-bold text-slate-700 transition hover:bg-slate-100"
-                  title="Kirim Email Alternatif"
-                >
-                  <Mail className="size-4 text-slate-500" /> Email
-                </a>
-                <a
-                  href="https://ti.umpo.ac.id/dosen/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-4 py-3.5 text-xs font-bold text-slate-700 transition hover:bg-slate-200"
-                >
-                  Portal ti.umpo.ac.id <ExternalLink className="size-3.5" />
-                </a>
+                  {/* 2. Official Academic ID (modal-stagger-2) */}
+                  <div className="modal-stagger-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="flex items-center justify-between rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-xs">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#4B6B94]">Nomor Induk Dosen (NIDN)</div>
+                        <div className="mt-0.5 font-mono text-base font-bold text-[#0B3A8C]">{selectedLecturer.nidn}</div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(selectedLecturer.nidn);
+                          setCopiedNidn(true);
+                          setTimeout(() => setCopiedNidn(false), 2000);
+                        }}
+                        className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-[#0B3A8C] transition hover:border-[#1E6FD9] hover:bg-blue-50 hover:text-[#1E6FD9]"
+                        title="Salin NIDN"
+                      >
+                        {copiedNidn ? (
+                          <>
+                            <Check className="size-3.5 text-emerald-600" /> Disalin!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="size-3.5" /> Salin
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-xs">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#4B6B94]">Nomor Induk Karyawan (NIK)</div>
+                      <div className="mt-0.5 font-mono text-base font-bold text-[#0B3A8C]">{selectedLecturer.nik}</div>
+                    </div>
+                  </div>
+
+                  {/* 3. Research Focus & Expertise (modal-stagger-3) */}
+                  <div className="modal-stagger-3 rounded-2xl border border-blue-200/80 bg-gradient-to-br from-[#EAF4FF] to-blue-50/40 p-4 sm:p-5 shadow-xs">
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1E6FD9]">
+                      <Sparkles className="size-4 text-[#FFB84D]" /> Bidang Kepakaran &amp; Fokus Riset
+                    </div>
+                    <p className="mt-2 text-sm font-semibold leading-relaxed text-[#0B3A8C]">
+                      {selectedLecturer.focus}
+                    </p>
+                  </div>
+
+                  {/* 4. Layanan & Bimbingan Mahasiswa (modal-stagger-4) */}
+                  <div className="modal-stagger-4 rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs">
+                    <div className="text-xs font-bold uppercase tracking-wider text-[#4B6B94]">
+                      Layanan &amp; Bimbingan Mahasiswa:
+                    </div>
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                      <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2 border border-slate-100 text-[#0F2A4A]">
+                        <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+                        <span className="font-semibold text-[11px]">Bimbingan Skripsi</span>
+                      </div>
+                      <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2 border border-slate-100 text-[#0F2A4A]">
+                        <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+                        <span className="font-semibold text-[11px]">Dosen PA / KRS</span>
+                      </div>
+                      <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2 border border-slate-100 text-[#0F2A4A]">
+                        <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+                        <span className="font-semibold text-[11px]">Riset &amp; MBKM</span>
+                      </div>
+                    </div>
+
+                    {/* Secondary Action Links */}
+                    <div className="mt-4 flex flex-wrap gap-2 pt-3 border-t border-slate-100">
+                      <a
+                        href={`mailto:informatika@umpo.ac.id?subject=Konsultasi Akademik: ${encodeURIComponent(selectedLecturer.name)}`}
+                        className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-3 text-xs font-bold text-slate-700 transition hover:bg-slate-100"
+                      >
+                        <Mail className="size-3.5 text-slate-500" />
+                        <span>Kirim Email</span>
+                      </a>
+                      <a
+                        href="https://ti.umpo.ac.id/dosen/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#1E6FD9]/30 bg-blue-50/50 py-2.5 px-3.5 text-xs font-bold text-[#1E6FD9] transition hover:bg-blue-100/50"
+                      >
+                        <span>Portal Kampus</span>
+                        <ExternalLink className="size-3.5" />
+                      </a>
+                    </div>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>
