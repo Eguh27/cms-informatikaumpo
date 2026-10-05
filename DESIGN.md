@@ -80,6 +80,13 @@ Dilarang: teks putih di `#25D366`, amber-500, atau teal-600; teks `slate-400`/`#
 * SVG inline kurva bergelombang dinamis untuk transisi antar-bagian.
 * Menyambungkan latar kanvas krem `#FFFBF5`, biru muda `#EAF4FF`, dan putih `#FFFFFF` tanpa garis patah kaku.
 
+### 2.5 Lingkaran Ikon (PxCircle)
+* `rounded-full` + border 1px + satu lapis glow. Diganti sebagai pengganti slab ikon persegi agar baris kartu tidak terbaca sebagai hujan warna.
+* **Warna dibatasi dua sumbu saja**: `primary` (`#1E6FD9` di atas kanvas krem) dan `amber` (`#FFB84D` di atas `#FFE8CC`). Larangan memakai palet semantik framework (`bg-blue-50`, `bg-emerald-50`, `bg-amber-50`) untuk membedakan jenis kartu.
+* Glow dibawa oleh varian `tone`, bukan flag terpisah, sehingga jumlah varian tetap dua sumbu dan lingkaran yang terlalu bercahaya tidak bisa terjadi.
+* Di atas panel gelap `#0B3A8C` gunakan `onNavy` (amber) atau `onNavySoft` (putih transparan).
+* Ukuran: `sm` 36px untuk ikon pelengkap, `md` 44px untuk target sentuh, `hero` 112px untuk satu nilai utama per section.
+
 ---
 
 ## 3. Daftar Section dan Urutannya (Homepage)
