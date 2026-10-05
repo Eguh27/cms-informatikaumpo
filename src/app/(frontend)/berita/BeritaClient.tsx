@@ -32,7 +32,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
   }, [filter, search, initialNews]);
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28">
       {/* Banner */}
       <PageBanner
         category="Warta & Informasi"
@@ -70,6 +70,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari berita atau agenda..."
+              aria-label="Cari berita atau agenda"
               className="w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2 pl-9 pr-8 text-xs font-medium text-slate-800 transition focus:border-[#1453d6] focus:bg-white focus:outline-none"
             />
             {search && (

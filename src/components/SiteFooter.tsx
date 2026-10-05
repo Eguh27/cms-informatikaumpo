@@ -36,7 +36,10 @@ export function SiteFooter() {
               <li><Link href="/profil" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Profil Program Studi</Link></li>
               <li><Link href="/akademik" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Akademik & Kurikulum</Link></li>
               <li><Link href="/dosen" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Dosen & Tendik</Link></li>
+              <li><Link href="/fasilitas" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Fasilitas Laboratorium</Link></li>
               <li><Link href="/berita" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Berita & Pengumuman</Link></li>
+              <li><Link href="/download" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Pusat Unduhan</Link></li>
+              <li><Link href="/kontak" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Kontak & Lokasi</Link></li>
             </ul>
           </div>
 
@@ -63,8 +66,8 @@ export function SiteFooter() {
         <div className="mt-8 flex flex-col md:flex-row items-center justify-between text-xs text-blue-100/50 gap-4">
           <p>© {new Date().getFullYear()} Teknik Informatika Universitas Muhammadiyah Ponorogo.</p>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-white transition">Kebijakan Privasi</a>
-            <a href="#" className="hover:text-white transition">Syarat & Ketentuan</a>
+            <a href="https://umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Portal UMPO</a>
+            <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">PMB Online</a>
           </div>
         </div>
       </div>

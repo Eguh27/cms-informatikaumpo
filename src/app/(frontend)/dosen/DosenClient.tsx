@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { PageBanner } from "@/components/PageBanner";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import {
@@ -14,6 +14,8 @@ import {
   ArrowRight,
   Sparkles,
   Users,
+  Phone,
+  Fingerprint,
 } from "lucide-react";
 import type { Lecturer } from "@/payload-types";
 
@@ -24,6 +26,33 @@ type DosenClientProps = {
 export function DosenClient({ initialLecturers }: DosenClientProps) {
   const [category, setCategory] = useState<"semua" | "pimpinan" | "lab" | "dosen">("semua");
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Lecturer | null>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const lastFocused = useRef<HTMLElement | null>(null);
+
+  // Native <dialog>: focus trap + Esc handled by browser; restore focus on close
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (selected && !dialog.open) {
+      lastFocused.current = document.activeElement as HTMLElement | null;
+      dialog.showModal();
+      dialog.querySelector<HTMLElement>("[data-dialog-close]")?.focus();
+    } else if (!selected && dialog.open) {
+      dialog.close();
+    }
+  }, [selected]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const onClose = () => {
+      setSelected(null);
+      lastFocused.current?.focus();
+    };
+    dialog.addEventListener("close", onClose);
+    return () => dialog.removeEventListener("close", onClose);
+  }, []);
 
   const counts = useMemo(() => {
     return {
@@ -52,7 +81,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28">
       <PageBanner
         category="Tenaga Pendidik & Peneliti"
         title="Dosen & Peneliti Profesional"
@@ -103,6 +132,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari nama dosen, NIDN, kepakaran..."
+              aria-label="Cari nama dosen, NIDN, atau bidang kepakaran"
               className="w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2.5 pl-10 pr-9 text-xs font-medium text-slate-800 transition focus:border-[#1453d6] focus:bg-white focus:outline-none"
             />
             {search && (
@@ -143,7 +173,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
             return (
               <article
                 key={lecturer.name}
-                className="glass-card group relative flex flex-col overflow-hidden rounded-[2rem] border border-white/80 bg-white/85 shadow-[0_10px_30px_-5px_rgba(9,45,116,0.06)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-2.5 hover:border-[#1453d6]/40 hover:bg-white/95 hover:shadow-[0_24px_50px_-10px_rgba(20,83,214,0.2)] cursor-pointer"
+                className="glass-card group relative flex flex-col overflow-hidden rounded-[2rem] border border-white/80 bg-white/85 shadow-[0_10px_30px_-5px_rgba(9,45,116,0.06)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-2.5 hover:border-[#1453d6]/40 hover:bg-white/95 hover:shadow-[0_24px_50px_-10px_rgba(20,83,214,0.2)]"
               >
                 {/* Portrait Frame with Frosted Light & Reflection */}
                 <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-blue-50/70 via-slate-100/50 to-white/90">
@@ -194,8 +224,8 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
                   <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white/90 via-white/50 to-transparent" />
 
                   {/* Hover Interactive Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-slate-950/20 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-[#08235b] shadow-xl transition-transform duration-300 hover:scale-105 border border-white">
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-950/20 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100" aria-hidden="true">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-[#08235b] shadow-xl border border-white">
                       <Eye className="size-3.5 text-[#1453d6]" /> Lihat Profil Lengkap
                     </span>
                   </div>
@@ -238,10 +268,15 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
 
                   {/* Footer: Detail CTA + WhatsApp CTA */}
                   <div className="mt-4 flex items-center justify-between border-t border-slate-100/80 pt-3">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1453d6] transition-colors group-hover:text-[#08235b]">
+                    <button
+                      type="button"
+                      onClick={() => setSelected(lecturer)}
+                      aria-haspopup="dialog"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1453d6] transition-colors hover:text-[#08235b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9] rounded"
+                    >
                       Detail Lengkap{" "}
-                      <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5" />
-                    </span>
+                      <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true" />
+                    </button>
                     <a
                       href={getWhatsAppUrl(lecturer.name)}
                       target="_blank"
@@ -261,7 +296,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
 
           {filtered.length === 0 && (
             <div className="col-span-full rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs">
-              <Users className="mx-auto size-12 text-slate-300" />
+              <Users className="mx-auto size-12 text-slate-300" aria-hidden="true" />
               <h4 className="mt-4 font-display text-lg font-bold text-slate-700">Dosen tidak ditemukan</h4>
               <p className="mt-1 text-sm text-slate-500">
                 Tidak ada data dosen yang sesuai dengan kata kunci &ldquo;{search}&rdquo;.
@@ -279,6 +314,100 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
           )}
         </div>
       </div>
+
+      {/* Lecturer detail dialog */}
+      <dialog
+        ref={dialogRef}
+        aria-labelledby="dosen-dialog-title"
+        className="w-[calc(100%-2.5rem)] max-w-lg rounded-[2rem] border border-white/80 bg-white/95 p-0 shadow-2xl backdrop-blur-xl backdrop:bg-[#08235b]/50 backdrop:backdrop-blur-sm"
+        onClick={(e) => {
+          if (e.target === dialogRef.current) setSelected(null);
+        }}
+      >
+        {selected && (
+          <div className="overflow-hidden">
+            <div className="relative h-44 bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={
+                  typeof selected.image === "object" && selected.image?.url
+                    ? selected.image.url
+                    : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
+                }
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 size-full object-cover object-top opacity-30"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B3A8C] via-transparent to-transparent" aria-hidden="true" />
+              <button
+                type="button"
+                data-dialog-close
+                onClick={() => setSelected(null)}
+                aria-label="Tutup profil dosen"
+                className="absolute right-4 top-4 grid size-9 place-items-center rounded-full bg-white/90 text-slate-700 shadow-md transition hover:bg-white hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFB84D]"
+              >
+                <X className="size-4" aria-hidden="true" />
+              </button>
+              <div className="absolute bottom-4 left-6 right-6">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-[#9fc0ff]">
+                  {selected.role}
+                </div>
+                <h2 id="dosen-dialog-title" className="mt-1 font-display text-xl font-bold leading-snug text-white">
+                  {selected.name}
+                </h2>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-[11px] font-semibold text-slate-700">
+                  <Fingerprint className="size-3.5 text-[#1E6FD9]" aria-hidden="true" />
+                  NIDN {selected.nidn || "-"}
+                </span>
+                {selected.nik && (
+                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-[11px] font-semibold text-slate-700">
+                    NIK {selected.nik}
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
+                  <BadgeCheck className="size-3.5" aria-hidden="true" /> Terverifikasi PDDIKTI
+                </span>
+              </div>
+
+              {selected.focus && (
+                <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#1E6FD9]">
+                    <Sparkles className="size-3.5 text-[#FFB84D]" aria-hidden="true" /> Bidang Riset &amp; Fokus
+                  </div>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-700">{selected.focus}</p>
+                </div>
+              )}
+
+              <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+                <a
+                  href={getWhatsAppUrl(selected.name)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#1ebd59]"
+                >
+                  <WhatsAppIcon className="size-4" />
+                  <span>Konsultasi via WhatsApp</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="inline-flex items-center justify-center rounded-full border border-slate-200 px-5 py-3 text-xs font-bold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                >
+                  Tutup
+                </button>
+              </div>
+              <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
+                <Phone className="size-3" aria-hidden="true" /> Sekretariat Prodi: +62 822-6786-8648
+              </p>
+            </div>
+          </div>
+        )}
+      </dialog>
     </div>
   );
 }

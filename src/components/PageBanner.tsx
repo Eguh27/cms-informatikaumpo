@@ -16,48 +16,78 @@ export function PageBanner({
   breadcrumbs,
 }: PageBannerProps) {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-[#031744] via-[#08286b] to-[#0d3ea8] pt-32 pb-20 text-white">
-      {/* Decorative Parallax Grid & Circles */}
-      <div className="absolute inset-0 hero-grid opacity-20 pointer-events-none" />
-      <div className="absolute -right-24 -top-24 size-96 rounded-full border border-white/10 pointer-events-none" />
-      <div className="absolute right-12 top-12 size-64 rounded-full border border-white/10 pointer-events-none" />
-      <div className="absolute left-1/4 bottom-0 size-80 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+    <div className="relative overflow-hidden pt-32 pb-24 text-[#0B3A8C]">
+      {/* Warm-light sky matching homepage hero */}
+      <div
+        className="absolute inset-0"
+        aria-hidden="true"
+        style={{
+          background:
+            "linear-gradient(175deg, #a8d8ff 0%, #c6e6ff 28%, #dbeeff 48%, #eaf4ff 66%, #f2efe8 84%, #fffbf5 100%)",
+        }}
+      />
+      <div
+        className="absolute -top-24 right-[8%] size-96 rounded-full pointer-events-none"
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(255,184,77,0.16) 0%, transparent 70%)",
+        }}
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/assets/hero/awan.webp"
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        className="absolute -top-10 -left-24 w-[42rem] max-w-none opacity-40 pointer-events-none"
+      />
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-1.5 text-xs font-semibold text-[#8eb3ff] mb-4 flex-wrap">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-1.5 text-xs font-semibold text-[#4B6B94] mb-4 flex-wrap"
+        >
           {breadcrumbs.map((b, i) => (
             <React.Fragment key={i}>
-              {i > 0 && <ChevronRight className="size-3 opacity-60 shrink-0" />}
+              {i > 0 && <ChevronRight className="size-3 opacity-60 shrink-0" aria-hidden="true" />}
               {b.href ? (
-                <Link
-                  href={b.href}
-                  className="hover:text-white transition cursor-pointer"
-                >
+                <Link href={b.href} className="hover:text-[#1E6FD9] transition">
                   {b.label}
                 </Link>
               ) : (
-                <span className="text-white font-bold">{b.label}</span>
+                <span aria-current="page" className="text-[#0B3A8C] font-bold">
+                  {b.label}
+                </span>
               )}
             </React.Fragment>
           ))}
         </nav>
 
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#6edbff] backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#1E6FD9]/20 bg-white/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#1E6FD9] backdrop-blur-md">
+            <span className="size-1.5 rounded-full bg-[#FFB84D]" aria-hidden="true" />
             {category}
           </div>
-          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">
+          <h1 className="mt-4 font-display text-4xl font-extrabold tracking-[-.03em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
             {title}
           </h1>
-          <p className="mt-4 text-base text-[#d1e2ff] md:text-lg leading-relaxed">
+          <p className="mt-4 text-base text-[#4B6B94] md:text-lg leading-relaxed">
             {subtitle}
           </p>
         </div>
       </div>
 
-      {/* Cloud divider curve matching homepage transition */}
-      <div className="cloud-divider" />
+      {/* Wave into canvas #FFFBF5 */}
+      <div className="absolute inset-x-[-2%] bottom-[-2px] h-14 md:h-20 pointer-events-none" aria-hidden="true">
+        <svg viewBox="0 0 1440 84" preserveAspectRatio="none" className="h-full w-full">
+          <path
+            d="M0,24 C320,72 640,-12 960,36 C1200,72 1360,28 1440,24 L1440,84 L0,84 Z"
+            fill="#FFFBF5"
+          />
+        </svg>
+      </div>
     </div>
   );
 }

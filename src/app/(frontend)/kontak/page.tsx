@@ -38,7 +38,7 @@ ${formData.message || "Halo Admin, saya ingin berkonsultasi seputar Program Stud
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28">
       {/* Banner */}
       <PageBanner
         category="Pusat Komunikasi & Layanan"

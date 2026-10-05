@@ -112,9 +112,9 @@ export function SiteHeader() {
 
         {/* Desktop Right CTA */}
         <div className="hidden items-center gap-3 lg:flex">
-          <button aria-label="Cari di website" className="grid size-10 place-items-center rounded-full transition bg-[#eaf0ff] text-[#1453d6] hover:bg-blue-100">
+          <Link href="/search" aria-label="Cari di website" className="grid size-10 place-items-center rounded-full transition bg-[#eaf0ff] text-[#1453d6] hover:bg-blue-100">
             <Search className="size-4" />
-          </button>
+          </Link>
           <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="rounded-full px-6 py-3 text-sm font-bold transition-all hover:-translate-y-0.5 bg-[#1453d6] text-white shadow-[0_10px_24px_rgba(20,83,214,.25)] hover:bg-[#0f44b3]">
             Pendaftaran PMB
           </a>
@@ -122,9 +122,9 @@ export function SiteHeader() {
 
         {/* Mobile Menu Button */}
         <div className="flex items-center gap-2 lg:hidden">
-          <button aria-label="Cari" className="grid size-10 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6]">
+          <Link href="/search" aria-label="Cari" className="grid size-10 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6]">
             <Search className="size-4" />
-          </button>
+          </Link>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Buka menu" className="grid size-11 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6]">
             {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
