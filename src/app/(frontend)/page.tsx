@@ -13,9 +13,7 @@ import {
   ExternalLink,
   GraduationCap,
   Network,
-  Sparkles,
 } from 'lucide-react'
-import * as LucideIcons from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { ParallaxEffects } from '@/components/parallax/ParallaxEffects'
@@ -125,12 +123,14 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div data-reveal-item className="lg:pl-8">
-            <SectionTag>Profil Program Studi</SectionTag>
+          <div className="lg:pl-8">
+            <div data-reveal-item>
+              <SectionTag>Profil Program Studi</SectionTag>
+            </div>
             <h2 id="profil-title" data-split-reveal className="mt-5 font-display text-4xl font-extrabold leading-tight tracking-[-.04em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
               Teknik Informatika UMPO
             </h2>
-            <p className="mt-6 text-base leading-relaxed text-[#4B6B94] md:text-lg">
+            <p data-reveal-item className="mt-6 text-base leading-relaxed text-[#4B6B94] md:text-lg">
               Program studi Teknik Informatika merupakan salah satu prodi jenjang S1 unggulan
               Universitas Muhammadiyah Ponorogo yang berdiri tahun 2005 dengan izin{' '}
               <strong className="text-[#0B3A8C]">SK Ditjen DIKTI No. 378/D/T/2005</strong>. Telah
@@ -151,12 +151,12 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="mt-9 grid grid-cols-2 gap-5">
-              <div className="rounded-3xl border border-[#1E6FD9]/10 bg-white p-6 shadow-[0_12px_32px_rgba(15,42,74,0.06)]">
+              <div className="rounded-3xl border border-white/60 bg-white/70 p-6 shadow-[0_12px_32px_rgba(15,42,74,0.08)] backdrop-blur-xl">
                 <div className="font-display text-4xl font-extrabold text-[#1E6FD9]">2</div>
                 <div className="mt-2 text-sm font-bold text-[#0F2A4A]">Laboratorium Terpadu</div>
                 <div className="mt-0.5 text-xs text-[#4B6B94]">Lab Jaringan IoT &amp; Lab RPL</div>
               </div>
-              <div className="rounded-3xl bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C] p-6 text-white shadow-[0_16px_36px_rgba(30,111,217,0.25)]">
+              <div className="rounded-3xl border border-white/20 bg-[#1E6FD9]/85 p-6 text-white shadow-[0_16px_36px_rgba(30,111,217,0.25)] backdrop-blur-xl">
                 <div className="font-display text-4xl font-extrabold text-[#FFE8CC]">1:18</div>
                 <div className="mt-2 text-sm font-bold">Rasio Dosen &amp; Mahasiswa</div>
                 <div className="mt-0.5 text-xs text-white/80">Pendampingan intensif &amp; fokus</div>
@@ -169,47 +169,41 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ============ KURIKULUM — sticky stack + parallax ============ */}
+      {/* ============ KURIKULUM — 3-column grid ============ */}
       <section id="kurikulum" aria-labelledby="kurikulum-title" data-story-section className="relative bg-[#EAF4FF]/70 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div data-reveal-item className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <SectionTag>Kurikulum Masa Depan</SectionTag>
+              <div data-reveal-item>
+                <SectionTag>Kurikulum Masa Depan</SectionTag>
+              </div>
               <h2 id="kurikulum-title" data-split-reveal className="mt-4 max-w-2xl font-display text-3xl font-extrabold tracking-[-.04em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
                 Pilih fokusmu. Ciptakan terobosanmu.
               </h2>
             </div>
-            <p className="max-w-md text-base leading-relaxed text-[#4B6B94]">
+            <p data-reveal-item className="max-w-md text-base leading-relaxed text-[#4B6B94]">
               Tiga rumpun kompetensi keilmuan yang dirancang bersama industri, ditampilkan berdampingan sehingga mudah dibandingkan.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-3 lg:gap-8">
-            {tracks.slice(0, 3).map((program: any, idx: number) => {
-              const IconComp = (LucideIcons as any)[program.icon] ?? Cpu
+          <div data-reveal-item className="mt-12 grid gap-6 md:grid-cols-3 lg:gap-8">
+            {tracks.slice(0, 3).map((program: any) => {
               return (
                 <article
                   key={program.title}
-                  data-reveal-item
                   aria-label={program.title}
                   className="px-card group relative flex flex-col overflow-hidden p-7 md:p-8"
                 >
                   <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#1E6FD9] via-[#2563EB] to-[#FFB84D]" aria-hidden="true" />
-                  <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] transition-colors group-hover:bg-[#1E6FD9] group-hover:text-white">
-                    <IconComp className="size-7" aria-hidden="true" />
-                  </span>
-                  <div className="mt-5 flex items-center gap-3">
-                    <span className="font-mono text-sm font-bold text-[#1E6FD9]/40">{program.number}</span>
-                    <span className="px-chip">Rumpun {idx + 1} / 3</span>
-                  </div>
-                  <h3 className="mt-3 font-display text-2xl font-bold text-[#0B3A8C] md:text-3xl">
+                  <span className="font-mono text-5xl font-bold tracking-tight text-[#1E6FD9]/25">{program.number}</span>
+                  <h3 className="mt-4 font-display text-3xl font-bold text-[#0B3A8C] md:text-4xl">
                     {program.title}
                   </h3>
-                  <p className="mt-3 leading-relaxed text-[#4B6B94]">{program.copy}</p>
+                  <p className="mt-4 text-base leading-relaxed text-[#4B6B94] md:text-lg">{program.copy}</p>
                   {!!program.tags?.length && (
-                    <div className="mt-5 flex flex-wrap gap-2">
+                    <div className="mt-5 flex flex-wrap gap-x-4 gap-y-1">
                       {program.tags.map((tag: string) => (
-                        <span key={tag} className="rounded-full border border-[#1E6FD9]/15 bg-[#FFFBF5] px-3 py-1 text-xs font-semibold text-[#0F2A4A]">
+                        <span key={tag} className="text-xs font-semibold text-[#4B6B94]">
                           {tag}
                         </span>
                       ))}
@@ -217,7 +211,7 @@ export default async function HomePage() {
                   )}
                   <div className="min-h-6 flex-1" aria-hidden="true" />
                   {!!program.prospects && (
-                    <p className="flex items-center justify-between gap-3 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9]">
+                    <p className="flex items-center justify-between gap-3 border-t border-slate-100 pt-4 text-sm font-bold text-[#1E6FD9]">
                       <span>Prospek: {program.prospects}</span>
                       <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                     </p>
@@ -255,22 +249,24 @@ export default async function HomePage() {
       <section id="dosen" aria-labelledby="dosen-title" data-story-section className="relative overflow-hidden bg-[#FFFBF5] py-24 lg:py-32">
         <div className="pointer-events-none absolute left-1/2 top-0 size-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-100/50 blur-3xl" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-          <div data-reveal-item className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <SectionTag>Tenaga Pendidik &amp; Peneliti</SectionTag>
+              <div data-reveal-item>
+                <SectionTag>Tenaga Pendidik &amp; Peneliti</SectionTag>
+              </div>
               <h2 id="dosen-title" data-split-reveal className="mt-4 max-w-2xl font-display text-4xl font-extrabold tracking-[-.04em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
                 Dosen &amp; pakar teknologi berdedikasi.
               </h2>
             </div>
-            <div className="max-w-md">
+            <div data-reveal-item className="max-w-md">
               <p className="text-sm leading-relaxed text-[#4B6B94] md:text-base">
                 Akademisi &amp; praktisi Fakultas Teknik UMPO yang aktif membimbing, meneliti, dan
                 membawa teknologi industri ke ruang kelas.
               </p>
-              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold">
-                <span className="px-chip"><Award className="size-3.5 text-[#FFB84D]" aria-hidden="true" /> Dosen Tetap</span>
-                <span className="px-chip"><BadgeCheck className="size-3.5 text-emerald-600" aria-hidden="true" /> Ber-NIDN</span>
-                <span className="px-chip"><Cpu className="size-3.5 text-[#1E6FD9]" aria-hidden="true" /> Riset AI, RPL &amp; IoT</span>
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-[#4B6B94]">
+                <span className="inline-flex items-center gap-1.5"><Award className="size-3.5 text-[#FFB84D]" aria-hidden="true" /> Dosen Tetap</span>
+                <span className="inline-flex items-center gap-1.5"><BadgeCheck className="size-3.5 text-emerald-600" aria-hidden="true" /> Ber-NIDN</span>
+                <span className="inline-flex items-center gap-1.5"><Cpu className="size-3.5 text-[#1E6FD9]" aria-hidden="true" /> Riset AI, RPL &amp; IoT</span>
               </div>
             </div>
           </div>
@@ -546,9 +542,6 @@ export default async function HomePage() {
           <div className="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full border-[3rem] border-white/5" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-36 -right-20 size-96 rounded-full border-[4rem] border-white/5" aria-hidden="true" />
           <div className="relative">
-            <p className="px-chip-amber px-chip mx-auto w-fit">
-              <Sparkles className="size-3.5" aria-hidden="true" /> Gelombang PMB dibuka
-            </p>
             <h2 id="pmb-title" className="mx-auto mt-5 max-w-3xl font-display text-4xl font-extrabold tracking-[-.045em] md:text-6xl">
               Siap menjadi bagian dari Teknik Informatika UMPO?
             </h2>
