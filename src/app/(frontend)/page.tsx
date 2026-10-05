@@ -144,7 +144,7 @@ export default async function HomePage() {
                 <BookOpen className="size-4" aria-hidden="true" /> Baca Sejarah Prodi
               </Link>
               <Link
-                href="/profil"
+                href="/profil#visimisi"
                 className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[#1E6FD9]/30 bg-[#FFFBF5] px-7 py-3.5 text-sm font-bold text-[#0B3A8C] transition-all hover:-translate-y-0.5 hover:border-[#1E6FD9] hover:bg-[#EAF4FF]"
               >
                 <Award className="size-4 text-[#FFB84D]" aria-hidden="true" /> Visi, Misi &amp; Roadmap
@@ -180,53 +180,48 @@ export default async function HomePage() {
               </h2>
             </div>
             <p className="max-w-md text-base leading-relaxed text-[#4B6B94]">
-              Tiga rumpun kompetensi keilmuan yang dirancang bersama industri. Kartu menumpuk
-              mengikuti scroll — gulir untuk melihat lapisannya.
+              Tiga rumpun kompetensi keilmuan yang dirancang bersama industri, ditampilkan berdampingan sehingga mudah dibandingkan.
             </p>
           </div>
 
-          <div data-sticky-stack className="mt-12 grid gap-6 lg:gap-8">
+          <div className="mt-12 grid gap-6 md:grid-cols-3 lg:gap-8">
             {tracks.slice(0, 3).map((program: any, idx: number) => {
               const IconComp = (LucideIcons as any)[program.icon] ?? Cpu
               return (
                 <article
                   key={program.title}
-                  data-stack-card
                   data-reveal-item
                   aria-label={program.title}
-                  className="px-card group relative overflow-hidden p-7 md:p-10"
+                  className="px-card group relative flex flex-col overflow-hidden p-7 md:p-8"
                 >
                   <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#1E6FD9] via-[#2563EB] to-[#FFB84D]" aria-hidden="true" />
-                  <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-10">
-                    <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] transition-colors group-hover:bg-[#1E6FD9] group-hover:text-white">
-                      <IconComp className="size-7" aria-hidden="true" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-sm font-bold text-[#1E6FD9]/40">{program.number}</span>
-                        <span className="px-chip">Lapisan {idx + 1} / 3</span>
-                      </div>
-                      <h3 className="mt-3 font-display text-2xl font-bold text-[#0B3A8C] md:text-3xl">
-                        {program.title}
-                      </h3>
-                      <p className="mt-3 max-w-2xl leading-relaxed text-[#4B6B94]">{program.copy}</p>
-                      {!!program.tags?.length && (
-                        <div className="mt-5 flex flex-wrap gap-2">
-                          {program.tags.map((tag: string) => (
-                            <span key={tag} className="rounded-full border border-[#1E6FD9]/15 bg-[#FFFBF5] px-3 py-1 text-xs font-semibold text-[#0F2A4A]">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {!!program.prospects && (
-                        <p className="mt-6 flex items-center justify-between gap-3 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9]">
-                          <span>Prospek: {program.prospects}</span>
-                          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-                        </p>
-                      )}
-                    </div>
+                  <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-[#EAF4FF] text-[#1E6FD9] transition-colors group-hover:bg-[#1E6FD9] group-hover:text-white">
+                    <IconComp className="size-7" aria-hidden="true" />
+                  </span>
+                  <div className="mt-5 flex items-center gap-3">
+                    <span className="font-mono text-sm font-bold text-[#1E6FD9]/40">{program.number}</span>
+                    <span className="px-chip">Rumpun {idx + 1} / 3</span>
                   </div>
+                  <h3 className="mt-3 font-display text-2xl font-bold text-[#0B3A8C] md:text-3xl">
+                    {program.title}
+                  </h3>
+                  <p className="mt-3 leading-relaxed text-[#4B6B94]">{program.copy}</p>
+                  {!!program.tags?.length && (
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {program.tags.map((tag: string) => (
+                        <span key={tag} className="rounded-full border border-[#1E6FD9]/15 bg-[#FFFBF5] px-3 py-1 text-xs font-semibold text-[#0F2A4A]">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="min-h-6 flex-1" aria-hidden="true" />
+                  {!!program.prospects && (
+                    <p className="flex items-center justify-between gap-3 border-t border-slate-100 pt-4 text-xs font-bold text-[#1E6FD9]">
+                      <span>Prospek: {program.prospects}</span>
+                      <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                    </p>
+                  )}
                 </article>
               )
             })}

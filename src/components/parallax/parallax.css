@@ -386,15 +386,6 @@
   .px-building { min-width: 160vw; height: 78vh; }
 }
 
-/* ---------- sticky stack (kurikulum) ---------- */
-[data-sticky-stack] { position: relative; }
-[data-stack-card] {
-  position: sticky;
-  top: 11vh;
-  transform-origin: center top;
-  will-change: transform, opacity;
-}
-
 /* ---------- cards ---------- */
 .px-card {
   background: #fff;
@@ -476,5 +467,4 @@
   .px-scroll-cue b, .px-eyebrow-dot {
     animation: none !important;
   }
-  [data-stack-card] { position: static; }
 }

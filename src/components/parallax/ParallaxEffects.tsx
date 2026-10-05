@@ -103,28 +103,6 @@ export function ParallaxEffects() {
         })
       })
 
-      // 4. Sticky card stack depth (kurikulum)
-      gsap.utils.toArray<HTMLElement>('[data-sticky-stack]').forEach((stack) => {
-        const cards = gsap.utils.toArray<HTMLElement>(stack.querySelectorAll('[data-stack-card]'))
-        cards.forEach((card, index) => {
-          const next = cards[index + 1]
-          if (!next) return
-          gsap.to(card, {
-            scale: 0.93 + index * 0.012,
-            autoAlpha: 0.65,
-            y: -22,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: next,
-              start: 'top 80%',
-              end: 'top 28%',
-              scrub: true,
-              invalidateOnRefresh: true,
-            },
-          })
-        })
-      })
-
       // 5. Hero intro (plays once on load)
       const intro = gsap.timeline({ defaults: { ease: 'power3.out' } })
       intro
