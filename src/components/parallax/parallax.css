@@ -17,7 +17,8 @@
 }
 .px-split-word {
   display: inline-block;
-  will-change: transform, opacity, filter;
+  /* No will-change here: one-shot entrance only; scrubbed parallax
+     layers below keep their hint for the continuous scroll animation. */
 }
 
 /* ---------- section tag ---------- */

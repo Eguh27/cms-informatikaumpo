@@ -353,7 +353,7 @@ export default async function HomePage() {
           data-speed="-0.18"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1663162551013-8bb8ab151e11?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=80&w=1800')",
+              "url('https://images.unsplash.com/photo-1663162551013-8bb8ab151e11?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=60&w=1600')",
           }}
           aria-hidden="true"
         />
