@@ -1,7 +1,8 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Share2 } from 'lucide-react'
+import { Share2, Facebook, Twitter, Send } from 'lucide-react'
+import { WhatsAppIcon } from '@/components/WhatsAppIcon'
 
 type Props = {
   title: string
@@ -18,10 +19,10 @@ export function ShareButtons({ title }: Props) {
   const text = encodeURIComponent(title)
 
   const links = [
-    { label: 'WhatsApp', href: `https://wa.me/?text=${text}%20${url}` },
-    { label: 'Telegram', href: `https://t.me/share/url?url=${url}&text=${text}` },
-    { label: 'X', href: `https://twitter.com/intent/tweet?url=${url}&text=${text}` },
-    { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${url}` },
+    { label: 'WhatsApp', href: `https://wa.me/?text=${text}%20${url}`, bg: 'bg-[#25D366] hover:bg-[#1da851]', Icon: WhatsAppIcon },
+    { label: 'Telegram', href: `https://t.me/share/url?url=${url}&text=${text}`, bg: 'bg-[#229ED9] hover:bg-[#1b86b8]', Icon: Send },
+    { label: 'X', href: `https://twitter.com/intent/tweet?url=${url}&text=${text}`, bg: 'bg-black hover:bg-neutral-800', Icon: Twitter },
+    { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${url}`, bg: 'bg-[#1877F2] hover:bg-[#0f6bde]', Icon: Facebook },
   ]
 
   return (
@@ -35,8 +36,9 @@ export function ShareButtons({ title }: Props) {
           href={l.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-[36px] items-center rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-bold text-[#08235b] transition hover:border-[#1453d6] hover:text-[#1453d6]"
+          className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-white transition ${l.bg}`}
         >
+          <l.Icon className="size-3.5" aria-hidden="true" />
           {l.label}
         </a>
       ))}
