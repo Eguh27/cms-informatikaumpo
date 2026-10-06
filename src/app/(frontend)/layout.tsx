@@ -17,9 +17,15 @@ import { draftMode } from 'next/headers'
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
   const siteMedia = await getSiteMedia()
+  
+  const payload = await getPayload({ config: configPromise })
+  const headerData = await payload.findGlobal({ slug: 'header' })
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -44,7 +50,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           >
             Lewati ke konten utama
           </a>
-          <SiteHeader logoSrc={siteMedia.logo} />
+          <SiteHeader logoSrc={siteMedia.logo} headerData={headerData} />
           {children}
           <SiteFooter logoSrc={siteMedia.logo} />
         </Providers>

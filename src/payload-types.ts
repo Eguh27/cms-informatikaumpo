@@ -797,6 +797,7 @@ export interface Lecturer {
   nik?: string | null;
   category: 'pimpinan' | 'dosen' | 'lab';
   email?: string | null;
+  whatsapp?: string | null;
   focus?: string | null;
   image?: (number | null) | Media;
   updatedAt: string;
@@ -1484,6 +1485,7 @@ export interface LecturersSelect<T extends boolean = true> {
   nik?: T;
   category?: T;
   email?: T;
+  whatsapp?: T;
   focus?: T;
   image?: T;
   updatedAt?: T;

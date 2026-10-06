@@ -3,14 +3,17 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Menu, X } from 'lucide-react'
+import { Search, Menu, X, ChevronDown } from 'lucide-react'
 import { SearchOverlay } from './SearchOverlay'
 import { SITE_LINKS, SITE_MEDIA } from '@/data/siteMedia'
+import { CMSLink } from '@/components/Link'
+import type { Header as HeaderType } from '@/payload-types'
 
-export function SiteHeader({ logoSrc }: { logoSrc?: string }) {
+export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerData?: HeaderType }) {
   const [scrollY, setScrollY] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -108,6 +111,40 @@ export function SiteHeader({ logoSrc }: { logoSrc?: string }) {
             >
               Kontak
             </Link>
+
+            {/* Dynamic Dropdown from CMS */}
+            {headerData?.navItems && headerData.navItems.length > 0 && (
+              <div
+                className="relative group"
+                onMouseEnter={() => setDropdownOpen(true)}
+                onMouseLeave={() => setDropdownOpen(false)}
+              >
+                <button
+                  className="nav-link text-sm font-semibold transition flex items-center gap-1 focus:outline-none"
+                  aria-haspopup="true"
+                  aria-expanded={dropdownOpen}
+                >
+                  Lainnya <ChevronDown className={`size-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {/* Dropdown Menu */}
+                <div
+                  className={`absolute left-0 top-full mt-2 w-48 rounded-xl bg-white shadow-[0_12px_40px_rgba(15,56,130,.15)] border border-slate-100 overflow-hidden transition-all duration-200 transform origin-top-left ${
+                    dropdownOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'
+                  }`}
+                >
+                  <div className="py-2 flex flex-col">
+                    {headerData.navItems.map(({ link }, i) => (
+                      <CMSLink
+                        key={i}
+                        {...link}
+                        className="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-[#eaf0ff] hover:text-[#1453d6] transition-colors"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Desktop Right CTA */}
@@ -205,10 +242,21 @@ export function SiteHeader({ logoSrc }: { logoSrc?: string }) {
               </Link>
               <Link
                 href="/kontak"
-                className="flex w-full items-center justify-between py-3.5 text-left text-sm font-semibold text-[#16356e]"
+                className={`flex w-full items-center justify-between py-3.5 text-left text-sm font-semibold text-[#16356e] ${headerData?.navItems?.length ? 'border-b border-[#e4ebfb]' : ''}`}
               >
                 Kontak
               </Link>
+              
+              {/* Dynamic Links from CMS (Mobile) */}
+              {headerData?.navItems?.map(({ link }, i) => (
+                <CMSLink
+                  key={i}
+                  {...link}
+                  className={`flex w-full items-center justify-between py-3.5 text-left text-sm font-semibold text-[#1453d6] ${
+                    i !== (headerData.navItems?.length ?? 0) - 1 ? 'border-b border-[#e4ebfb]' : ''
+                  }`}
+                />
+              ))}
               <div className="pt-3">
                 <a
                   href={SITE_LINKS.pmb}
