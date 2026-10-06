@@ -55,6 +55,23 @@ test.describe('Navbar Pendaftaran & Akademik', () => {
     await expect(nav.submenu('Pendaftaran')).toBeHidden()
   })
 
+  test('dropdown Profil memuat Kontak di dalamnya, tanpa tautan Kontak mandiri', async ({ page }) => {
+    const nav = new SiteNav(page)
+    await nav.openSubmenu('Profil')
+
+    const menu = nav.submenu('Profil')
+    await expect(menu.getByRole('link', { name: /kontak/i })).toHaveAttribute('href', '/kontak')
+    await expect(menu.getByRole('link', { name: /visi/i })).toHaveAttribute(
+      'href',
+      '/profil#visimisi',
+    )
+    await expect(nav.header.getByRole('link', { name: 'Kontak', exact: true })).toHaveCount(0)
+    await expect(nav.header.getByRole('link', { name: 'Profil', exact: true })).toHaveAttribute(
+      'href',
+      '/profil',
+    )
+  })
+
   test('dropdown Akademik memuat Jadwal Kuliah dan induk tetap tautan', async ({ page }) => {
     const nav = new SiteNav(page)
     await nav.openSubmenu('Akademik')
@@ -125,6 +142,13 @@ test.describe('Menu seluler', () => {
     await expect(akademik.getByRole('link', { name: /jadwal kuliah/i })).toHaveAttribute(
       'href',
       '/akademik/jadwal-kuliah',
+    )
+
+    await page.getByRole('button', { name: /submenu profil/i }).click()
+    const profil = page.getByRole('list', { name: 'Submenu Profil' })
+    await expect(profil.getByRole('link', { name: /kontak/i })).toHaveAttribute(
+      'href',
+      '/kontak',
     )
   })
 })
