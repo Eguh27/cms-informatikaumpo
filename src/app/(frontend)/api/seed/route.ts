@@ -3,7 +3,10 @@ import { getPayload } from 'payload';
 import configPromise from '@payload-config';
 import { LECTURERS, NEWS, CURRICULUM_TRACKS, PARTNERS } from '@/data/mock';
 
-export async function GET(req: Request) {
+export async function GET(req: Request) { return await runSeed(req); }
+export async function POST(req: Request) { return await runSeed(req); }
+
+async function runSeed(req: Request) {
   try {
     const payload = await getPayload({ config: configPromise });
 
@@ -22,6 +25,27 @@ export async function GET(req: Request) {
             focus: lecturer.focus,
           },
         });
+      }
+    }
+
+    // Seed Categories
+    const categoriesMap: Record<string, any> = {};
+    const existingCats = await payload.find({ collection: 'categories', limit: 10 });
+    for (const cat of existingCats.docs) {
+      categoriesMap[cat.title] = cat.id;
+    }
+
+    const defaultCats = ['Agenda', 'Akademik', 'Pengumuman'];
+    for (const catName of defaultCats) {
+      if (!categoriesMap[catName]) {
+        const newCat = await payload.create({
+          collection: 'categories',
+          data: {
+            title: catName,
+            slug: catName.toLowerCase().replace(/ /g, '-'),
+          },
+        });
+        categoriesMap[catName] = newCat.id;
       }
     }
 
@@ -58,12 +82,14 @@ export async function GET(req: Request) {
           }
         };
 
+        const catId = categoriesMap[news.category] || categoriesMap['Pengumuman'];
+
         await payload.create({
           collection: 'news',
           data: {
             title: news.title,
             slug: news.id,
-            category: news.category,
+            category: catId,
             excerpt: news.excerpt,
             readTime: parseInt(news.readTime) || 3,
             publishedAt: new Date(news.date).toISOString(),

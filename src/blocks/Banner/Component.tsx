@@ -1,4 +1,5 @@
-import type { BannerBlock as BannerBlockProps } from 'src/payload-types'
+// import type { BannerBlock as BannerBlockProps } from 'src/payload-types'
+type BannerBlockProps = any;
 
 import { cn } from '@/utilities/ui'
 import React from 'react'

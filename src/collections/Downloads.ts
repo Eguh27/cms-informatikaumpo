@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 export const Downloads: CollectionConfig = {
   slug: 'downloads',
+  labels: { singular: 'Unduhan Dokumen', plural: 'Unduhan Dokumen' },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category'],

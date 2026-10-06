@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { Lecturers } from './collections/Lecturers'
 import { News } from './collections/News'
@@ -21,10 +20,15 @@ import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 
+import { id } from '@payloadcms/translations/languages/id'
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  i18n: {
+    supportedLanguages: { id },
+  },
   admin: {
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
@@ -68,7 +72,7 @@ export default buildConfig({
       url: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Lecturers, News, CurriculumTracks, Partners, Downloads],
+  collections: [Pages, Media, Categories, Users, Lecturers, News, CurriculumTracks, Partners, Downloads],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteMedia],
   plugins,
