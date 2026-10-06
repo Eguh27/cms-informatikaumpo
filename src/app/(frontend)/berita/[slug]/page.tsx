@@ -8,6 +8,7 @@ import { Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { SITE_MEDIA } from '@/data/siteMedia'
 import { ShareButtons } from '@/components/ShareButtons'
+import RichText from '@/components/RichText'
 
 type Args = {
   params: Promise<{
@@ -130,18 +131,12 @@ export default async function BeritaDetailPage({ params }: Args) {
             <p className="lead text-lg font-medium text-slate-700">
               {newsItem.excerpt}
             </p>
-            
-            {/* Note: In a complete implementation, you'd use a Payload Rich Text Parser here to parse newsItem.content. 
-                For MVP, we just render some static text after the excerpt. */}
-            <p>
-              Program Studi S1 Teknik Informatika Universitas Muhammadiyah Ponorogo senantiasa mendukung peningkatan 
-              kualitas akademik dan wawasan keilmuan bagi seluruh mahasiswa melalui kegiatan dan publikasi ini.
-            </p>
-            <p>
-              Untuk informasi lebih detail atau teknis mengenai pengumuman/berita ini, Anda dapat menghubungi pihak
-              Sekretariat Prodi Teknik Informatika di Gedung Fakultas Teknik Lantai 2 Kampus 1 UMPO, atau melalui kanal 
-              komunikasi resmi yang tersedia.
-            </p>
+
+            {newsItem.content ? (
+              <RichText data={newsItem.content} enableGutter={false} enableProse={false} />
+            ) : (
+              <p className="text-sm text-slate-500">Konten lengkap belum tersedia untuk berita ini.</p>
+            )}
           </div>
         </article>
 
