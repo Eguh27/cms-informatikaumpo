@@ -7,6 +7,7 @@ import { PageBanner } from '@/components/PageBanner'
 import { Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { SITE_MEDIA } from '@/data/siteMedia'
+import { ShareButtons } from '@/components/ShareButtons'
 
 type Args = {
   params: Promise<{
@@ -108,6 +109,8 @@ export default async function BeritaDetailPage({ params }: Args) {
               <Clock className="size-4 text-slate-500" /> {newsItem.readTime || 3} min read
             </span>
           </div>
+
+          <ShareButtons title={newsItem.title} />
 
           {imageUrl && (
             <figure className="mb-10">
