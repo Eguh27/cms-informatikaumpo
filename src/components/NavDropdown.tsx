@@ -68,7 +68,7 @@ export function NavDropdown({ label, href, items, isActive }: NavDropdownProps) 
         {href ? (
           <Link
             href={href}
-            className={`nav-link text-sm font-semibold transition ${
+            className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${
               isActive ? 'text-[#1453d6] font-bold' : ''
             }`}
           >
