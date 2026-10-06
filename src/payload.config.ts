@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { Lecturers } from './collections/Lecturers'
 import { News } from './collections/News'
@@ -68,7 +67,7 @@ export default buildConfig({
       url: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Lecturers, News, CurriculumTracks, Partners, Downloads],
+  collections: [Pages, Media, Categories, Users, Lecturers, News, CurriculumTracks, Partners, Downloads],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteMedia],
   plugins,
