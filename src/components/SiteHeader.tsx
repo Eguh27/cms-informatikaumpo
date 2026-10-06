@@ -15,7 +15,6 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileExpanded, setMobileExpanded] = useState<'akademik' | 'pendaftaran' | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -60,10 +59,10 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden items-center gap-4 lg:flex text-[#203f6b]">
+          <div className="hidden items-center gap-4 xl:flex text-[#203f6b]">
             <Link
               href="/"
-              className={`nav-link text-sm font-semibold transition ${
+              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${
                 pathname === '/' ? 'text-[#1453d6] font-bold' : ''
               }`}
             >
@@ -72,7 +71,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
 
             <Link
               href="/profil"
-              className={`nav-link text-sm font-semibold transition ${pathname.startsWith('/profil') ? 'text-[#1453d6] font-bold' : ''}`}
+              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/profil') ? 'text-[#1453d6] font-bold' : ''}`}
             >
               Profil
             </Link>
@@ -96,31 +95,31 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
             />
             <Link
               href="/dosen"
-              className={`nav-link text-sm font-semibold transition ${pathname.startsWith('/dosen') ? 'text-[#1453d6] font-bold' : ''}`}
+              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/dosen') ? 'text-[#1453d6] font-bold' : ''}`}
             >
               Dosen
             </Link>
             <Link
               href="/fasilitas"
-              className={`nav-link text-sm font-semibold transition ${pathname.startsWith('/fasilitas') ? 'text-[#1453d6] font-bold' : ''}`}
+              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/fasilitas') ? 'text-[#1453d6] font-bold' : ''}`}
             >
               Fasilitas
             </Link>
             <Link
               href="/berita"
-              className={`nav-link text-sm font-semibold transition ${pathname.startsWith('/berita') ? 'text-[#1453d6] font-bold' : ''}`}
+              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/berita') ? 'text-[#1453d6] font-bold' : ''}`}
             >
               Berita
             </Link>
             <Link
               href="/download"
-              className={`nav-link text-sm font-semibold transition ${pathname.startsWith('/download') ? 'text-[#1453d6] font-bold' : ''}`}
+              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/download') ? 'text-[#1453d6] font-bold' : ''}`}
             >
               Unduhan
             </Link>
             <Link
               href="/kontak"
-              className={`nav-link text-sm font-semibold transition ${pathname.startsWith('/kontak') ? 'text-[#1453d6] font-bold' : ''}`}
+              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/kontak') ? 'text-[#1453d6] font-bold' : ''}`}
             >
               Kontak
             </Link>
@@ -155,43 +154,32 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
               ]}
             />
 
-            {/* Dynamic Dropdown from CMS */}
+            {/* Dynamic Dropdown from CMS — same behavior and panel as the other menus */}
             {headerData?.navItems && headerData.navItems.length > 0 && (
-              <div
-                className="relative group"
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => setDropdownOpen(false)}
-              >
-                <button
-                  className="nav-link text-sm font-semibold transition flex items-center gap-1 focus:outline-none"
-                  aria-haspopup="true"
-                  aria-expanded={dropdownOpen}
-                >
-                  Lainnya <ChevronDown className={`size-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-                
-                {/* Dropdown Menu */}
-                <div
-                  className={`absolute left-0 top-full mt-2 w-48 rounded-xl bg-white shadow-[0_12px_40px_rgba(15,56,130,.15)] border border-slate-100 overflow-hidden transition-all duration-200 transform origin-top-left ${
-                    dropdownOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'
-                  }`}
-                >
-                  <div className="py-2 flex flex-col">
-                    {headerData.navItems.map(({ link }, i) => (
-                      <CMSLink
-                        key={i}
-                        {...link}
-                        className="px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-[#eaf0ff] hover:text-[#1453d6] transition-colors"
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <NavDropdown
+                label="Lainnya"
+                items={headerData.navItems
+                  .map(({ link }) => {
+                    const href =
+                      link?.type === 'reference' &&
+                      typeof link?.reference?.value === 'object' &&
+                      link?.reference?.value?.slug
+                        ? `${link.reference.relationTo !== 'pages' ? `/${link.reference.relationTo}` : ''}/${link.reference.value.slug}`
+                        : link?.url || undefined
+                    if (!href) return null
+                    return {
+                      label: link?.label || href,
+                      href,
+                      external: !!link?.newTab,
+                    }
+                  })
+                  .filter((item): item is { label: string; href: string; external: boolean } => item !== null)}
+              />
             )}
           </div>
 
           {/* Desktop Right CTA */}
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden items-center gap-3 xl:flex">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
@@ -212,7 +200,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-2 xl:hidden">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
@@ -238,7 +226,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
         {mobileMenuOpen && (
           <div
             id="navigasi-seluler"
-            className="mx-4 mt-3 max-h-[80vh] overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl lg:hidden"
+            className="mx-4 mt-3 max-h-[80vh] overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl xl:hidden"
           >
             <div className="space-y-1">
               <Link
