@@ -53,9 +53,12 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
     });
   }, [category, search, initialLecturers]);
 
-  const getWhatsAppUrl = (name: string) => {
-    const text = encodeURIComponent(``);
-    return `https://wa.me/6282267868648?text=${text}`;
+  const getWhatsAppUrl = (whatsapp?: string | null) => {
+    if (!whatsapp) return null;
+    // Bersihkan karakter non-digit jika ada (selain + di awal)
+    const cleanNumber = whatsapp.replace(/[^\d+]/g, '');
+    const text = encodeURIComponent(`Halo, saya ingin bertanya mengenai program studi Teknik Informatika.`);
+    return `https://wa.me/${cleanNumber}?text=${text}`;
   };
 
   return (
@@ -241,17 +244,22 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
 
                   {/* Action buttons — always at bottom */}
                   <div className="mt-auto pt-2 border-t border-slate-100 flex items-center gap-2">
-                    <a
-                      href={getWhatsAppUrl(lecturer.name)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      title={`Chat WhatsApp dengan ${lecturer.name}`}
-                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#15803D] py-2 text-[11px] font-bold text-white shadow-sm transition hover:bg-[#166534] hover:scale-105 active:scale-95"
-                    >
-                      <WhatsAppIcon className="size-3.5" />
-                      WhatsApp
-                    </a>
+                    {(() => {
+                      const waUrl = getWhatsAppUrl(lecturer.whatsapp as string | undefined | null);
+                      return waUrl ? (
+                        <a
+                          href={waUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          title={`Chat WhatsApp dengan ${lecturer.name}`}
+                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#15803D] py-2 text-[11px] font-bold text-white shadow-sm transition hover:bg-[#166534] hover:scale-105 active:scale-95"
+                        >
+                          <WhatsAppIcon className="size-3.5" />
+                          WhatsApp
+                        </a>
+                      ) : null;
+                    })()}
                     {lecturer.email && (
                       <a
                         href={`mailto:${lecturer.email}`}

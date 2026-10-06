@@ -49,6 +49,11 @@ export const Lecturers: CollectionConfig = {
       label: 'Email Institusional',
     },
     {
+      name: 'whatsapp',
+      type: 'text',
+      label: 'Nomor WhatsApp (contoh: 6281234567890)',
+    },
+    {
       name: 'focus',
       type: 'text',
       label: 'Bidang Keahlian / Riset',
