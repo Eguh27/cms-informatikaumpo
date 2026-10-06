@@ -60,6 +60,9 @@ export function NavDropdown({ label, href, items, isActive }: NavDropdownProps) 
       className="relative"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false)
+      }}
     >
       <span className="flex items-center">
         {href ? (

@@ -43,6 +43,18 @@ test.describe('Navbar Pendaftaran & Akademik', () => {
     await expect(toggle).toBeFocused()
   })
 
+  test('keyboard: Tab keluar menu menutup panel', async ({ page }) => {
+    const nav = new SiteNav(page)
+    await nav.openSubmenu('Pendaftaran')
+    // 3 links inside (Magang, KKN, Skripsi — Organisasi is a non-link span);
+    // the 4th Tab leaves the menu and must close the panel
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await expect(nav.submenu('Pendaftaran')).toBeHidden()
+  })
+
   test('dropdown Akademik memuat Jadwal Kuliah dan induk tetap tautan', async ({ page }) => {
     const nav = new SiteNav(page)
     await nav.openSubmenu('Akademik')
