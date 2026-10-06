@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Search, Menu, X, ChevronDown } from 'lucide-react'
 import { SearchOverlay } from './SearchOverlay'
+import { NavDropdown } from './NavDropdown'
 import { SITE_LINKS, SITE_MEDIA } from '@/data/siteMedia'
 import { CMSLink } from '@/components/Link'
 import type { Header as HeaderType } from '@/payload-types'
@@ -12,6 +13,7 @@ import type { Header as HeaderType } from '@/payload-types'
 export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerData?: HeaderType }) {
   const [scrollY, setScrollY] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileExpanded, setMobileExpanded] = useState<'akademik' | 'pendaftaran' | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const pathname = usePathname()
@@ -58,7 +60,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden items-center gap-6 lg:flex text-[#203f6b]">
+          <div className="hidden items-center gap-4 lg:flex text-[#203f6b]">
             <Link
               href="/"
               className={`nav-link text-sm font-semibold transition ${
@@ -75,12 +77,23 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
               Profil
             </Link>
 
-            <Link
+            <NavDropdown
+              label="Akademik"
               href="/akademik"
-              className={`nav-link text-sm font-semibold transition ${pathname.startsWith('/akademik') ? 'text-[#1453d6] font-bold' : ''}`}
-            >
-              Akademik
-            </Link>
+              isActive={pathname.startsWith('/akademik')}
+              items={[
+                {
+                  label: 'Kurikulum & CPL',
+                  desc: 'Konsentrasi, peta semester, capaian lulusan',
+                  href: '/akademik',
+                },
+                {
+                  label: 'Jadwal Kuliah',
+                  desc: 'Unduh jadwal per semester dari CMS',
+                  href: '/akademik/jadwal-kuliah',
+                },
+              ]}
+            />
             <Link
               href="/dosen"
               className={`nav-link text-sm font-semibold transition ${pathname.startsWith('/dosen') ? 'text-[#1453d6] font-bold' : ''}`}
@@ -111,6 +124,36 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
             >
               Kontak
             </Link>
+
+            <NavDropdown
+              label="Pendaftaran"
+              isActive={pathname.startsWith('/pendaftaran')}
+              items={[
+                {
+                  label: 'Magang',
+                  desc: 'Formulir & berkas Kerja Praktik industri',
+                  href: '/pendaftaran/magang',
+                },
+                {
+                  label: 'KKN',
+                  desc: 'Portal GIAT UMPO',
+                  href: SITE_LINKS.kkn,
+                  external: true,
+                },
+                {
+                  label: 'Skripsi',
+                  desc: 'Sistem informasi SISKRIP',
+                  href: SITE_LINKS.siskrip,
+                  external: true,
+                },
+                {
+                  label: 'Organisasi',
+                  desc: 'HIMAKA & ormawa prodi',
+                  badge: 'Segera',
+                  disabled: true,
+                },
+              ]}
+            />
 
             {/* Dynamic Dropdown from CMS */}
             {headerData?.navItems && headerData.navItems.length > 0 && (
@@ -210,12 +253,49 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
               >
                 Profil Program Studi
               </Link>
-              <Link
-                href="/akademik"
-                className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
-              >
-                Akademik
-              </Link>
+              <div className="border-b border-[#e4ebfb]">
+                <div className="flex w-full items-center justify-between">
+                  <Link
+                    href="/akademik"
+                    className="flex-1 py-3.5 text-left text-sm font-semibold text-[#16356e]"
+                  >
+                    Akademik
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setMobileExpanded(mobileExpanded === 'akademik' ? null : 'akademik')}
+                    aria-expanded={mobileExpanded === 'akademik'}
+                    aria-label={`${mobileExpanded === 'akademik' ? 'Tutup' : 'Buka'} submenu Akademik`}
+                    aria-controls="submenu-seluler-akademik"
+                    className="grid size-11 place-items-center rounded-full text-[#1453d6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9]"
+                  >
+                    <ChevronDown
+                      className={`size-5 transition-transform ${mobileExpanded === 'akademik' ? 'rotate-180' : ''}`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+                {mobileExpanded === 'akademik' && (
+                  <ul id="submenu-seluler-akademik" aria-label="Submenu Akademik" className="pb-2 pl-4">
+                    <li>
+                      <Link
+                        href="/akademik"
+                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
+                      >
+                        Kurikulum & CPL
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/akademik/jadwal-kuliah"
+                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
+                      >
+                        Jadwal Kuliah
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </div>
               <Link
                 href="/dosen"
                 className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
@@ -240,6 +320,58 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
               >
                 Unduhan
               </Link>
+              <div className="border-b border-[#e4ebfb]">
+                <button
+                  type="button"
+                  onClick={() => setMobileExpanded(mobileExpanded === 'pendaftaran' ? null : 'pendaftaran')}
+                  aria-expanded={mobileExpanded === 'pendaftaran'}
+                  aria-controls="submenu-seluler-pendaftaran"
+                  className="flex min-h-[44px] w-full items-center justify-between py-3.5 text-left text-sm font-semibold text-[#16356e]"
+                >
+                  Pendaftaran
+                  <ChevronDown
+                    className={`size-5 text-[#1453d6] transition-transform ${mobileExpanded === 'pendaftaran' ? 'rotate-180' : ''}`}
+                    aria-hidden="true"
+                  />
+                </button>
+                {mobileExpanded === 'pendaftaran' && (
+                  <ul id="submenu-seluler-pendaftaran" aria-label="Submenu Pendaftaran" className="pb-2 pl-4">
+                    <li>
+                      <Link
+                        href="/pendaftaran/magang"
+                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
+                      >
+                        Magang
+                      </Link>
+                    </li>
+                    <li>
+                      <a
+                        href={SITE_LINKS.kkn}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
+                      >
+                        KKN
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href={SITE_LINKS.siskrip}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
+                      >
+                        Skripsi
+                      </a>
+                    </li>
+                    <li>
+                      <span aria-disabled="true" className="block min-h-[44px] cursor-default py-3 text-sm font-semibold text-slate-400">
+                        Organisasi
+                      </span>
+                    </li>
+                  </ul>
+                )}
+              </div>
               <Link
                 href="/kontak"
                 className={`flex w-full items-center justify-between py-3.5 text-left text-sm font-semibold text-[#16356e] ${headerData?.navItems?.length ? 'border-b border-[#e4ebfb]' : ''}`}

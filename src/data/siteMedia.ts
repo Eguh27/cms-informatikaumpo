@@ -48,4 +48,8 @@ export const SITE_LINKS = {
     'https://drive.google.com/file/d/1MBJ4e8JyA6YZPJl39maTZMhMiZ1B58SN/view?usp=sharing',
   pmb: 'https://spmb.umpo.ac.id/',
   portalUmpo: 'https://umpo.ac.id/',
+  /** Portal KKN GIAT UMPO (menu Pendaftaran → KKN). */
+  kkn: 'https://giat.umpo.ac.id/',
+  /** Sistem Informasi Skripsi (menu Pendaftaran → Skripsi). */
+  siskrip: 'https://siskrip.simakumpo.com/',
 } as const

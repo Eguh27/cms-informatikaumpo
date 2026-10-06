@@ -873,7 +873,7 @@ export interface Partner {
 export interface Download {
   id: number;
   title: string;
-  category: 'Pedoman' | 'Skripsi' | 'Magang' | 'KKN' | 'Publikasi';
+  category: 'Pedoman' | 'Skripsi' | 'Magang' | 'KKN' | 'Jadwal Kuliah' | 'Publikasi';
   file: number | Media;
   updatedAt: string;
   createdAt: string;

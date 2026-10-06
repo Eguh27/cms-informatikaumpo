@@ -9,7 +9,10 @@ import {
   CheckCircle2,
   ExternalLink,
   Sparkles,
+  CalendarDays,
+  ArrowRight,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function AkademikPage() {
   const [semesterGroup, setSemesterGroup] = useState<1 | 2 | 3 | 4>(1);
@@ -253,6 +256,27 @@ export default function AkademikPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* Jadwal Kuliah */}
+        <div className="mb-14">
+          <div className="flex flex-col items-center justify-between gap-4 rounded-3xl border border-[#1E6FD9]/20 bg-white p-6 shadow-[0_12px_32px_rgba(15,42,74,0.06)] sm:flex-row sm:px-8">
+            <div className="flex items-center gap-4">
+              <div className="grid size-12 place-items-center rounded-2xl bg-[#EAF4FF]">
+                <CalendarDays className="size-6 text-[#1E6FD9]" aria-hidden="true" />
+              </div>
+              <div>
+                <div className="font-bold text-[#0B3A8C]">Jadwal Kuliah Semester Berjalan</div>
+                <div className="text-xs text-[#4B6B94]">Unduh jadwal terbaru per semester dari dokumen resmi prodi</div>
+              </div>
+            </div>
+            <Link
+              href="/akademik/jadwal-kuliah"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[#1E6FD9] px-6 py-3 text-xs font-bold text-white shadow-md transition-all hover:bg-[#0B3A8C]"
+            >
+              Lihat Jadwal Kuliah <ArrowRight className="size-3.5" aria-hidden="true" />
+            </Link>
           </div>
         </div>
 

@@ -26,6 +26,7 @@ export const Downloads: CollectionConfig = {
         { label: 'Skripsi', value: 'Skripsi' },
         { label: 'Magang', value: 'Magang' },
         { label: 'KKN', value: 'KKN' },
+        { label: 'Jadwal Kuliah', value: 'Jadwal Kuliah' },
         { label: 'Publikasi', value: 'Publikasi' },
       ],
     },
