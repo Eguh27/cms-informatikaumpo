@@ -1,14 +1,13 @@
-import React from 'react'
-import type { Metadata } from 'next'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
-import { notFound } from 'next/navigation'
 import { PageBanner } from '@/components/PageBanner'
-import { Calendar, Clock, ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
-import { SITE_MEDIA } from '@/data/siteMedia'
-import { ShareButtons } from '@/components/ShareButtons'
 import RichText from '@/components/RichText'
+import { ShareButtons } from '@/components/ShareButtons'
+import { SITE_MEDIA } from '@/data/siteMedia'
+import configPromise from '@payload-config'
+import { ArrowLeft, Calendar, Clock } from 'lucide-react'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { getPayload } from 'payload'
 
 type Args = {
   params: Promise<{
@@ -129,7 +128,7 @@ export default async function BeritaDetailPage({ params }: Args) {
 
           <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:font-display prose-headings:text-[#08235b] prose-a:text-[#1453d6]">
             <p className="lead text-lg font-medium text-slate-700">
-              {newsItem.excerpt}
+              {/* {draft} */}
             </p>
 
             {newsItem.content ? (
