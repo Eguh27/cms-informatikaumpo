@@ -164,7 +164,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         key: `news-${n.id}`,
         group: 'news',
         label: n.title,
-        hint: n.category || 'Berita',
+        hint: (typeof n.category === 'object' && n.category !== null ? n.category.title : String(n.category || '')) || 'Berita',
         href: `/berita/${n.slug}`,
       })
     }

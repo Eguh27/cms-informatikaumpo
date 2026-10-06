@@ -15,7 +15,7 @@ export interface BreadcrumbItem {
 
 export interface PageBannerProps {
   title: string
-  subtitle: string
+  subtitle?: string | null
   category: string
   breadcrumbs: BreadcrumbItem[]
   className?: string

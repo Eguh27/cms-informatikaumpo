@@ -3,7 +3,10 @@ import { getPayload } from 'payload';
 import configPromise from '@payload-config';
 import { LECTURERS, NEWS, CURRICULUM_TRACKS, PARTNERS } from '@/data/mock';
 
-export async function GET(req: Request) {
+export async function GET(req: Request) { return await runSeed(req); }
+export async function POST(req: Request) { return await runSeed(req); }
+
+async function runSeed(req: Request) {
   try {
     const payload = await getPayload({ config: configPromise });
 
