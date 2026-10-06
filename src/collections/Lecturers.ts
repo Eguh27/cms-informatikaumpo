@@ -51,7 +51,7 @@ export const Lecturers: CollectionConfig = {
     {
       name: 'whatsapp',
       type: 'text',
-      label: 'Nomor WhatsApp (contoh: 6281234567890)',
+      label: 'Nomor WhatsApp (contoh: 62xxxxxxxxxxx)',
     },
     {
       name: 'focus',
