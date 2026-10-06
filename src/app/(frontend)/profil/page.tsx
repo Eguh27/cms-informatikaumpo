@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { PageBanner } from "@/components/PageBanner";
 import {
@@ -16,46 +16,101 @@ import {
   Sparkles,
 } from "lucide-react";
 
+type ProfilTab = "sejarah" | "visimisi" | "struktur" | "akreditasi";
+
+const TABS: ProfilTab[] = ["sejarah", "visimisi", "struktur", "akreditasi"];
+
+function tabFromHash(): ProfilTab | null {
+  if (typeof window === "undefined") return null;
+  const h = window.location.hash.replace("#", "");
+  return (TABS as string[]).includes(h) ? (h as ProfilTab) : null;
+}
+
 export default function ProfilPage() {
-  const [activeTab, setActiveTab] = useState<
-    "sejarah" | "visimisi" | "struktur" | "akreditasi"
-  >("sejarah");
+  const [activeTab, setActiveTab] = useState<ProfilTab>("sejarah");
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  // Deep-link support: /profil#visimisi (used by navbar dropdown) opens the right tab
+  useEffect(() => {
+    const apply = () => {
+      const t = tabFromHash();
+      if (t) {
+        setActiveTab(t);
+        document.getElementById(`tabpanel-${t}`)?.scrollIntoView({ block: "nearest" });
+      }
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, []);
+
+  const selectTab = (tab: ProfilTab) => {
+    setActiveTab(tab);
+    if (window.location.hash !== `#${tab}`) {
+      window.history.replaceState(null, "", `#${tab}`);
+    }
+  };
+
+  const onTabKeyDown = (e: React.KeyboardEvent, index: number) => {
+    let next: number | null = null;
+    if (e.key === "ArrowRight") next = (index + 1) % TABS.length;
+    else if (e.key === "ArrowLeft") next = (index - 1 + TABS.length) % TABS.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = TABS.length - 1;
+    if (next !== null) {
+      e.preventDefault();
+      selectTab(TABS[next]);
+      tabRefs.current[next]?.focus();
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
-        category="Identitas & Legalitas"
+        // category="Identitas & Legalitas"
         title="Profil Program Studi"
         subtitle="Mengenal lebih dekat Program Studi S1 Teknik Informatika Universitas Muhammadiyah Ponorogo, sejarah pendirian, visi misi keunggulan, struktur organisasi, dan akreditasi resmi."
         breadcrumbs={[
           { label: "Beranda", href: "/" },
           { label: "Profil Prodi" },
-        ]}
-      />
+        ]} category={""}      />
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8 mt-4">
         {/* Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-white p-2 shadow-sm border border-slate-200/80 mb-10">
+        <div
+          role="tablist"
+          aria-label="Bagian profil program studi"
+          className="flex flex-wrap items-center gap-2 rounded-2xl bg-white p-2 shadow-sm border border-slate-200/80 mb-10"
+        >
           {[
             { id: "sejarah", label: "Sejarah Pendirian", icon: BookOpen },
             { id: "visimisi", label: "Visi, Misi & Tujuan", icon: Award },
             { id: "struktur", label: "Struktur Organisasi", icon: Layers },
             { id: "akreditasi", label: "Akreditasi BAN-PT", icon: ShieldCheck },
-          ].map((tab) => {
+          ].map((tab, index) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
+                ref={(el) => {
+                  tabRefs.current[index] = el;
+                }}
+                role="tab"
+                id={`tab-${tab.id}`}
+                aria-selected={isActive}
+                aria-controls={`tabpanel-${tab.id}`}
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => selectTab(tab.id as ProfilTab)}
+                onKeyDown={(e) => onTabKeyDown(e, index)}
+                className={`inline-flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9] ${
                   isActive
                     ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
-                <Icon className="size-4" />
+                <Icon className="size-4" aria-hidden="true" />
                 <span>{tab.label}</span>
               </button>
             );
@@ -64,7 +119,13 @@ export default function ProfilPage() {
 
         {/* Tab 1: Sejarah */}
         {activeTab === "sejarah" && (
-          <div className="space-y-10 animate-in fade-in duration-300">
+          <div
+            role="tabpanel"
+            id="tabpanel-sejarah"
+            aria-labelledby="tab-sejarah"
+            tabIndex={0}
+            className="space-y-10 animate-in fade-in duration-300 focus:outline-none"
+          >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-8 rounded-3xl border border-slate-200/80 bg-white p-7 md:p-10 shadow-sm">
                 <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold text-[#1453d6] border border-blue-100">
@@ -97,7 +158,7 @@ export default function ProfilPage() {
 
                 <div className="mt-8 flex flex-wrap gap-4 pt-6 border-t border-slate-100">
                   <button
-                    onClick={() => setActiveTab("visimisi")}
+                    onClick={() => selectTab("visimisi")}
                     className="inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#08235b] transition"
                   >
                     Lanjut ke Visi Misi <ArrowRight className="size-3.5" />
@@ -118,17 +179,17 @@ export default function ProfilPage() {
                   <h3 className="mt-2 font-display text-lg font-bold text-[#08235b]">SK & Akreditasi Resmi</h3>
                   <div className="mt-4 space-y-3 text-xs">
                     <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
-                      <div className="text-slate-400 font-medium">SK Pendirian DIKTI</div>
+                      <div className="text-slate-500 font-medium">SK Pendirian DIKTI</div>
                       <div className="font-bold text-slate-800 mt-0.5">378/D/T/2005</div>
                       <div className="text-[10px] text-slate-500 mt-1">Tanggal 12 September 2005</div>
                     </div>
                     <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
-                      <div className="text-slate-400 font-medium">Akreditasi BAN-PT</div>
+                      <div className="text-slate-500 font-medium">Akreditasi BAN-PT</div>
                       <div className="font-bold text-[#1453d6] mt-0.5">Peringkat B</div>
                       <div className="text-[10px] text-slate-500 mt-1">SK No. 3418/SK/BAN-PT/Akred/S/IX/2019</div>
                     </div>
                     <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
-                      <div className="text-slate-400 font-medium">Gelar Lulusan</div>
+                      <div className="text-slate-500 font-medium">Gelar Lulusan</div>
                       <div className="font-bold text-slate-800 mt-0.5">Sarjana Komputer (S.Kom.)</div>
                       <div className="text-[10px] text-slate-500 mt-1">Beban Studi 144 SKS (8 Semester)</div>
                     </div>
@@ -146,7 +207,13 @@ export default function ProfilPage() {
 
         {/* Tab 2: Visi Misi */}
         {activeTab === "visimisi" && (
-          <div className="space-y-10 animate-in fade-in duration-300">
+          <div
+            role="tabpanel"
+            id="tabpanel-visimisi"
+            aria-labelledby="tab-visimisi"
+            tabIndex={0}
+            className="space-y-10 animate-in fade-in duration-300 focus:outline-none"
+          >
             {/* Visi */}
             <div className="rounded-3xl border border-blue-200 bg-gradient-to-br from-[#06183d] to-[#0c317c] p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
               <div className="absolute -right-16 -top-16 size-64 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" />
@@ -247,7 +314,13 @@ export default function ProfilPage() {
 
         {/* Tab 3: Struktur Organisasi */}
         {activeTab === "struktur" && (
-          <div className="space-y-8 animate-in fade-in duration-300">
+          <div
+            role="tabpanel"
+            id="tabpanel-struktur"
+            aria-labelledby="tab-struktur"
+            tabIndex={0}
+            className="space-y-8 animate-in fade-in duration-300 focus:outline-none"
+          >
             <div className="rounded-3xl border border-slate-200/80 bg-white p-7 md:p-10 shadow-sm">
               <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Pimpinan & Pengelola Prodi</div>
               <h2 className="mt-2 font-display text-2xl md:text-3xl font-bold text-[#08235b]">
@@ -277,7 +350,7 @@ export default function ProfilPage() {
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
                       Ismail Abdurrazzaq Zulkarnain, S.Kom., M.Kom.
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 mt-1">NIDN: 0728078805</div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0728078805</div>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
@@ -285,7 +358,7 @@ export default function ProfilPage() {
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
                       Tim Penjaminan Mutu Akademik Prodi
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1">Audit & Pengendalian Standar SPMI</div>
+                    <div className="text-[11px] text-slate-500 mt-1">Audit & Pengendalian Standar SPMI</div>
                   </div>
                 </div>
 
@@ -296,7 +369,7 @@ export default function ProfilPage() {
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
                       Angga Prasetyo, S.T., M.Kom.
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 mt-1">NIDN: 0719088202</div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0719088202</div>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 text-center">
@@ -304,7 +377,7 @@ export default function ProfilPage() {
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
                       Ir. Moh. Bhanu Setyawan, S.T., M.Kom.
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 mt-1">NIDN: 0725028002</div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0725028002</div>
                   </div>
                 </div>
 
@@ -328,7 +401,13 @@ export default function ProfilPage() {
 
         {/* Tab 4: Akreditasi */}
         {activeTab === "akreditasi" && (
-          <div className="space-y-8 animate-in fade-in duration-300">
+          <div
+            role="tabpanel"
+            id="tabpanel-akreditasi"
+            aria-labelledby="tab-akreditasi"
+            tabIndex={0}
+            className="space-y-8 animate-in fade-in duration-300 focus:outline-none"
+          >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-8 rounded-3xl border border-slate-200/80 bg-white p-7 md:p-10 shadow-sm">
                 <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">

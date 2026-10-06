@@ -44,6 +44,11 @@ export const Lecturers: CollectionConfig = {
       ],
     },
     {
+      name: 'email',
+      type: 'email',
+      label: 'Email Institusional',
+    },
+    {
       name: 'focus',
       type: 'text',
       label: 'Bidang Keahlian / Riset',

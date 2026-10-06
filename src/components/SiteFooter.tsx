@@ -1,8 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import { MapPin, Phone, Mail, ChevronRight } from 'lucide-react'
+import { SITE_LINKS, SITE_MEDIA } from '@/data/siteMedia'
 
-export function SiteFooter() {
+export function SiteFooter({ logoSrc }: { logoSrc?: string }) {
   return (
     <footer className="bg-[#06183d] text-white pt-20 pb-10 mt-auto">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -13,7 +14,7 @@ export function SiteFooter() {
             <div className="flex items-center gap-3 mb-6">
               <span className="grid size-12 place-items-center rounded-2xl bg-white p-2">
                 <img
-                  src="https://ti.umpo.ac.id/wp-content/uploads/2026/09/LOGO-UNMUH-150x150.png"
+                  src={logoSrc || SITE_MEDIA.logoUmpo}
                   alt="Logo UMPO"
                   className="size-8 object-contain"
                 />
@@ -36,7 +37,10 @@ export function SiteFooter() {
               <li><Link href="/profil" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Profil Program Studi</Link></li>
               <li><Link href="/akademik" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Akademik & Kurikulum</Link></li>
               <li><Link href="/dosen" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Dosen & Tendik</Link></li>
+              <li><Link href="/fasilitas" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Fasilitas Laboratorium</Link></li>
               <li><Link href="/berita" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Berita & Pengumuman</Link></li>
+              <li><Link href="/download" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Pusat Unduhan</Link></li>
+              <li><Link href="/kontak" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Kontak & Lokasi</Link></li>
             </ul>
           </div>
 
@@ -63,8 +67,8 @@ export function SiteFooter() {
         <div className="mt-8 flex flex-col md:flex-row items-center justify-between text-xs text-blue-100/50 gap-4">
           <p>© {new Date().getFullYear()} Teknik Informatika Universitas Muhammadiyah Ponorogo.</p>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-white transition">Kebijakan Privasi</a>
-            <a href="#" className="hover:text-white transition">Syarat & Ketentuan</a>
+            <a href={SITE_LINKS.portalUmpo} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Portal UMPO</a>
+            <a href={SITE_LINKS.pmb} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">PMB Online</a>
           </div>
         </div>
       </div>

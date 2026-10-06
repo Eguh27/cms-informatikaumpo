@@ -10,6 +10,7 @@ import { SiteFooter } from '@/components/SiteFooter'
 import { SiteHeader } from '@/components/SiteHeader'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
+import { getSiteMedia } from '@/utilities/getSiteMedia'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
@@ -18,6 +19,7 @@ import { getServerSideURL } from '@/utilities/getURL'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+  const siteMedia = await getSiteMedia()
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -25,6 +27,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
         <Providers>
@@ -34,9 +38,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
 
-          <SiteHeader />
+          <a
+            href="#konten-utama"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#0B3A8C] focus:px-5 focus:py-2.5 focus:text-sm focus:font-bold focus:text-white"
+          >
+            Lewati ke konten utama
+          </a>
+          <SiteHeader logoSrc={siteMedia.logo} />
           {children}
-          <SiteFooter />
+          <SiteFooter logoSrc={siteMedia.logo} />
         </Providers>
       </body>
     </html>

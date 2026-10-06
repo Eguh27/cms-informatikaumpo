@@ -1,29 +1,32 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
 import { PageBanner } from "@/components/PageBanner";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { LecturerAvatar } from "@/components/LecturerAvatar";
+import { resolveMediaUrl } from "@/data/siteMedia";
+import type { Lecturer } from "@/payload-types";
 import {
-  Search,
-  X,
   Award,
+  BadgeCheck,
   Cpu,
   GraduationCap,
-  BadgeCheck,
-  Eye,
-  ArrowRight,
-  Sparkles,
+  Mail,
+  Search,
+  // Sparkles,
   Users,
+  X,
 } from "lucide-react";
-import type { Lecturer } from "@/payload-types";
+import { useMemo, useState } from "react";
 
 type DosenClientProps = {
   initialLecturers: Lecturer[];
+  /** Prefills the filter when arriving from the navbar search panel (?q=). */
+  initialQuery?: string;
 };
 
-export function DosenClient({ initialLecturers }: DosenClientProps) {
+export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClientProps) {
   const [category, setCategory] = useState<"semua" | "pimpinan" | "lab" | "dosen">("semua");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialQuery);
 
   const counts = useMemo(() => {
     return {
@@ -43,16 +46,20 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
         (l.nidn && l.nidn.includes(search)) ||
         (l.focus && l.focus.toLowerCase().includes(search.toLowerCase()));
       return matchCat && matchSearch;
+    }).sort((a, b) => {
+      const rank = (c: string) => (c === "pimpinan" ? 0 : c === "lab" ? 1 : 2);
+      const r = rank(a.category) - rank(b.category);
+      return r !== 0 ? r : a.name.localeCompare(b.name, "id");
     });
   }, [category, search, initialLecturers]);
 
   const getWhatsAppUrl = (name: string) => {
-    const text = encodeURIComponent(`Halo, Bapak/Ibu ${name}, saya mahasiswa Informatika UMPO.`);
+    const text = encodeURIComponent(``);
     return `https://wa.me/6282267868648?text=${text}`;
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       <PageBanner
         category="Tenaga Pendidik & Peneliti"
         title="Dosen & Peneliti Profesional"
@@ -77,7 +84,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
               <button
                 key={tab.key}
                 onClick={() => setCategory(tab.key as any)}
-                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                className={`inline-flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
                   category === tab.key
                     ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -97,18 +104,19 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
 
           {/* Search Field */}
           <div className="relative w-full lg:w-80">
-            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari nama dosen, NIDN, kepakaran..."
+              aria-label="Cari nama dosen, NIDN, atau bidang kepakaran"
               className="w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2.5 pl-10 pr-9 text-xs font-medium text-slate-800 transition focus:border-[#1453d6] focus:bg-white focus:outline-none"
             />
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
               >
                 <X className="size-4" />
               </button>
@@ -135,124 +143,126 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
           </div>
         )}
 
-        {/* Grid Modern Glassmorphic Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">
+        {/* Grid Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {filtered.map((lecturer) => {
-            const imageUrl = typeof lecturer.image === 'object' && lecturer.image?.url ? lecturer.image.url : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
+            const imageUrl = resolveMediaUrl(lecturer.image, '')
+            const hasPhoto = imageUrl.length > 0
 
             return (
               <article
                 key={lecturer.name}
-                className="glass-card group relative flex flex-col overflow-hidden rounded-[2rem] border border-white/80 bg-white/85 shadow-[0_10px_30px_-5px_rgba(9,45,116,0.06)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-2.5 hover:border-[#1453d6]/40 hover:bg-white/95 hover:shadow-[0_24px_50px_-10px_rgba(20,83,214,0.2)] cursor-pointer"
+                className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#1453d6]/30 hover:shadow-[0_12px_32px_-6px_rgba(20,83,214,0.15)]"
               >
-                {/* Portrait Frame with Frosted Light & Reflection */}
-                <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-blue-50/70 via-slate-100/50 to-white/90">
-                  <div className="absolute inset-0 lecturer-avatar-backdrop opacity-70" />
-                  <div className="absolute inset-0 lecturer-dot-pattern opacity-40" />
+                {/* Top: Photo (full-bleed, dominant area) + Category Badge */}
+                <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#e8f1fc]">
+                  {hasPhoto ? (
+                    <img
+                      src={imageUrl}
+                      alt={lecturer.name}
+                      className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <LecturerAvatar
+                      name={lecturer.name}
+                      className="size-full text-5xl"
+                    />
+                  )}
 
-                  {/* Floating Category Badge with Glass Effect */}
-                  <div className="absolute left-3.5 top-3.5 z-10">
+                  {/* Category badge top-left */}
+                  <div className="absolute left-3 top-3">
                     {lecturer.category === "pimpinan" && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/90 px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-amber-500/20 backdrop-blur-md border border-amber-300/40">
-                        <Award className="size-3.5" /> Pimpinan
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[#B45309] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
+                        <Award className="size-3" /> Pimpinan
                       </span>
                     )}
                     {lecturer.category === "lab" && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-600/90 px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-teal-600/20 backdrop-blur-md border border-teal-300/40">
-                        <Cpu className="size-3.5" /> Ka. Lab
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[#0F766E] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
+                        <Cpu className="size-3" /> Ka. Lab
                       </span>
                     )}
                     {lecturer.category === "dosen" && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1453d6]/90 px-3 py-1 text-[11px] font-bold text-white shadow-md shadow-blue-600/20 backdrop-blur-md border border-blue-300/40">
-                        <GraduationCap className="size-3.5" /> Dosen
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[#1453d6] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
+                        <GraduationCap className="size-3" /> Dosen
                       </span>
                     )}
                   </div>
 
-                  {/* Verified Badge */}
-                  <div className="absolute right-3.5 top-3.5 z-10">
+                  {/* Verified badge top-right */}
+                  <div className="absolute right-3 top-3">
                     <span
-                      className="grid size-7 place-items-center rounded-full bg-white/90 text-emerald-600 shadow-sm backdrop-blur-md transition-transform duration-300 group-hover:scale-110 border border-white"
+                      className="grid size-7 place-items-center rounded-full bg-white/90 text-emerald-600 shadow-sm border border-white"
                       title="Dosen Tetap Terverifikasi PDDIKTI"
                     >
                       <BadgeCheck className="size-4" />
                     </span>
                   </div>
 
-                  {/* Photo */}
-                  <img
-                    src={imageUrl}
-                    alt={lecturer.name}
-                    className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
-                    onError={(e) => {
-                      (e.target as HTMLElement).setAttribute(
-                        "src",
-                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-                      );
-                    }}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white/90 via-white/50 to-transparent" />
-
-                  {/* Hover Interactive Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-slate-950/20 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-[#08235b] shadow-xl transition-transform duration-300 hover:scale-105 border border-white">
-                      <Eye className="size-3.5 text-[#1453d6]" /> Lihat Profil Lengkap
-                    </span>
-                  </div>
+                  {/* Fade at bottom */}
+                  <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent" />
                 </div>
 
-                {/* Card Content Area with Glass Highlights */}
-                <div className="flex flex-1 flex-col justify-between p-5 pt-3">
+                {/* Body: info list */}
+                <div className="flex flex-1 flex-col p-4 gap-3">
+                  {/* Name + Role */}
                   <div>
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#1453d6]">
-                      {lecturer.role}
-                    </div>
                     <h3
-                      className="mt-1 font-display text-[15px] font-bold leading-snug text-[#08235b] transition-colors group-hover:text-[#1453d6] line-clamp-2"
+                      className="font-display text-[15px] font-bold leading-snug text-[#08235b] line-clamp-2"
                       title={lecturer.name}
                     >
                       {lecturer.name}
                     </h3>
-
-                    <div className="mt-2.5 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/90 px-2.5 py-1 font-mono text-[11px] font-semibold text-slate-700 shadow-xs backdrop-blur-sm">
-                        <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                          NIDN
-                        </span>
-                        {lecturer.nidn || "-"}
-                      </span>
-                      <span className="text-[11px] font-medium text-slate-400">S1 TI UMPO</span>
-                    </div>
-
-                    {lecturer.focus && (
-                      <div className="mt-3 rounded-xl border border-blue-100/80 bg-gradient-to-br from-blue-50/70 via-indigo-50/30 to-white/50 p-3 backdrop-blur-sm transition-all duration-300 group-hover:border-blue-200 group-hover:bg-blue-50/80">
-                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 transition-colors group-hover:text-blue-600">
-                          <Sparkles className="size-3 text-amber-500 animate-pulse" /> Bidang Riset & Fokus
-                        </div>
-                        <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-slate-600" title={lecturer.focus}>
-                          {lecturer.focus}
-                        </p>
-                      </div>
-                    )}
+                    <p className="mt-0.5 text-[11px] font-semibold text-[#1453d6] uppercase tracking-wide">
+                      {lecturer.role}
+                    </p>
                   </div>
 
-                  {/* Footer: Detail CTA + WhatsApp CTA */}
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-100/80 pt-3">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1453d6] transition-colors group-hover:text-[#08235b]">
-                      Detail Lengkap{" "}
-                      <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5" />
-                    </span>
+                  {/* Info rows */}
+                  <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-[11px]">
+                    <div>
+                      <dt className="font-bold uppercase tracking-wider text-slate-400">NIDN</dt>
+                      <dd className="mt-0.5 font-mono font-semibold text-slate-700">{lecturer.nidn || "—"}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-bold uppercase tracking-wider text-slate-400">NIK</dt>
+                      <dd className="mt-0.5 font-mono font-semibold text-slate-700">{lecturer.nik || "—"}</dd>
+                    </div>
+                  </dl>
+
+                  {/* Bidang Riset */}
+                  {lecturer.focus && (
+                    <div className="rounded-lg border border-blue-100 bg-blue-50/60 px-3 py-2">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#1E6FD9] mb-1">Bidang Riset &amp; Fokus</p>
+                      <p className="line-clamp-2 text-[11px] font-medium leading-relaxed text-slate-600" title={lecturer.focus}>
+                        {lecturer.focus}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Action buttons — always at bottom */}
+                  <div className="mt-auto pt-2 border-t border-slate-100 flex items-center gap-2">
                     <a
                       href={getWhatsAppUrl(lecturer.name)}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       title={`Chat WhatsApp dengan ${lecturer.name}`}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-3.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-emerald-500/20 transition-all hover:bg-[#1ebd59] hover:shadow-md hover:shadow-emerald-500/30 hover:scale-105 active:scale-95"
+                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#15803D] py-2 text-[11px] font-bold text-white shadow-sm transition hover:bg-[#166534] hover:scale-105 active:scale-95"
                     >
                       <WhatsAppIcon className="size-3.5" />
-                      <span>WhatsApp</span>
+                      WhatsApp
                     </a>
+                    {lecturer.email && (
+                      <a
+                        href={`mailto:${lecturer.email}`}
+                        onClick={(e) => e.stopPropagation()}
+                        title={`Email ${lecturer.name}`}
+                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-[11px] font-bold text-slate-600 transition hover:border-[#1453d6] hover:text-[#1453d6] hover:scale-105 active:scale-95"
+                      >
+                        <Mail className="size-3.5" />
+                        Email
+                      </a>
+                    )}
                   </div>
                 </div>
               </article>
@@ -261,7 +271,7 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
 
           {filtered.length === 0 && (
             <div className="col-span-full rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs">
-              <Users className="mx-auto size-12 text-slate-300" />
+              <Users className="mx-auto size-12 text-slate-300" aria-hidden="true" />
               <h4 className="mt-4 font-display text-lg font-bold text-slate-700">Dosen tidak ditemukan</h4>
               <p className="mt-1 text-sm text-slate-500">
                 Tidak ada data dosen yang sesuai dengan kata kunci &ldquo;{search}&rdquo;.
@@ -279,6 +289,8 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
           )}
         </div>
       </div>
+
+
     </div>
   );
 }

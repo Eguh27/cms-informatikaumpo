@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { PageBanner } from "@/components/PageBanner";
+import { SITE_LINKS } from "@/data/siteMedia";
 import {
   Laptop,
   Cpu,
@@ -71,7 +72,7 @@ export default function AkademikPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
         category="Kurikulum & Standar Kompetensi"
@@ -193,7 +194,7 @@ export default function AkademikPage() {
               </h2>
             </div>
             <a
-              href="https://drive.google.com/file/d/1MBJ4e8JyA6YZPJl39maTZMhMiZ1B58SN/view?usp=sharing"
+              href={SITE_LINKS.curriculumDrive}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#08235b] transition"
@@ -240,7 +241,7 @@ export default function AkademikPage() {
                   className="flex items-center justify-between p-4 hover:bg-blue-50/30 transition text-xs md:text-sm"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs font-bold text-slate-400 w-16">{c.code}</span>
+                    <span className="font-mono text-xs font-bold text-slate-500 w-16">{c.code}</span>
                     <span className="font-semibold text-slate-800">{c.name}</span>
                   </div>
                   <div className="flex items-center gap-3">

@@ -48,7 +48,7 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-28">
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
         category="Layanan Mahasiswa & Dosen"
@@ -68,7 +68,7 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
               <button
                 key={cat}
                 onClick={() => setSelectedCat(cat)}
-                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 min-h-[44px] ${
                   selectedCat === cat
                     ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -80,12 +80,13 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
           </div>
 
           <div className="relative w-full md:w-72">
-            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari nama formulir atau template..."
+              aria-label="Cari nama formulir atau template dokumen"
               className="w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2 pl-9 pr-4 text-xs font-medium text-slate-800 transition focus:border-[#1453d6] focus:bg-white focus:outline-none"
             />
           </div>
@@ -95,7 +96,7 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-14">
           {filtered.map((doc, idx) => {
             const media = typeof doc.file === 'object' ? doc.file : null;
-            const fileUrl = media?.url || '#';
+            const fileUrl = media?.url || null;
             const fileExt = getFileExtension(media?.mimeType, media?.filename);
             const fileSize = media?.filesize ? formatBytes(media.filesize) : 'Unknown size';
 
@@ -110,7 +111,7 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
                   </div>
                   <div className="min-w-0">
                     <h4 className="text-sm font-bold text-[#08235b] line-clamp-1">{doc.title}</h4>
-                    <div className="mt-1 flex items-center gap-2 text-xs text-slate-400">
+                    <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
                       <span className="rounded-md bg-slate-100 px-2 py-0.5 font-bold uppercase text-[#1453d6]">
                         {fileExt}
                       </span>
@@ -122,14 +123,24 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
                   </div>
                 </div>
 
-                <a
-                  href={fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#1453d6] px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#08235b] transition"
-                >
-                  Unduh <DownloadIcon className="size-3.5" />
-                </a>
+                {fileUrl ? (
+                  <a
+                    href={fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#1453d6] px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#08235b] transition"
+                  >
+                    Unduh <DownloadIcon className="size-3.5" aria-hidden="true" />
+                  </a>
+                ) : (
+                  <span
+                    aria-disabled="true"
+                    title="Berkas belum tersedia"
+                    className="inline-flex shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-slate-200 px-4 py-2.5 text-xs font-bold text-slate-500"
+                  >
+                    Segera <DownloadIcon className="size-3.5" aria-hidden="true" />
+                  </span>
+                )}
               </div>
             );
           })}

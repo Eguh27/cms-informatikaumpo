@@ -20,7 +20,10 @@ const collections: CollectionSlug[] = [
   'search',
 ]
 
-const globals: GlobalSlug[] = ['header', 'footer']
+const globals: ('header' | 'footer')[] = ['header', 'footer']
+
+/** Globals whose data shape has no `navItems` field (reset with empty data). */
+const globalsWithoutNavItems: ('site-media')[] = ['site-media']
 
 const categories = ['Technology', 'News', 'Finance', 'Design', 'Software', 'Engineering']
 
@@ -51,6 +54,18 @@ export const seed = async ({
         data: {
           navItems: [],
         },
+        depth: 0,
+        context: {
+          disableRevalidate: true,
+        },
+      }),
+    ),
+  )
+  await Promise.all(
+    globalsWithoutNavItems.map((slug) =>
+      payload.updateGlobal({
+        slug,
+        data: {},
         depth: 0,
         context: {
           disableRevalidate: true,
