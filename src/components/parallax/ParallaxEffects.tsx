@@ -46,8 +46,10 @@ export function ParallaxEffects() {
     gsap.ticker.lagSmoothing(0)
 
     const ctx = gsap.context(() => {
-      // 1. Split-text kinetic typography
+      // 1. Split-text kinetic typography (skip hero: it has its own intro timeline;
+      // double-targeting hero text causes hidden-text flashes)
       gsap.utils.toArray<HTMLElement>('[data-split-reveal]').forEach((el) => {
+        if (el.closest('[data-px-hero-card]')) return
         splitWords(el)
         const words = el.querySelectorAll('.px-split-word')
         if (!words.length) return

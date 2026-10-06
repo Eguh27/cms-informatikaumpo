@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { PageBanner } from "@/components/PageBanner";
+import { SITE_LINKS } from "@/data/siteMedia";
 import {
   Laptop,
   Cpu,
@@ -193,7 +194,7 @@ export default function AkademikPage() {
               </h2>
             </div>
             <a
-              href="https://drive.google.com/file/d/1MBJ4e8JyA6YZPJl39maTZMhMiZ1B58SN/view?usp=sharing"
+              href={SITE_LINKS.curriculumDrive}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#08235b] transition"

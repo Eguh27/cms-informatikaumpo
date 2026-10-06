@@ -122,10 +122,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'site-media': SiteMedia;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'site-media': SiteMediaSelect<false> | SiteMediaSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1877,6 +1879,19 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-media".
+ */
+export interface SiteMedia {
+  id: number;
+  logo?: (number | null) | Media;
+  heroBuilding?: (number | null) | Media;
+  heroCloud?: (number | null) | Media;
+  himatifBanner?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1917,6 +1932,19 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-media_select".
+ */
+export interface SiteMediaSelect<T extends boolean = true> {
+  logo?: T;
+  heroBuilding?: T;
+  heroCloud?: T;
+  himatifBanner?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

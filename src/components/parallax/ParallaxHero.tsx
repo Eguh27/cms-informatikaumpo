@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowRight, ChevronRight } from 'lucide-react'
+import { SITE_MEDIA } from '@/data/siteMedia'
 
 const STATS: Array<[string, string]> = [
   ['B', 'Akreditasi BAN-PT'],
@@ -10,7 +11,14 @@ const STATS: Array<[string, string]> = [
   ['1.800+', 'Alumni'],
 ]
 
-export function ParallaxHero() {
+export interface ParallaxHeroImages {
+  building: string
+  cloud: string
+}
+
+export function ParallaxHero({ images }: { images?: ParallaxHeroImages }) {
+  const buildingSrc = images?.building || SITE_MEDIA.heroBuilding
+  const cloudSrc = images?.cloud || SITE_MEDIA.heroCloud
   const scrollToProfil = () => {
     document.getElementById('profil')?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -33,7 +41,7 @@ export function ParallaxHero() {
         data-px-cloud-a
         data-parallax-layer
         data-speed="-0.22"
-        src="/assets/hero/awan.webp"
+        src={cloudSrc}
         alt=""
         aria-hidden="true"
         fetchPriority="high"
@@ -44,7 +52,7 @@ export function ParallaxHero() {
         data-px-cloud-b
         data-parallax-layer
         data-speed="-0.16"
-        src="/assets/hero/awan.webp"
+        src={cloudSrc}
         alt=""
         aria-hidden="true"
         loading="lazy"
@@ -54,7 +62,7 @@ export function ParallaxHero() {
       <div className="px-building" data-px-building data-parallax-layer data-speed="-0.08" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/assets/hero/gedung-cerah.webp"
+          src={buildingSrc}
           alt=""
           width={1678}
           height={937}
@@ -78,7 +86,7 @@ export function ParallaxHero() {
             <span className="px-eyebrow-dot" aria-hidden="true" />
             Penerimaan Mahasiswa Baru
           </p>
-          <h1 id="hero-title" data-split-reveal>
+          <h1 id="hero-title">
             Code the future. Shape the world.
           </h1>
           <p className="px-lead" data-px-hero-meta>
@@ -101,7 +109,6 @@ export function ParallaxHero() {
 
         {/* Stats */}
         <div className="px-stats" data-px-stats>
-          <span className="px-stats-kicker">Tumbuh bersama kami</span>
           <dl className="px-stat-group">
             {STATS.map(([value, label], i) => (
               <div key={label} className={`px-stat${i === 0 ? ' px-stat-featured' : ''}`}>

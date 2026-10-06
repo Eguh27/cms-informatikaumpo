@@ -1,8 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import { MapPin, Phone, Mail, ChevronRight } from 'lucide-react'
+import { SITE_LINKS, SITE_MEDIA } from '@/data/siteMedia'
 
-export function SiteFooter() {
+export function SiteFooter({ logoSrc }: { logoSrc?: string }) {
   return (
     <footer className="bg-[#06183d] text-white pt-20 pb-10 mt-auto">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -13,7 +14,7 @@ export function SiteFooter() {
             <div className="flex items-center gap-3 mb-6">
               <span className="grid size-12 place-items-center rounded-2xl bg-white p-2">
                 <img
-                  src="https://ti.umpo.ac.id/wp-content/uploads/2026/09/LOGO-UNMUH-150x150.png"
+                  src={logoSrc || SITE_MEDIA.logoUmpo}
                   alt="Logo UMPO"
                   className="size-8 object-contain"
                 />
@@ -66,8 +67,8 @@ export function SiteFooter() {
         <div className="mt-8 flex flex-col md:flex-row items-center justify-between text-xs text-blue-100/50 gap-4">
           <p>© {new Date().getFullYear()} Teknik Informatika Universitas Muhammadiyah Ponorogo.</p>
           <div className="flex items-center gap-4">
-            <a href="https://umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Portal UMPO</a>
-            <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">PMB Online</a>
+            <a href={SITE_LINKS.portalUmpo} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Portal UMPO</a>
+            <a href={SITE_LINKS.pmb} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">PMB Online</a>
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { SiteFooter } from '@/components/SiteFooter'
 import { SiteHeader } from '@/components/SiteHeader'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
+import { getSiteMedia } from '@/utilities/getSiteMedia'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
@@ -18,6 +19,7 @@ import { getServerSideURL } from '@/utilities/getURL'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+  const siteMedia = await getSiteMedia()
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -42,9 +44,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           >
             Lewati ke konten utama
           </a>
-          <SiteHeader />
+          <SiteHeader logoSrc={siteMedia.logo} />
           {children}
-          <SiteFooter />
+          <SiteFooter logoSrc={siteMedia.logo} />
         </Providers>
       </body>
     </html>

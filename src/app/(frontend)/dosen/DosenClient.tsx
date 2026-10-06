@@ -1,31 +1,35 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect } from "react";
 import { PageBanner } from "@/components/PageBanner";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { LecturerAvatar } from "@/components/LecturerAvatar";
+import { resolveMediaUrl } from "@/data/siteMedia";
+import type { Lecturer } from "@/payload-types";
 import {
-  Search,
-  X,
-  Award,
-  Cpu,
-  GraduationCap,
-  BadgeCheck,
-  Eye,
   ArrowRight,
+  Award,
+  BadgeCheck,
+  Cpu,
+  Eye,
+  Fingerprint,
+  GraduationCap,
+  Phone,
+  Search,
   Sparkles,
   Users,
-  Phone,
-  Fingerprint,
+  X,
 } from "lucide-react";
-import type { Lecturer } from "@/payload-types";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type DosenClientProps = {
   initialLecturers: Lecturer[];
+  /** Prefills the filter when arriving from the navbar search panel (?q=). */
+  initialQuery?: string;
 };
 
-export function DosenClient({ initialLecturers }: DosenClientProps) {
+export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClientProps) {
   const [category, setCategory] = useState<"semua" | "pimpinan" | "lab" | "dosen">("semua");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialQuery);
   const [selected, setSelected] = useState<Lecturer | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
@@ -168,7 +172,8 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
         {/* Grid Modern Glassmorphic Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">
           {filtered.map((lecturer) => {
-            const imageUrl = typeof lecturer.image === 'object' && lecturer.image?.url ? lecturer.image.url : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
+            const imageUrl = resolveMediaUrl(lecturer.image, '')
+            const hasPhoto = imageUrl.length > 0
 
             return (
               <article
@@ -209,18 +214,19 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
                     </span>
                   </div>
 
-                  {/* Photo */}
-                  <img
-                    src={imageUrl}
-                    alt={lecturer.name}
-                    className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
-                    onError={(e) => {
-                      (e.target as HTMLElement).setAttribute(
-                        "src",
-                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-                      );
-                    }}
-                  />
+                  {/* Photo (dummy initials avatar until CMS photo is uploaded) */}
+                  {hasPhoto ? (
+                    <img
+                      src={imageUrl}
+                      alt={lecturer.name}
+                      className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <LecturerAvatar
+                      name={lecturer.name}
+                      className="size-full text-6xl transition duration-500 ease-out group-hover:scale-105"
+                    />
+                  )}
                   <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white/90 via-white/50 to-transparent" />
 
                   {/* Hover Interactive Overlay */}
@@ -327,17 +333,15 @@ export function DosenClient({ initialLecturers }: DosenClientProps) {
         {selected && (
           <div className="overflow-hidden">
             <div className="relative h-44 bg-gradient-to-br from-[#1E6FD9] to-[#0B3A8C]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={
-                  typeof selected.image === "object" && selected.image?.url
-                    ? selected.image.url
-                    : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-                }
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 size-full object-cover object-top opacity-30"
-              />
+              {resolveMediaUrl(selected.image, '').length > 0 && (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={resolveMediaUrl(selected.image, '')}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 size-full object-cover object-top opacity-30"
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B3A8C] via-transparent to-transparent" aria-hidden="true" />
               <button
                 type="button"

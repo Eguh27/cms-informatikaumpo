@@ -1,5 +1,6 @@
 import React from "react";
 import { PageBanner } from "@/components/PageBanner";
+import { SITE_MEDIA } from "@/data/siteMedia";
 import {
   Network,
   Laptop,
@@ -77,7 +78,7 @@ export default function FasilitasPage() {
                 <div className="relative overflow-hidden rounded-3xl border border-slate-200 shadow-md aspect-[4/3]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80"
+                    src={SITE_MEDIA.labNetwork}
                     alt="Laboratorium Jaringan Komputer UMPO"
                     className="size-full object-cover"
                   />
@@ -98,7 +99,7 @@ export default function FasilitasPage() {
                 <div className="relative overflow-hidden rounded-3xl border border-slate-200 shadow-md aspect-[4/3]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80"
+                    src={SITE_MEDIA.labSoftware}
                     alt="Laboratorium RPL UMPO"
                     className="size-full object-cover"
                   />

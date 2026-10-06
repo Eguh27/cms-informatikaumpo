@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
-import { LECTURERS, NEWS, CURRICULUM_TRACKS, PARTNERS, DOWNLOADS } from '@/data/mock';
+import { LECTURERS, NEWS, CURRICULUM_TRACKS, PARTNERS } from '@/data/mock';
 
 export async function GET(req: Request) {
   try {
@@ -105,14 +105,8 @@ export async function GET(req: Request) {
       }
     }
 
-    // Seed Downloads
-    const existingDownloads = await payload.find({ collection: 'downloads', limit: 1 });
-    if (existingDownloads.totalDocs === 0) {
-      for (const d of DOWNLOADS) {
-        // Since download requires a file and category, we will skip seeding the file for now
-        // Because payload requires an actual media relation ID which we don't have.
-      }
-    }
+    // Downloads require an uploaded Media file; seed them from the admin panel instead.
+    // (Previous loop body was intentionally empty and has been removed.)
 
     return NextResponse.json({ message: 'Seeding completed successfully!' });
   } catch (error) {

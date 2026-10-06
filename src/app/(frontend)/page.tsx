@@ -19,6 +19,9 @@ import configPromise from '@payload-config'
 import { ParallaxEffects } from '@/components/parallax/ParallaxEffects'
 import { ParallaxHero } from '@/components/parallax/ParallaxHero'
 import { SectionTag, WaveDivider } from '@/components/parallax/ParallaxBits'
+import { LecturerAvatar } from '@/components/LecturerAvatar'
+import { SITE_LINKS, SITE_MEDIA, resolveMediaUrl } from '@/data/siteMedia'
+import { getSiteMedia } from '@/utilities/getSiteMedia'
 
 const FALLBACK_TRACKS = [
   {
@@ -47,16 +50,9 @@ const FALLBACK_TRACKS = [
   },
 ]
 
-function resolveImage(image: unknown, fallback: string): string {
-  if (typeof image === 'object' && image !== null && 'url' in image) {
-    const url = (image as { url?: string }).url
-    if (url) return url
-  }
-  return fallback
-}
-
 export default async function HomePage() {
   const payload = await getPayload({ config: configPromise })
+  const siteMedia = await getSiteMedia()
 
   const [lecturersRes, newsRes, tracksRes, partnersRes] = await Promise.all([
     payload.find({ collection: 'lecturers', depth: 1, limit: 4 }).catch(() => ({ docs: [] })),
@@ -85,7 +81,7 @@ export default async function HomePage() {
   return (
     <main className="px-canvas" id="konten-utama">
       <ParallaxEffects />
-      <ParallaxHero />
+      <ParallaxHero images={{ building: siteMedia.heroBuilding, cloud: siteMedia.heroCloud }} />
 
       {/* ============ PROFIL ============ */}
       <section id="profil" aria-labelledby="profil-title" data-story-section className="relative overflow-hidden py-24 lg:py-32">
@@ -99,7 +95,7 @@ export default async function HomePage() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/assets/hero/gedung-cerah.webp"
+                src={siteMedia.heroBuilding}
                 alt="Gedung Fakultas Teknik dan Program Studi Teknik Informatika UMPO"
                 className="aspect-[4/3.2] w-full rounded-[2rem] object-cover object-center"
                 data-parallax-layer
@@ -233,7 +229,7 @@ export default async function HomePage() {
                 </div>
               </div>
               <a
-                href="https://drive.google.com/file/d/1MBJ4e8JyA6YZPJl39maTZMhMiZ1B58SN/view?usp=sharing"
+                href={SITE_LINKS.curriculumDrive}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#1E6FD9] px-6 py-3 text-xs font-bold text-white shadow-md transition-all hover:bg-[#0B3A8C]"
@@ -279,10 +275,8 @@ export default async function HomePage() {
               </p>
             )}
             {lecturers.map((lecturer: any) => {
-              const imageUrl = resolveImage(
-                lecturer.image,
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-              )
+              const imageUrl = resolveMediaUrl(lecturer.image, '')
+              const hasPhoto = imageUrl.length > 0
               return (
                 <article
                   key={lecturer.id ?? lecturer.name}
@@ -295,13 +289,20 @@ export default async function HomePage() {
                         <Award className="size-3.5" aria-hidden="true" /> {lecturer.category}
                       </span>
                     </div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={imageUrl}
-                      alt={lecturer.name}
-                      loading="lazy"
-                      className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
-                    />
+                    {hasPhoto ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={imageUrl}
+                        alt={lecturer.name}
+                        loading="lazy"
+                        className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
+                      />
+                    ) : (
+                      <LecturerAvatar
+                        name={lecturer.name}
+                        className="aspect-[4/4.3] size-full text-5xl transition duration-500 ease-out group-hover:scale-105"
+                      />
+                    )}
                     <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white/90 via-white/50 to-transparent" aria-hidden="true" />
                   </div>
                   <div className="flex flex-1 flex-col justify-between p-5 pt-3">
@@ -343,8 +344,7 @@ export default async function HomePage() {
           data-parallax-layer
           data-speed="-0.18"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1663162551013-8bb8ab151e11?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=60&w=1600')",
+            backgroundImage: 'url(' + siteMedia.himatifBanner + ')',
           }}
           aria-hidden="true"
         />
@@ -465,7 +465,7 @@ export default async function HomePage() {
               </p>
             )}
             {news.map((item: any) => {
-              const imageUrl = resolveImage(item.image, '')
+              const imageUrl = resolveMediaUrl(item.image, '')
               const dateStr = item.publishedAt
                 ? new Date(item.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
                 : ''
@@ -550,7 +550,7 @@ export default async function HomePage() {
             </p>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
               <a
-                href="https://spmb.umpo.ac.id/"
+                href={SITE_LINKS.pmb}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-full bg-white px-7 py-4 font-bold text-[#124bb8] shadow-xl transition hover:-translate-y-1"

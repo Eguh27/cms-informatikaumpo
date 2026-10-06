@@ -5,6 +5,7 @@ import { PageBanner } from "@/components/PageBanner";
 import { PxCard, PxButton, PxCircle } from "@/components/ui";
 import { cn } from "@/utilities/ui";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { SITE_LINKS } from "@/data/siteMedia";
 import {
   MapPin,
   Mail,
@@ -396,7 +397,7 @@ ${formData.message || "Halo Admin, saya ingin berkonsultasi seputar Program Stud
                     asChild
                     className="mt-4 min-h-[44px] border-[#0F2A4A]/35 text-[#0F2A4A] hover:border-[#0F2A4A] hover:bg-[#FFB84D]/25 hover:text-[#0F2A4A]"
                   >
-                    <a href="https://spmb.umpo.ac.id/" target="_blank" rel="noopener noreferrer">
+                    <a href={SITE_LINKS.pmb} target="_blank" rel="noopener noreferrer">
                       Daftar di spmb.umpo.ac.id
                       <ExternalLink className="size-3.5" aria-hidden="true" />
                     </a>

@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { PageBanner } from "@/components/PageBanner";
+import { SITE_MEDIA } from "@/data/siteMedia";
 import {
   Calendar,
   Clock,
@@ -103,8 +104,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={
-                          imageUrl ||
-                          "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80"
+                          imageUrl || SITE_MEDIA.labSoftware
                         }
                         alt={item.title}
                         className="size-full object-cover transition duration-500 group-hover:scale-105"
