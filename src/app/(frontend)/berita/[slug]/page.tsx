@@ -110,14 +110,19 @@ export default async function BeritaDetailPage({ params }: Args) {
           </div>
 
           {imageUrl && (
-            <div className="w-full aspect-video rounded-3xl overflow-hidden mb-10 bg-slate-100 border border-slate-100">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageUrl}
-                alt={newsItem.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <figure className="mb-10">
+              <div className="w-full aspect-video rounded-3xl overflow-hidden bg-slate-100 border border-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imageUrl}
+                  alt={newsItem.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <figcaption className="mt-2 text-xs text-slate-500">
+                Sumber: {imageUrl}
+              </figcaption>
+            </figure>
           )}
 
           <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:font-display prose-headings:text-[#08235b] prose-a:text-[#1453d6]">
