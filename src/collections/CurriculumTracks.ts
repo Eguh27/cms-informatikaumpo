@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 export const CurriculumTracks: CollectionConfig = {
   slug: 'curriculum-tracks',
+  labels: { singular: 'Kurikulum', plural: 'Kurikulum' },
   admin: {
     useAsTitle: 'title',
   },
