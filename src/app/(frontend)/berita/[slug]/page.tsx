@@ -40,6 +40,8 @@ export default async function BeritaDetailPage({ params }: Args) {
     ? new Date(newsItem.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
     : ''
 
+  const categoryId = typeof newsItem.category === 'object' && newsItem.category !== null ? newsItem.category.id : newsItem.category;
+
   // Related news: same category first, fallback to the latest other items
   const sameCat = await payload.find({
     collection: 'news',
@@ -47,7 +49,7 @@ export default async function BeritaDetailPage({ params }: Args) {
     sort: '-publishedAt',
     where: {
       and: [
-        { category: { equals: newsItem.category } },
+        { category: { equals: categoryId } },
         { id: { not_equals: newsItem.id } },
       ],
     },
@@ -93,7 +95,7 @@ export default async function BeritaDetailPage({ params }: Args) {
         
         <article className="rounded-[2.5rem] bg-white p-6 md:p-10 shadow-sm border border-slate-200/80">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold text-[#1453d6] border border-blue-100 mb-6">
-            {newsItem.category}
+            {typeof newsItem.category === 'object' && newsItem.category !== null ? newsItem.category.title : newsItem.category}
           </div>
 
           <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight text-[#08235b] mb-6">
@@ -170,7 +172,7 @@ export default async function BeritaDetailPage({ params }: Args) {
                           className="size-full object-cover transition duration-500 group-hover:scale-105"
                         />
                         <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-bold text-[#1453d6] shadow-sm backdrop-blur-md">
-                          {item.category}
+                          {typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}
                         </span>
                       </div>
                       <div className="flex flex-1 flex-col p-4">

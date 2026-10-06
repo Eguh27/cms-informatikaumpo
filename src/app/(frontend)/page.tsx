@@ -542,12 +542,12 @@ export default async function HomePage() {
                           className="px-media-img transition-[scale] duration-700 group-hover:scale-105"
                         />
                         <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#1E6FD9]">
-                          {item.category}
+                        {typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}
                         </span>
                       </div>
                     ) : (
                       <div className="flex aspect-[16/6] items-center justify-between rounded-2xl bg-[#0B3A8C] p-6 text-white">
-                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{item.category}</span>
+                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}</span>
                         <Bookmark className="size-5 text-white/50" aria-hidden="true" />
                       </div>
                     )}

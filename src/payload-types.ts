@@ -811,7 +811,7 @@ export interface News {
   id: number;
   title: string;
   slug: string;
-  category: 'Agenda' | 'Akademik' | 'Pengumuman';
+  category: number | Category;
   publishedAt: string;
   image?: (number | null) | Media;
   excerpt: string;

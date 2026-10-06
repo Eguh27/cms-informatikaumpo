@@ -25,14 +25,10 @@ export const News: CollectionConfig = {
     },
     {
       name: 'category',
-      type: 'select',
+      type: 'relationship',
+      relationTo: 'categories',
       required: true,
       label: 'Kategori',
-      options: [
-        { label: 'Agenda', value: 'Agenda' },
-        { label: 'Akademik', value: 'Akademik' },
-        { label: 'Pengumuman', value: 'Pengumuman' },
-      ],
     },
     {
       name: 'publishedAt',

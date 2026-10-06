@@ -25,6 +25,27 @@ export async function GET(req: Request) {
       }
     }
 
+    // Seed Categories
+    const categoriesMap: Record<string, any> = {};
+    const existingCats = await payload.find({ collection: 'categories', limit: 10 });
+    for (const cat of existingCats.docs) {
+      categoriesMap[cat.title] = cat.id;
+    }
+
+    const defaultCats = ['Agenda', 'Akademik', 'Pengumuman'];
+    for (const catName of defaultCats) {
+      if (!categoriesMap[catName]) {
+        const newCat = await payload.create({
+          collection: 'categories',
+          data: {
+            title: catName,
+            slug: catName.toLowerCase().replace(/ /g, '-'),
+          },
+        });
+        categoriesMap[catName] = newCat.id;
+      }
+    }
+
     // Seed News
     const existingNews = await payload.find({ collection: 'news', limit: 1 });
     if (existingNews.totalDocs === 0) {
@@ -58,12 +79,14 @@ export async function GET(req: Request) {
           }
         };
 
+        const catId = categoriesMap[news.category] || categoriesMap['Pengumuman'];
+
         await payload.create({
           collection: 'news',
           data: {
             title: news.title,
             slug: news.id,
-            category: news.category,
+            category: catId,
             excerpt: news.excerpt,
             readTime: parseInt(news.readTime) || 3,
             publishedAt: new Date(news.date).toISOString(),

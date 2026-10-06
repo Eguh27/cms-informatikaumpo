@@ -24,7 +24,8 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
 
   const filtered = useMemo(() => {
     return initialNews.filter((item) => {
-      const matchCat = filter === "Semua" || item.category === filter;
+      const itemCategory = typeof item.category === 'object' && item.category !== null ? item.category.title : item.category;
+      const matchCat = filter === "Semua" || itemCategory === filter;
       const matchSearch =
         item.title.toLowerCase().includes(search.toLowerCase()) ||
         (item.excerpt && item.excerpt.toLowerCase().includes(search.toLowerCase()));
@@ -111,7 +112,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
                       />
                       <div className="absolute left-3.5 top-3.5">
                         <span className="rounded-full bg-white/95 px-3 py-1 text-[11px] font-bold text-[#1453d6] shadow-sm backdrop-blur-md">
-                          {item.category}
+                          {typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}
                         </span>
                       </div>
                     </div>
