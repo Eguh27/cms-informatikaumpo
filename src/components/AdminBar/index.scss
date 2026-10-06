@@ -1,7 +1,6 @@
 @import '@payloadcms/ui/scss';
 
 .admin-bar {
-  @include small-break {
-    display: none;
-  }
+  overflow-x: auto;
+  scrollbar-width: thin;
 }

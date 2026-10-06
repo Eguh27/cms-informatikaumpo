@@ -122,10 +122,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'site-media': SiteMedia;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'site-media': SiteMediaSelect<false> | SiteMediaSelect<true>;
   };
   locale: null;
   widgets: {
@@ -794,6 +796,7 @@ export interface Lecturer {
   nidn?: string | null;
   nik?: string | null;
   category: 'pimpinan' | 'dosen' | 'lab';
+  email?: string | null;
   focus?: string | null;
   image?: (number | null) | Media;
   updatedAt: string;
@@ -1480,6 +1483,7 @@ export interface LecturersSelect<T extends boolean = true> {
   nidn?: T;
   nik?: T;
   category?: T;
+  email?: T;
   focus?: T;
   image?: T;
   updatedAt?: T;
@@ -1877,6 +1881,19 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-media".
+ */
+export interface SiteMedia {
+  id: number;
+  logo?: (number | null) | Media;
+  heroBuilding?: (number | null) | Media;
+  heroCloud?: (number | null) | Media;
+  himatifBanner?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1917,6 +1934,19 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-media_select".
+ */
+export interface SiteMediaSelect<T extends boolean = true> {
+  logo?: T;
+  heroBuilding?: T;
+  heroCloud?: T;
+  himatifBanner?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

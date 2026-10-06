@@ -39,6 +39,18 @@ Dokumen ini merupakan acuan desain resmi untuk redesain antarmuka website Progra
 * `rounded-xl` (`12px`): Input form, dropdown panel menu
 * `rounded-full` (`9999px`): Tombol aksi utama (CTA), pill badges, status akreditasi
 
+### 1.5 Aturan Ink-on-Tint (Kontras Pasangan Warna)
+
+Setiap pasangan teks–latar harus lolos WCAG AA (4.5:1 teks normal, 3:1 teks besar ≥24px). Pasangan yang sudah terukur dan disetujui:
+
+| Teks di atas Latar | Rasio | Status |
+| :--- | :--- | :--- |
+| `#0B3A8C` / `#0F2A4A` di `#FFFBF5` | 10–14:1 | ✅ |
+| Putih di `#1E6FD9` / `#0B3A8C` / `#15803D` / `#B45309` / `#0F766E` | 4.8–10:1 | ✅ |
+| `#4B6B94` di putih / `#FFFBF5` | 5.3–5.5:1 | ✅ (pengganti semua abu-abu) |
+
+Dilarang: teks putih di `#25D366`, amber-500, atau teal-600; teks `slate-400`/`#7386a8` di permukaan terang. Uji pasangan baru sebelum dipakai.
+
 ### 1.4 Elevasi & Bayangan (Shadows)
 * **Level 1 (Card Resting)**: `box-shadow: 0 4px 20px -2px rgba(15, 42, 74, 0.05), 0 2px 6px -1px rgba(15, 42, 74, 0.03)`
 * **Level 2 (Hover / Active)**: `box-shadow: 0 16px 32px -4px rgba(30, 111, 217, 0.12), 0 6px 12px -2px rgba(15, 42, 74, 0.04)` + `transform: translateY(-4px)`
@@ -67,6 +79,13 @@ Dokumen ini merupakan acuan desain resmi untuk redesain antarmuka website Progra
 ### 2.4 Pembatas Bergelombang (Wave Divider SVG)
 * SVG inline kurva bergelombang dinamis untuk transisi antar-bagian.
 * Menyambungkan latar kanvas krem `#FFFBF5`, biru muda `#EAF4FF`, dan putih `#FFFFFF` tanpa garis patah kaku.
+
+### 2.5 Lingkaran Ikon (PxCircle)
+* `rounded-full` + border 1px + satu lapis glow. Diganti sebagai pengganti slab ikon persegi agar baris kartu tidak terbaca sebagai hujan warna.
+* **Warna dibatasi dua sumbu saja**: `primary` (`#1E6FD9` di atas kanvas krem) dan `amber` (`#FFB84D` di atas `#FFE8CC`). Larangan memakai palet semantik framework (`bg-blue-50`, `bg-emerald-50`, `bg-amber-50`) untuk membedakan jenis kartu.
+* Glow dibawa oleh varian `tone`, bukan flag terpisah, sehingga jumlah varian tetap dua sumbu dan lingkaran yang terlalu bercahaya tidak bisa terjadi.
+* Di atas panel gelap `#0B3A8C` gunakan `onNavy` (amber) atau `onNavySoft` (putih transparan).
+* Ukuran: `sm` 36px untuk ikon pelengkap, `md` 44px untuk target sentuh, `hero` 112px untuk satu nilai utama per section.
 
 ---
 

@@ -70,11 +70,11 @@ export default async function BeritaDetailPage({ params }: Args) {
 
           <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-8 border-b border-slate-100 pb-6">
             <span className="flex items-center gap-1.5 font-medium">
-              <Calendar className="size-4 text-slate-400" /> {dateStr}
+              <Calendar className="size-4 text-slate-500" /> {dateStr}
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5 font-medium">
-              <Clock className="size-4 text-slate-400" /> {newsItem.readTime || 3} min read
+              <Clock className="size-4 text-slate-500" /> {newsItem.readTime || 3} min read
             </span>
           </div>
 
