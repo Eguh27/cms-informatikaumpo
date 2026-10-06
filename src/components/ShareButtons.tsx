@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Share2 } from 'lucide-react'
 
@@ -8,38 +9,42 @@ type Props = {
 }
 
 /**
- * Share toolbar for news detail pages. Opens share URLs in a new tab; small
- * chip-style links keep the palette quiet (one ink + one blue accent).
+ * Dynamic share button: prefers the native Web Share API (mobile sheet),
+ * falls back to copying the link on desktop where share is unsupported.
  */
 export function ShareButtons({ title }: Props) {
   const pathname = usePathname() || '/berita'
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
-  const url = encodeURIComponent(`${origin}${pathname}`)
-  const text = encodeURIComponent(title)
+  const [copied, setCopied] = useState(false)
 
-  const links = [
-    { label: 'WhatsApp', href: `https://wa.me/?text=${text}%20${url}` },
-    { label: 'Telegram', href: `https://t.me/share/url?url=${url}&text=${text}` },
-    { label: 'X', href: `https://twitter.com/intent/tweet?url=${url}&text=${text}` },
-    { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${url}` },
-  ]
+  const handleShare = async () => {
+    const url = `${window.location.origin}${pathname}`
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url })
+      } catch {
+        /* user cancelled — no-op */
+      }
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      window.prompt('Salin tautan berita ini:', url)
+    }
+  }
 
   return (
-    <div className="mb-8 flex flex-wrap items-center gap-2 border-b border-slate-100 pb-6">
-      <span className="mr-1 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-        <Share2 className="size-3.5" aria-hidden="true" /> Bagikan
-      </span>
-      {links.map((l) => (
-        <a
-          key={l.label}
-          href={l.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-[36px] items-center rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-bold text-[#08235b] transition hover:border-[#1453d6] hover:text-[#1453d6]"
-        >
-          {l.label}
-        </a>
-      ))}
+    <div className="mt-4 flex justify-center">
+      <button
+        type="button"
+        onClick={handleShare}
+        className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[#1453d6] px-8 py-3 text-sm font-bold text-white shadow-md shadow-blue-600/25 transition hover:bg-[#08235b]"
+      >
+        <Share2 className="size-4" aria-hidden="true" />
+        {copied ? 'Tautan tersalin!' : 'Bagikan Berita'}
+      </button>
     </div>
   )
 }

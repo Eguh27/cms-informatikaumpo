@@ -110,8 +110,6 @@ export default async function BeritaDetailPage({ params }: Args) {
             </span>
           </div>
 
-          <ShareButtons title={newsItem.title} />
-
           {imageUrl && (
             <figure className="mb-10">
               <div className="w-full aspect-video rounded-3xl overflow-hidden bg-slate-100 border border-slate-100">
@@ -146,6 +144,8 @@ export default async function BeritaDetailPage({ params }: Args) {
             </p>
           </div>
         </article>
+
+        <ShareButtons title={newsItem.title} />
 
         {/* Rekomendasi berita lain */}
         {related.length > 0 && (
