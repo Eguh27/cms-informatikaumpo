@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { PageBanner } from '@/components/PageBanner'
 import { Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { SITE_MEDIA } from '@/data/siteMedia'
 
 type Args = {
   params: Promise<{
@@ -37,6 +38,36 @@ export default async function BeritaDetailPage({ params }: Args) {
   const dateStr = newsItem.publishedAt 
     ? new Date(newsItem.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
     : ''
+
+  // Related news: same category first, fallback to the latest other items
+  const sameCat = await payload.find({
+    collection: 'news',
+    limit: 3,
+    sort: '-publishedAt',
+    where: {
+      and: [
+        { category: { equals: newsItem.category } },
+        { id: { not_equals: newsItem.id } },
+      ],
+    },
+  })
+  let related = sameCat.docs || []
+  if (related.length < 3) {
+    const latest = await payload.find({
+      collection: 'news',
+      limit: 6,
+      sort: '-publishedAt',
+      where: { id: { not_equals: newsItem.id } },
+    })
+    const existingIds = new Set(related.map((r: any) => r.id))
+    for (const d of latest.docs || []) {
+      if (related.length >= 3) break
+      if (!existingIds.has(d.id)) {
+        related.push(d)
+        existingIds.add(d.id)
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-50/60 pb-28">
@@ -107,6 +138,59 @@ export default async function BeritaDetailPage({ params }: Args) {
             </p>
           </div>
         </article>
+
+        {/* Rekomendasi berita lain */}
+        {related.length > 0 && (
+          <section className="mt-14" aria-labelledby="related-news-title">
+            <div className="mb-6 flex items-end justify-between gap-4">
+              <h2 id="related-news-title" className="font-display text-xl font-extrabold text-[#08235b] md:text-2xl">
+                Berita Terkait
+              </h2>
+              <Link href="/berita" className="text-xs font-bold text-[#1453d6] transition hover:text-[#08235b]">
+                Lihat Semua Berita →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {related.map((item: any) => {
+                const rImg = typeof item.image === 'object' && item.image?.url ? item.image.url : null
+                const rDate = item.publishedAt
+                  ? new Date(item.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+                  : ''
+                return (
+                  <Link href={`/berita/${item.slug}`} key={item.id} className="group">
+                    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#1453d6]/40 hover:shadow-lg">
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={rImg || SITE_MEDIA.labSoftware}
+                          alt={item.title}
+                          className="size-full object-cover transition duration-500 group-hover:scale-105"
+                        />
+                        <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-bold text-[#1453d6] shadow-sm backdrop-blur-md">
+                          {item.category}
+                        </span>
+                      </div>
+                      <div className="flex flex-1 flex-col p-4">
+                        <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                          <Calendar className="size-3" aria-hidden="true" /> {rDate}
+                          <span aria-hidden="true">•</span>
+                          <Clock className="size-3" aria-hidden="true" /> {item.readTime || 3} min read
+                        </div>
+                        <h3 className="mt-2 line-clamp-2 font-display text-[15px] font-bold leading-snug text-[#08235b] transition-colors group-hover:text-[#1453d6]">
+                          {item.title}
+                        </h3>
+                        <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-slate-600">
+                          {item.excerpt}
+                        </p>
+                      </div>
+                    </article>
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   )
