@@ -68,14 +68,13 @@ export default function ProfilPage() {
     <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
-        category="Identitas & Legalitas"
+        // category="Identitas & Legalitas"
         title="Profil Program Studi"
         subtitle="Mengenal lebih dekat Program Studi S1 Teknik Informatika Universitas Muhammadiyah Ponorogo, sejarah pendirian, visi misi keunggulan, struktur organisasi, dan akreditasi resmi."
         breadcrumbs={[
           { label: "Beranda", href: "/" },
           { label: "Profil Prodi" },
-        ]}
-      />
+        ]} category={""}      />
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8 mt-4">
         {/* Navigation Tabs */}

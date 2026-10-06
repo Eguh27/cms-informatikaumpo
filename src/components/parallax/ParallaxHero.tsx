@@ -82,15 +82,11 @@ export function ParallaxHero({ images }: { images?: ParallaxHeroImages }) {
       {/* Layer 4: content */}
       <div className="px-hero-inner">
         <div className="px-hero-card" data-px-hero-card>
-          <p className="px-eyebrow" data-px-hero-meta>
-            <span className="px-eyebrow-dot" aria-hidden="true" />
-            Penerimaan Mahasiswa Baru
-          </p>
           <h1 id="hero-title">
-            Code the future. Shape the world.
+            Teknik Informatika UNMUH Ponorogo
           </h1>
           <p className="px-lead" data-px-hero-meta>
-            Program Studi Teknik Informatika Universitas Muhammadiyah Ponorogo —
+            Program Studi Teknik Informatika Universitas Muhammadiyah Ponorogo, 
             menghubungkan teknologi, kreativitas, dan dampak nyata berbasis
             nilai-nilai keislaman.
           </p>

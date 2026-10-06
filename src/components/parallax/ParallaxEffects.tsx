@@ -35,7 +35,8 @@ export function ParallaxEffects() {
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduceMotion) {
-      gsap.set('[data-split-reveal]', { clearProps: 'all' })
+      gsap.set('[data-split-reveal], [data-parallax-media-img], [data-depth-orb]', { clearProps: 'all' })
+      gsap.set('[data-scroll-progress]', { scaleX: 1 })
       return
     }
 
@@ -105,6 +106,27 @@ export function ParallaxEffects() {
         })
       })
 
+      // 4. Media parallax — image travels inside a clipped frame, scrubbed
+      gsap.utils.toArray<HTMLElement>('[data-parallax-media]').forEach((frame) => {
+        const img = frame.querySelector<HTMLElement>('[data-parallax-media-img]')
+        if (!img) return
+        gsap.fromTo(
+          img,
+          { yPercent: -6 },
+          {
+            yPercent: 6,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: frame,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1,
+              invalidateOnRefresh: true,
+            },
+          },
+        )
+      })
+
       // 5. Hero intro (plays once on load)
       const intro = gsap.timeline({ defaults: { ease: 'power3.out' } })
       intro
@@ -132,6 +154,22 @@ export function ParallaxEffects() {
             scrollTrigger: { trigger: footer, start: 'top bottom', end: 'top 55%', scrub: 1 },
           },
         )
+      }
+
+      // 7. Scroll progress rail — full document, independent of section layers
+      const rail = document.querySelector('[data-scroll-progress]')
+      if (rail) {
+        gsap.to(rail, {
+          scaleX: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: document.documentElement,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.3,
+            invalidateOnRefresh: true,
+          },
+        })
       }
     })
 

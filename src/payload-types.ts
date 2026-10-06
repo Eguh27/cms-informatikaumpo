@@ -796,6 +796,7 @@ export interface Lecturer {
   nidn?: string | null;
   nik?: string | null;
   category: 'pimpinan' | 'dosen' | 'lab';
+  email?: string | null;
   focus?: string | null;
   image?: (number | null) | Media;
   updatedAt: string;
@@ -1482,6 +1483,7 @@ export interface LecturersSelect<T extends boolean = true> {
   nidn?: T;
   nik?: T;
   category?: T;
+  email?: T;
   focus?: T;
   image?: T;
   updatedAt?: T;

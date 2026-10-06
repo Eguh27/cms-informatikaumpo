@@ -46,14 +46,32 @@ export const AdminBar: React.FC<{
     setShow(Boolean(user?.id))
   }, [])
 
+  React.useEffect(() => {
+    if (show) {
+      document.documentElement.style.setProperty('--admin-bar-height', '44px')
+      document.body.classList.add('has-admin-bar')
+    } else {
+      document.documentElement.style.setProperty('--admin-bar-height', '0px')
+      document.body.classList.remove('has-admin-bar')
+    }
+    return () => {
+      document.documentElement.style.setProperty('--admin-bar-height', '0px')
+      document.body.classList.remove('has-admin-bar')
+    }
+  }, [show])
+
   return (
     <div
-      className={cn(baseClass, 'py-2 bg-black text-white', {
-        block: show,
-        hidden: !show,
-      })}
+      className={cn(
+        baseClass,
+        'fixed top-0 inset-x-0 z-[60] py-2 bg-neutral-900/95 backdrop-blur-md text-white border-b border-white/10 text-xs shadow-md transition-all duration-300',
+        {
+          block: show,
+          hidden: !show,
+        },
+      )}
     >
-      <div className="container">
+      <div className="container mx-auto px-4 overflow-x-auto">
         <PayloadAdminBar
           {...adminBarProps}
           className="py-2 text-white"

@@ -44,14 +44,14 @@ export function PageBanner({
             'linear-gradient(175deg, #a8d8ff 0%, #c6e6ff 28%, #dbeeff 48%, #eaf4ff 66%, #f2efe8 84%, #fffbf5 100%)',
         }}
       />
-      <div
+      {/* <div
         className="absolute -top-24 right-[8%] size-96 rounded-full pointer-events-none"
         aria-hidden="true"
         style={{
           background:
             'radial-gradient(ellipse at center, rgba(255,184,77,0.16) 0%, transparent 70%)',
         }}
-      />
+      /> */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={SITE_MEDIA.heroCloud}
@@ -92,12 +92,7 @@ export function PageBanner({
         </nav>
 
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#1E6FD9]/20 bg-white/80 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-[#1E6FD9] backdrop-blur-md">
-            <PxChip variant="amber" size="sm" className="px-2 py-0.5">
-              <Sparkles className="size-3.5" aria-hidden="true" />
-              {category}
-            </PxChip>
-          </div>
+          
           <h1 className="mt-4 font-display text-4xl font-extrabold tracking-[-.03em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
             {title}
           </h1>

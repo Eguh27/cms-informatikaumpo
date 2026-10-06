@@ -28,7 +28,8 @@ export function SiteHeader({ logoSrc }: { logoSrc?: string }) {
     <>
       <nav
         aria-label="Navigasi utama"
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        style={{ top: 'var(--admin-bar-height, 0px)' }}
+        className={`fixed inset-x-0 z-50 transition-all duration-500 ${
           scrollY > 40
             ? 'bg-white/95 py-3 shadow-[0_12px_40px_rgba(15,56,130,.10)] backdrop-blur-xl border-b border-blue-50'
             : 'bg-gradient-to-b from-[#FFFBF5]/90 via-[#FFFBF5]/40 to-transparent py-5'

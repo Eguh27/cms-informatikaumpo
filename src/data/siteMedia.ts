@@ -18,7 +18,7 @@ export const SITE_MEDIA = {
   heroCloud: '/assets/hero/awan.webp',
   /** HIMATIF parallax banner backdrop. */
   himatifBanner:
-    'https://images.unsplash.com/photo-1663162551013-8bb8ab151e11?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=60&w=1600',
+    './assets/hero/gedung-cerah.webp',
   /** Fasilitas: Lab Jaringan & IoT cover (placeholder until CMS upload). */
   labNetwork:
     'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80',

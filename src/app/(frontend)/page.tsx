@@ -81,12 +81,25 @@ export default async function HomePage() {
   return (
     <main className="px-canvas" id="konten-utama">
       <ParallaxEffects />
+      <div className="px-progress" aria-hidden="true">
+        <div className="px-progress-bar" data-scroll-progress />
+      </div>
       <ParallaxHero images={{ building: siteMedia.heroBuilding, cloud: siteMedia.heroCloud }} />
 
       {/* ============ PROFIL ============ */}
-      <section id="profil" aria-labelledby="profil-title" data-story-section className="relative overflow-hidden py-24 lg:py-32">
-        <div className="pointer-events-none absolute -left-32 top-32 size-80 rounded-full bg-[#FFE8CC]/40 blur-3xl" aria-hidden="true" />
-        <div className="pointer-events-none absolute right-0 top-1/2 size-96 rounded-full bg-[#EAF4FF]/60 blur-3xl" aria-hidden="true" />
+      <section id="profil" aria-labelledby="profil-title" data-story-section className="px-depth py-24 lg:py-32">
+        <div
+          className="px-depth-orb -left-32 top-32 size-80 bg-[#FFE8CC]/40"
+          data-parallax-layer
+          data-speed="-0.05"
+          aria-hidden="true"
+        />
+        <div
+          className="px-depth-orb right-0 top-1/2 size-96 bg-[#EAF4FF]/60"
+          data-parallax-layer
+          data-speed="0.07"
+          aria-hidden="true"
+        />
         <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
           <div data-reveal-item className="relative">
             <div
@@ -166,7 +179,19 @@ export default async function HomePage() {
       </section>
 
       {/* ============ KURIKULUM — 3-column grid ============ */}
-      <section id="kurikulum" aria-labelledby="kurikulum-title" data-story-section className="relative bg-[#EAF4FF]/70 py-20 lg:py-28">
+      <section id="kurikulum" aria-labelledby="kurikulum-title" data-story-section className="px-depth bg-[#EAF4FF]/70 py-20 lg:py-28">
+        <div
+          className="px-depth-orb -right-24 top-16 size-96 bg-[#FFB84D]/25"
+          data-parallax-layer
+          data-speed="0.06"
+          aria-hidden="true"
+        />
+        <div
+          className="px-depth-orb -left-28 bottom-8 size-80 bg-[#1E6FD9]/20"
+          data-parallax-layer
+          data-speed="-0.05"
+          aria-hidden="true"
+        />
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
@@ -242,8 +267,13 @@ export default async function HomePage() {
       </section>
 
       {/* ============ DOSEN ============ */}
-      <section id="dosen" aria-labelledby="dosen-title" data-story-section className="relative overflow-hidden bg-[#FFFBF5] py-24 lg:py-32">
-        <div className="pointer-events-none absolute left-1/2 top-0 size-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-100/50 blur-3xl" aria-hidden="true" />
+      <section id="dosen" aria-labelledby="dosen-title" data-story-section className="px-depth bg-[#FFFBF5] py-24 lg:py-32">
+        <div
+          className="px-depth-orb left-1/2 top-0 size-[36rem] -translate-x-1/2 -translate-y-1/2 bg-blue-100/50"
+          data-parallax-layer
+          data-speed="-0.06"
+          aria-hidden="true"
+        />
         <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
@@ -283,7 +313,10 @@ export default async function HomePage() {
                   data-reveal-item
                   className="px-card group relative flex flex-col overflow-hidden"
                 >
-                  <div className="relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-blue-50/70 via-slate-100/50 to-white/90">
+                  <div
+                    className="px-media relative aspect-[4/4.3] w-full overflow-hidden bg-gradient-to-b from-blue-50/70 via-slate-100/50 to-white/90"
+                    data-parallax-media
+                  >
                     <div className="absolute left-3.5 top-3.5 z-10">
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/40 bg-[#B45309] px-3 py-1 text-[11px] font-bold capitalize text-white shadow-md backdrop-blur-md">
                         <Award className="size-3.5" aria-hidden="true" /> {lecturer.category}
@@ -295,7 +328,8 @@ export default async function HomePage() {
                         src={imageUrl}
                         alt={lecturer.name}
                         loading="lazy"
-                        className="size-full object-cover object-top transition duration-500 ease-out group-hover:scale-105"
+                        data-parallax-media-img
+                        className="px-media-img object-top transition-[scale] duration-500 ease-out group-hover:scale-105"
                       />
                     ) : (
                       <LecturerAvatar
@@ -374,7 +408,19 @@ export default async function HomePage() {
       </section>
 
       {/* ============ FASILITAS ============ */}
-      <section id="fasilitas" aria-labelledby="fasilitas-title" data-story-section className="bg-[#f0f4fc] py-24 lg:py-32">
+      <section id="fasilitas" aria-labelledby="fasilitas-title" data-story-section className="px-depth bg-[#f0f4fc] py-24 lg:py-32">
+        <div
+          className="px-depth-orb -right-32 top-24 size-[28rem] bg-[#1E6FD9]/18"
+          data-parallax-layer
+          data-speed="-0.06"
+          aria-hidden="true"
+        />
+        <div
+          className="px-depth-orb -left-24 bottom-16 size-72 bg-[#FFB84D]/22"
+          data-parallax-layer
+          data-speed="0.05"
+          aria-hidden="true"
+        />
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div data-reveal-item className="text-center">
             <div className="flex justify-center"><SectionTag>Sarana &amp; Prasarana</SectionTag></div>
@@ -449,7 +495,13 @@ export default async function HomePage() {
       </section>
 
       {/* ============ BERITA ============ */}
-      <section id="berita" aria-labelledby="berita-title" data-story-section className="bg-[#FFFBF5] py-24 lg:py-32">
+      <section id="berita" aria-labelledby="berita-title" data-story-section className="px-depth bg-[#FFFBF5] py-24 lg:py-32">
+        <div
+          className="px-depth-orb -left-32 top-20 size-96 bg-[#EAF4FF]"
+          data-parallax-layer
+          data-speed="0.05"
+          aria-hidden="true"
+        />
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div data-reveal-item>
             <SectionTag>Cerita &amp; Pengumuman</SectionTag>
@@ -477,13 +529,17 @@ export default async function HomePage() {
                 >
                   <div>
                     {imageUrl ? (
-                      <div className="relative overflow-hidden rounded-2xl bg-slate-100">
+                      <div
+                          className="px-media relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-slate-100"
+                          data-parallax-media
+                        >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={imageUrl}
                           alt={item.title}
                           loading="lazy"
-                          className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-105"
+                          data-parallax-media-img
+                          className="px-media-img transition-[scale] duration-700 group-hover:scale-105"
                         />
                         <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#1E6FD9]">
                           {item.category}
