@@ -15,7 +15,9 @@ import {
   X,
 } from 'lucide-react'
 import { useDebounce } from '@/utilities/useDebounce'
-import type { CurriculumTrack, Lecturer, News } from '@/payload-types'
+import type { Curriculum, Lecturer, News } from '@/payload-types'
+
+type TrackType = NonNullable<Curriculum['tracks']>[0]
 
 gsap.registerPlugin(useGSAP)
 
@@ -125,7 +127,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const [activeIndex, setActiveIndex] = useState(-1)
   const [news, setNews] = useState<News[]>([])
   const [lecturers, setLecturers] = useState<Lecturer[]>([])
-  const [tracks, setTracks] = useState<CurriculumTrack[]>([])
+  const [tracks, setTracks] = useState<TrackType[]>([])
   const [loading, setLoading] = useState(false)
 
   const debounced = useDebounce(query, 220)
@@ -232,14 +234,24 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         ctrl.signal,
       ),
       readDocs(
-        `/api/curriculum-tracks?depth=0&limit=3&where[or][0][title][like]=${w}&where[or][1][copy][like]=${w}`,
+        `/api/curriculums?depth=0&limit=1&where[isActive][equals]=true`,
         ctrl.signal,
       ),
     ])
-      .then(([n, l, t]) => {
+      .then(([n, l, c]) => {
         setNews(n as News[])
         setLecturers(l as Lecturer[])
-        setTracks(t as CurriculumTrack[])
+        const activeCurriculum = (c as any[])[0]
+        if (activeCurriculum && activeCurriculum.tracks) {
+          const wLower = trimmed.toLowerCase()
+          const matchedTracks = activeCurriculum.tracks.filter((t: any) => 
+            t.title?.toLowerCase().includes(wLower) || 
+            t.copy?.toLowerCase().includes(wLower)
+          )
+          setTracks(matchedTracks as TrackType[])
+        } else {
+          setTracks([])
+        }
         setLoading(false)
       })
       .catch(() => {

@@ -57,13 +57,15 @@ export default async function HomePage() {
   const [lecturersRes, newsRes, tracksRes, partnersRes] = await Promise.all([
     payload.find({ collection: 'lecturers', depth: 1, limit: 4 }).catch(() => ({ docs: [] })),
     payload.find({ collection: 'news', depth: 1, limit: 3, sort: '-publishedAt' }).catch(() => ({ docs: [] })),
-    payload.find({ collection: 'curriculum-tracks', depth: 1, limit: 10, sort: 'number' }).catch(() => ({ docs: [] })),
+    payload.find({ collection: 'curriculums', where: { isActive: { equals: true } }, depth: 1, limit: 1 }).catch(() => ({ docs: [] })),
     payload.find({ collection: 'partners', depth: 1, limit: 10 }).catch(() => ({ docs: [] })),
   ])
 
   const lecturers = (lecturersRes as { docs: any[] }).docs ?? []
   const news = (newsRes as { docs: any[] }).docs ?? []
-  const dbTracks = (tracksRes as { docs: any[] }).docs ?? []
+  const curriculumsDocs = (tracksRes as { docs: any[] }).docs ?? []
+  const activeCurriculum = curriculumsDocs[0]
+  const dbTracks = activeCurriculum?.tracks ?? []
   const partners = (partnersRes as { docs: any[] }).docs ?? []
 
   const tracks =

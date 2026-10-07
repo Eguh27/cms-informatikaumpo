@@ -73,7 +73,7 @@ export interface Config {
     users: User;
     lecturers: Lecturer;
     news: News;
-    'curriculum-tracks': CurriculumTrack;
+    curriculums: Curriculum;
     partners: Partner;
     downloads: Download;
     redirects: Redirect;
@@ -99,7 +99,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     lecturers: LecturersSelect<false> | LecturersSelect<true>;
     news: NewsSelect<false> | NewsSelect<true>;
-    'curriculum-tracks': CurriculumTracksSelect<false> | CurriculumTracksSelect<true>;
+    curriculums: CurriculumsSelect<false> | CurriculumsSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     downloads: DownloadsSelect<false> | DownloadsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -769,21 +769,48 @@ export interface Lecturer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "curriculum-tracks".
+ * via the `definition` "curriculums".
  */
-export interface CurriculumTrack {
+export interface Curriculum {
   id: number;
-  number?: string | null;
-  title: string;
-  copy: string;
-  tags?:
+  name: string;
+  /**
+   * Jika dicentang, kurikulum ini yang akan ditampilkan di halaman Akademik website.
+   */
+  isActive?: boolean | null;
+  tracks?:
     | {
-        tag?: string | null;
+        number?: string | null;
+        title: string;
+        copy: string;
+        tags?:
+          | {
+              tag?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        prospects?: string | null;
+        icon?: string | null;
         id?: string | null;
       }[]
     | null;
-  prospects?: string | null;
-  icon?: string | null;
+  semesters?:
+    | {
+        stage: number;
+        label: string;
+        focus: string;
+        courses?:
+          | {
+              code: string;
+              name: string;
+              sks: number;
+              type: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1026,8 +1053,8 @@ export interface PayloadLockedDocument {
         value: number | News;
       } | null)
     | ({
-        relationTo: 'curriculum-tracks';
-        value: number | CurriculumTrack;
+        relationTo: 'curriculums';
+        value: number | Curriculum;
       } | null)
     | ({
         relationTo: 'partners';
@@ -1407,20 +1434,44 @@ export interface NewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "curriculum-tracks_select".
+ * via the `definition` "curriculums_select".
  */
-export interface CurriculumTracksSelect<T extends boolean = true> {
-  number?: T;
-  title?: T;
-  copy?: T;
-  tags?:
+export interface CurriculumsSelect<T extends boolean = true> {
+  name?: T;
+  isActive?: T;
+  tracks?:
     | T
     | {
-        tag?: T;
+        number?: T;
+        title?: T;
+        copy?: T;
+        tags?:
+          | T
+          | {
+              tag?: T;
+              id?: T;
+            };
+        prospects?: T;
+        icon?: T;
         id?: T;
       };
-  prospects?: T;
-  icon?: T;
+  semesters?:
+    | T
+    | {
+        stage?: T;
+        label?: T;
+        focus?: T;
+        courses?:
+          | T
+          | {
+              code?: T;
+              name?: T;
+              sks?: T;
+              type?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
