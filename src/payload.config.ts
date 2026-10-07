@@ -10,7 +10,7 @@ import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
 import { Lecturers } from './collections/Lecturers'
 import { News } from './collections/News'
-import { CurriculumTracks } from './collections/CurriculumTracks'
+import { Curriculums } from './collections/Curriculums'
 import { Partners } from './collections/Partners'
 import { Downloads } from './collections/Downloads'
 import { Footer } from './Footer/config'
@@ -72,7 +72,7 @@ export default buildConfig({
       url: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Pages, Media, Categories, Users, Lecturers, News, CurriculumTracks, Partners, Downloads],
+  collections: [Pages, Media, Categories, Users, Lecturers, News, Curriculums, Partners, Downloads],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteMedia],
   plugins,
