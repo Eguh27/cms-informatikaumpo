@@ -81,6 +81,28 @@ const nextConfig: NextConfig = {
     return webpackConfig
   },
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        source: '/media/:path*',
+        headers: [
+          {
+            key: 'Content-Disposition',
+            value: 'inline',
+          },
+        ],
+      },
+      {
+        source: '/api/media/file/:path*',
+        headers: [
+          {
+            key: 'Content-Disposition',
+            value: 'inline',
+          },
+        ],
+      },
+    ]
+  },
   redirects,
   turbopack: {
     root: path.resolve(dirname),
