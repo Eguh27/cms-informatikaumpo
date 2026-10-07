@@ -10,6 +10,36 @@ export const Curriculums: CollectionConfig = {
   access: {
     read: () => true,
   },
+  hooks: {
+    afterChange: [
+      async ({ doc, req, operation }) => {
+        if ((operation === 'create' || operation === 'update') && doc.isActive === true) {
+          const { payload } = req
+          const otherActive = await payload.find({
+            collection: 'curriculums',
+            where: {
+              and: [
+                { id: { not_equals: doc.id } },
+                { isActive: { equals: true } },
+              ],
+            },
+            depth: 0,
+          })
+
+          for (const other of otherActive.docs) {
+            await payload.update({
+              collection: 'curriculums',
+              id: other.id,
+              data: {
+                isActive: false,
+              },
+              req,
+            })
+          }
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'name',
