@@ -4,9 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { cn } from '@/utilities/ui'
-import { PxChip } from './px-chip'
 import { SITE_MEDIA } from '@/data/siteMedia'
-import { Sparkles } from 'lucide-react'
 
 export interface BreadcrumbItem {
   label: string

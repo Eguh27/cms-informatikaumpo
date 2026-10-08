@@ -3,7 +3,6 @@
 import { cn } from '@/utilities/ui'
 import { type VariantProps, cva } from 'class-variance-authority'
 import * as React from 'react'
-import { ChevronRight } from 'lucide-react'
 
 const sectionTagVariants = cva(
   'inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest',

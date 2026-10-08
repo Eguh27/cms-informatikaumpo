@@ -20,7 +20,7 @@ import { ParallaxEffects } from '@/components/parallax/ParallaxEffects'
 import { ParallaxHero } from '@/components/parallax/ParallaxHero'
 import { SectionTag, WaveDivider } from '@/components/parallax/ParallaxBits'
 import { LecturerAvatar } from '@/components/LecturerAvatar'
-import { SITE_LINKS, SITE_MEDIA, resolveMediaUrl } from '@/data/siteMedia'
+import { SITE_LINKS, resolveMediaUrl } from '@/data/siteMedia'
 import { getSiteMedia } from '@/utilities/getSiteMedia'
 
 const FALLBACK_TRACKS = [
