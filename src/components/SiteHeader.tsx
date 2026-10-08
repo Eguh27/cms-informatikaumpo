@@ -5,15 +5,28 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Search, Menu, X, ChevronDown } from 'lucide-react'
 import { SearchOverlay } from './SearchOverlay'
-import { NavDropdown } from './NavDropdown'
+import { NavDropdown, NAV_ITEM_CLASS, NAV_ITEM_ACTIVE_CLASS } from './NavDropdown'
 import { SITE_LINKS, SITE_MEDIA } from '@/data/siteMedia'
 import { CMSLink } from '@/components/Link'
 import type { Header as HeaderType } from '@/payload-types'
 
+/** Flat section link, sharing the dropdown trigger's footprint and states. */
+function NavLink({ href, label, isActive }: { href: string; label: string; isActive?: boolean }) {
+  return (
+    <Link
+      href={href}
+      aria-current={isActive ? 'page' : undefined}
+      className={`${NAV_ITEM_CLASS} ${isActive ? NAV_ITEM_ACTIVE_CLASS : ''}`}
+    >
+      {label}
+    </Link>
+  )
+}
+
 export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerData?: HeaderType }) {
   const [scrollY, setScrollY] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [mobileExpanded, setMobileExpanded] = useState<'profil' | 'akademik' | 'pendaftaran' | null>(null)
+  const [mobileExpanded, setMobileExpanded] = useState<'akademik' | 'pendaftaran' | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const pathname = usePathname()
 
@@ -58,71 +71,11 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
             </span>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden items-center gap-4 xl:flex text-[#203f6b]">
-            <Link
-              href="/"
-              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname === '/' ? 'text-[#1453d6] font-bold' : ''}`}
-            >
-              Beranda
-            </Link>
-
-            <NavDropdown
-              label="Profil"
-              href="/profil"
-              isActive={pathname.startsWith('/profil')}
-              items={[
-                {
-                  label: 'Profil Program Studi',
-                  desc: 'Sejarah pendirian prodi',
-                  href: '/profil',
-                },
-                {
-                  label: 'Visi, Misi & Tujuan',
-                  desc: 'Arah dan tujuan pendidikan',
-                  href: '/profil#visimisi',
-                },
-                {
-                  label: 'Struktur Organisasi',
-                  desc: 'Bagan organisasi prodi',
-                  href: '/profil#struktur',
-                },
-                {
-                  label: 'Akreditasi BAN-PT',
-                  desc: 'Peringkat B terakreditasi resmi',
-                  href: '/profil#akreditasi',
-                },
-                {
-                  label: 'Kontak & Lokasi',
-                  desc: 'Alamat, hotline dan jam layanan',
-                  href: '/kontak',
-                },
-              ]}
-            />
-            <Link
-              href="/dosen"
-              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/dosen') ? 'text-[#1453d6] font-bold' : ''}`}
-            >
-              Dosen
-            </Link>
-            <Link
-              href="/fasilitas"
-              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/fasilitas') ? 'text-[#1453d6] font-bold' : ''}`}
-            >
-              Fasilitas
-            </Link>
-            <Link
-              href="/berita"
-              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/berita') ? 'text-[#1453d6] font-bold' : ''}`}
-            >
-              Berita
-            </Link>
-            <Link
-              href="/download"
-              className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${pathname.startsWith('/download') ? 'text-[#1453d6] font-bold' : ''}`}
-            >
-              Unduhan
-            </Link>
+          {/* Desktop Navigation Links — ordered by how visitors arrive:
+              orientasi, identitas, isi akademik, lalu sumber daya & aksi. */}
+          <div className="hidden items-center gap-0.5 xl:flex">
+            <NavLink href="/" label="Beranda" isActive={pathname === '/'} />
+            <NavLink href="/profil" label="Profil" isActive={pathname.startsWith('/profil')} />
 
             <NavDropdown
               label="Akademik"
@@ -141,6 +94,12 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
                 },
               ]}
             />
+
+            <NavLink href="/dosen" label="Dosen" isActive={pathname.startsWith('/dosen')} />
+            <NavLink href="/fasilitas" label="Fasilitas" isActive={pathname.startsWith('/fasilitas')} />
+            <NavLink href="/berita" label="Berita" isActive={pathname.startsWith('/berita')} />
+            <NavLink href="/download" label="Unduhan" isActive={pathname.startsWith('/download')} />
+
             <NavDropdown
               label="Pendaftaran"
               isActive={pathname.startsWith('/pendaftaran')}
@@ -210,7 +169,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
               href={SITE_LINKS.pmb}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full px-6 py-3 text-sm font-bold transition-all hover:-translate-y-0.5 bg-[#1453d6] text-white shadow-[0_10px_24px_rgba(20,83,214,.25)] hover:bg-[#0f44b3]"
+              className="rounded-full px-6 py-3 text-sm font-bold transition-colors bg-[#1453d6] text-white shadow-[0_10px_24px_rgba(20,83,214,.25)] hover:bg-[#0f44b3]"
             >
               Pendaftaran PMB
             </a>
@@ -252,73 +211,12 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
               >
                 Beranda
               </Link>
-              <div className="border-b border-[#e4ebfb]">
-                <div className="flex w-full items-center justify-between">
-                  <Link
-                    href="/profil"
-                    className="flex-1 py-3.5 text-left text-sm font-semibold text-[#16356e]"
-                  >
-                    Profil Program Studi
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => setMobileExpanded(mobileExpanded === 'profil' ? null : 'profil')}
-                    aria-expanded={mobileExpanded === 'profil'}
-                    aria-label={`${mobileExpanded === 'profil' ? 'Tutup' : 'Buka'} submenu Profil`}
-                    aria-controls="submenu-seluler-profil"
-                    className="grid size-11 place-items-center rounded-full text-[#1453d6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9]"
-                  >
-                    <ChevronDown
-                      className={`size-5 transition-transform ${mobileExpanded === 'profil' ? 'rotate-180' : ''}`}
-                      aria-hidden="true"
-                    />
-                  </button>
-                </div>
-                {mobileExpanded === 'profil' && (
-                  <ul id="submenu-seluler-profil" aria-label="Submenu Profil" className="pb-2 pl-4">
-                    <li>
-                      <Link
-                        href="/profil"
-                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
-                      >
-                        Profil Program Studi
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/profil#visimisi"
-                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
-                      >
-                        Visi, Misi & Tujuan
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/profil#struktur"
-                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
-                      >
-                        Struktur Organisasi
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/profil#akreditasi"
-                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
-                      >
-                        Akreditasi BAN-PT
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/kontak"
-                        className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
-                      >
-                        Kontak & Lokasi
-                      </Link>
-                    </li>
-                  </ul>
-                )}
-              </div>
+              <Link
+                href="/profil"
+                className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
+              >
+                Profil Program Studi
+              </Link>
 
               <Link
                 href="/dosen"

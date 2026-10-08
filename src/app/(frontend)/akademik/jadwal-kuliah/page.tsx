@@ -153,7 +153,7 @@ export default async function JadwalKuliahPage() {
               Sementara itu, tanyakan jadwal kelasmu lewat hotline prodi.
             </p>
             <Link
-              href="/kontak"
+              href="/profil#kontak"
               className="mt-6 inline-flex min-h-[44px] items-center rounded-full bg-[#1453d6] px-6 py-3 text-xs font-bold text-white transition hover:bg-[#08235b]"
             >
               Hubungi Sekretariat Prodi

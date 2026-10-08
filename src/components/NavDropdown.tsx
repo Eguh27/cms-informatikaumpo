@@ -4,6 +4,28 @@ import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ChevronDown, ExternalLink } from 'lucide-react'
 
+/**
+ * Shared footprint for every top-level navbar entry, so plain links and
+ * dropdown triggers read as one evenly weighted row instead of a scattered
+ * list. Vertical rhythm comes from `min-h-[44px]`, horizontal rhythm from
+ * `--nav-item-pad-x` (set in globals.css, shared with the underline) plus the
+ * parent's near-zero gap.
+ *
+ * Hover stays typographic only — a colour shift plus the underline drawn by
+ * `.nav-link:hover::after`. No background fill anywhere in the row, including
+ * the current page.
+ */
+export const NAV_ITEM_CLASS =
+  'nav-link inline-flex min-h-[44px] items-center rounded-full text-sm font-semibold text-[#203f6b] transition-colors duration-200 hover:text-[#1453d6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9]'
+
+/**
+ * Current-page treatment: blue text plus the underline that
+ * `.nav-link[aria-current='page']::after` keeps on. No background and no
+ * weight bump — `font-bold` loses the cascade to `font-semibold` in Tailwind's
+ * output, and the persistent underline is the non-colour marker anyway.
+ */
+export const NAV_ITEM_ACTIVE_CLASS = 'text-[#1453d6]'
+
 export type NavSubItem = {
   label: string
   desc?: string
@@ -68,21 +90,21 @@ export function NavDropdown({ label, href, items, isActive }: NavDropdownProps) 
         {href ? (
           <Link
             href={href}
-            className={`nav-link inline-flex min-h-[44px] items-center text-sm font-semibold transition ${
-              isActive ? 'text-[#1453d6] font-bold' : ''
-            }`}
+            aria-current={isActive ? 'page' : undefined}
+            className={`${NAV_ITEM_CLASS} ${isActive ? NAV_ITEM_ACTIVE_CLASS : ''}`}
           >
             {label}
           </Link>
         ) : (
           <span
-            className={`nav-link cursor-default text-sm font-semibold transition ${
-              isActive ? 'text-[#1453d6] font-bold' : ''
-            }`}
+            className={`${NAV_ITEM_CLASS} cursor-default ${isActive ? NAV_ITEM_ACTIVE_CLASS : ''}`}
           >
             {label}
           </span>
         )}
+        {/* Chevron hugs its label: a 44px-wide button here read as an unrelated
+            item and broke the row's rhythm. The link beside it still supplies
+            the 44px-tall row height. */}
         <button
           ref={toggleRef}
           type="button"
@@ -90,7 +112,7 @@ export function NavDropdown({ label, href, items, isActive }: NavDropdownProps) 
           aria-haspopup="true"
           aria-expanded={open}
           aria-label={`${open ? 'Tutup' : 'Buka'} submenu ${label}`}
-          className="grid min-h-[44px] min-w-[44px] place-items-center rounded-full text-current transition hover:bg-[#eaf0ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9]"
+          className="-ml-2 grid size-7 shrink-0 place-items-center rounded-full text-current transition-colors duration-200 hover:text-[#1453d6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9]"
         >
           <ChevronDown
             className={`size-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}

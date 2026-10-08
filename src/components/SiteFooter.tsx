@@ -41,7 +41,7 @@ export function SiteFooter({ logoSrc }: { logoSrc?: string }) {
               <li><Link href="/fasilitas" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Fasilitas Laboratorium</Link></li>
               <li><Link href="/berita" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Berita & Pengumuman</Link></li>
               <li><Link href="/download" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Pusat Unduhan</Link></li>
-              <li><Link href="/kontak" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Kontak & Lokasi</Link></li>
+              <li><Link href="/profil#kontak" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Kontak & Lokasi</Link></li>
               <li><Link href="/pendaftaran/magang" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Pendaftaran Magang</Link></li>
             </ul>
           </div>

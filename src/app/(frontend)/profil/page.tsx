@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { PageBanner } from "@/components/PageBanner";
+import { KontakContent } from "@/components/KontakContent";
 import {
   BookOpen,
   Award,
@@ -11,14 +12,15 @@ import {
   CheckCircle2,
   Calendar,
   ExternalLink,
+  MapPin,
   Users,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
 
-type ProfilTab = "sejarah" | "visimisi" | "struktur" | "akreditasi";
+type ProfilTab = "sejarah" | "visimisi" | "struktur" | "akreditasi" | "kontak";
 
-const TABS: ProfilTab[] = ["sejarah", "visimisi", "struktur", "akreditasi"];
+const TABS: ProfilTab[] = ["sejarah", "visimisi", "struktur", "akreditasi", "kontak"];
 
 function tabFromHash(): ProfilTab | null {
   if (typeof window === "undefined") return null;
@@ -30,7 +32,8 @@ export default function ProfilPage() {
   const [activeTab, setActiveTab] = useState<ProfilTab>("sejarah");
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
-  // Deep-link support: /profil#visimisi (used by navbar dropdown) opens the right tab
+  // Deep-link support: /profil#visimisi or /profil#kontak (linked from the
+  // navbar, footer and search overlay) opens the right tab
   useEffect(() => {
     const apply = () => {
       const t = tabFromHash();
@@ -70,7 +73,7 @@ export default function ProfilPage() {
       <PageBanner
         // category="Identitas & Legalitas"
         title="Profil Program Studi"
-        subtitle="Mengenal lebih dekat Program Studi S1 Teknik Informatika Universitas Muhammadiyah Ponorogo, sejarah pendirian, visi misi keunggulan, struktur organisasi, dan akreditasi resmi."
+        subtitle="Mengenal lebih dekat Program Studi S1 Teknik Informatika Universitas Muhammadiyah Ponorogo, sejarah pendirian, visi misi keunggulan, struktur organisasi, akreditasi resmi, dan kontak layanan."
         breadcrumbs={[
           { label: "Beranda", href: "/" },
           { label: "Profil Prodi" },
@@ -88,6 +91,7 @@ export default function ProfilPage() {
             { id: "visimisi", label: "Visi, Misi & Tujuan", icon: Award },
             { id: "struktur", label: "Struktur Organisasi", icon: Layers },
             { id: "akreditasi", label: "Akreditasi BAN-PT", icon: ShieldCheck },
+            { id: "kontak", label: "Kontak & Lokasi", icon: MapPin },
           ].map((tab, index) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -445,12 +449,12 @@ export default function ProfilPage() {
                   >
                     Unduh Dokumen Akreditasi <ExternalLink className="size-3.5" />
                   </a>
-                  <Link
-                    href="/kontak"
+                  <button
+                    onClick={() => selectTab("kontak")}
                     className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:border-[#1453d6] hover:text-[#1453d6] transition"
                   >
                     Konsultasi dengan Prodi
-                  </Link>
+                  </button>
                 </div>
               </div>
 
@@ -467,6 +471,19 @@ export default function ProfilPage() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Tab 5: Kontak & Lokasi */}
+        {activeTab === "kontak" && (
+          <div
+            role="tabpanel"
+            id="tabpanel-kontak"
+            aria-labelledby="tab-kontak"
+            tabIndex={0}
+            className="animate-in fade-in duration-300 focus:outline-none"
+          >
+            <KontakContent />
           </div>
         )}
       </div>

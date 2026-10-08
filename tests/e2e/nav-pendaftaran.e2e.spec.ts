@@ -55,21 +55,36 @@ test.describe('Navbar Pendaftaran & Akademik', () => {
     await expect(nav.submenu('Pendaftaran')).toBeHidden()
   })
 
-  test('dropdown Profil memuat Kontak di dalamnya, tanpa tautan Kontak mandiri', async ({ page }) => {
+  test('Profil jadi tautan langsung tanpa dropdown, Kontak jadi tab di /profil', async ({ page }) => {
     const nav = new SiteNav(page)
-    await nav.openSubmenu('Profil')
-
-    const menu = nav.submenu('Profil')
-    await expect(menu.getByRole('link', { name: /kontak/i })).toHaveAttribute('href', '/kontak')
-    await expect(menu.getByRole('link', { name: /visi/i })).toHaveAttribute(
-      'href',
-      '/profil#visimisi',
-    )
-    await expect(nav.header.getByRole('link', { name: 'Kontak', exact: true })).toHaveCount(0)
+    // Sub-halaman profil kini hidup sebagai tab pill di dalam /profil,
+    // jadi navbar tidak lagi punya dropdown Profil.
+    await expect(nav.submenuToggle('Profil')).toHaveCount(0)
+    await expect(nav.submenu('Profil')).toHaveCount(0)
     await expect(nav.header.getByRole('link', { name: 'Profil', exact: true })).toHaveAttribute(
       'href',
       '/profil',
     )
+    // Kontak bukan lagi menu navbar di level mana pun.
+    await expect(nav.header.getByRole('link', { name: /^kontak/i })).toHaveCount(0)
+
+    await nav.header.getByRole('link', { name: 'Profil', exact: true }).click()
+    const kontakTab = page.getByRole('tab', { name: /kontak & lokasi/i })
+    await expect(kontakTab).toBeVisible()
+
+    await kontakTab.click()
+    await expect(kontakTab).toHaveAttribute('aria-selected', 'true')
+    await expect(page.getByRole('heading', { name: /kirim pesan ke admin prodi/i })).toBeVisible()
+  })
+
+  test('/kontak dialihkan ke tab Kontak di /profil', async ({ page }) => {
+    await page.goto(`${BASE}/kontak`)
+    await expect(page).toHaveURL(/\/profil#kontak$/)
+    await expect(page.getByRole('tab', { name: /kontak & lokasi/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+    await expect(page.getByRole('heading', { name: /kampus 1 umpo/i })).toBeVisible()
   })
 
   test('dropdown Akademik memuat Jadwal Kuliah dan induk tetap tautan', async ({ page }) => {
@@ -115,24 +130,24 @@ test.describe('Navbar Pendaftaran & Akademik', () => {
 test.describe('Menu seluler', () => {
   test.use({ viewport: { width: 390, height: 844 } })
 
-  test('akordeon Pendaftaran dan Akademik memuat semua tautan', async ({ page }) => {
+  test('akordeon Pendaftaran dan Akademik memuat semua tautan, Profil tetap datar', async ({ page }) => {
     await page.goto(BASE)
     const nav = new SiteNav(page)
     await nav.hamburger.click()
     await expect(page.getByRole('button', { name: /^pendaftaran$/i })).toBeVisible()
 
     await page.getByRole('button', { name: /^pendaftaran$/i }).click()
-    const panel = page.getByRole('list', { name: 'Submenu Pendaftaran' })
-    await expect(panel).toBeVisible()
-    await expect(panel.getByRole('link', { name: /magang/i })).toHaveAttribute(
+    const daftar = page.getByRole('list', { name: 'Submenu Pendaftaran' })
+    await expect(daftar).toBeVisible()
+    await expect(daftar.getByRole('link', { name: /magang/i })).toHaveAttribute(
       'href',
       '/pendaftaran/magang',
     )
-    await expect(panel.getByRole('link', { name: /kkn/i })).toHaveAttribute(
+    await expect(daftar.getByRole('link', { name: /kkn/i })).toHaveAttribute(
       'href',
       'https://giat.umpo.ac.id/',
     )
-    await expect(panel.getByRole('link', { name: /skripsi/i })).toHaveAttribute(
+    await expect(daftar.getByRole('link', { name: /skripsi/i })).toHaveAttribute(
       'href',
       'https://siskrip.simakumpo.com/',
     )
@@ -144,11 +159,12 @@ test.describe('Menu seluler', () => {
       '/akademik/jadwal-kuliah',
     )
 
-    await page.getByRole('button', { name: /submenu profil/i }).click()
-    const profil = page.getByRole('list', { name: 'Submenu Profil' })
-    await expect(profil.getByRole('link', { name: /kontak/i })).toHaveAttribute(
+    // Profil mengikuti pola yang sama: tautan datar, tanpa submenu.
+    await expect(page.getByRole('button', { name: /submenu profil/i })).toHaveCount(0)
+    await expect(nav.header.getByRole('link', { name: /profil program studi/i })).toHaveAttribute(
       'href',
-      '/kontak',
+      '/profil',
     )
+    await expect(nav.header.getByRole('link', { name: /^kontak/i })).toHaveCount(0)
   })
 })

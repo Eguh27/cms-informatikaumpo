@@ -43,7 +43,7 @@ const SECTIONS: Section[] = [
     label: 'Profil',
     href: '/profil',
     hint: 'Sejarah, visi misi, struktur, akreditasi',
-    keywords: 'sejarah visi misi struktur organisasi akreditasi ban-pt berdiri',
+    keywords: 'sejarah visi misi struktur organisasi akreditasi ban-pt berdiri kontak alamat lokasi',
   },
   {
     id: 'akademik',
@@ -83,7 +83,7 @@ const SECTIONS: Section[] = [
   {
     id: 'kontak',
     label: 'Kontak',
-    href: '/kontak',
+    href: '/profil#kontak',
     hint: 'Alamat, telepon, dan WhatsApp',
     keywords: 'kontak alamat telepon wa whatsapp lokasi peta sekretariat',
   },
