@@ -37,7 +37,21 @@ export type SiteMediaKey = keyof typeof SITE_MEDIA
 export function resolveMediaUrl(media: unknown, fallback: string): string {
   if (typeof media === 'object' && media !== null && 'url' in media) {
     const url = (media as { url?: unknown }).url
-    if (typeof url === 'string' && url.length > 0) return url
+    if (typeof url === 'string' && url.length > 0) {
+      // If the URL contains the server URL (e.g. http://localhost:3000/media/...), 
+      // strip it to make it a relative path. This ensures it works across local IPs.
+      try {
+        const parsedUrl = new URL(url)
+        // Only strip if it's not an external URL (e.g., if it matches our localhost or NEXT_PUBLIC_SERVER_URL)
+        if (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1' || url.startsWith(process.env.NEXT_PUBLIC_SERVER_URL || '')) {
+           return parsedUrl.pathname + parsedUrl.search + parsedUrl.hash
+        }
+      } catch (e) {
+        // Not a valid absolute URL, probably already relative
+        return url
+      }
+      return url
+    }
   }
   return fallback
 }
