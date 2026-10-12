@@ -1,0 +1,47 @@
+{
+  "Navigation": {
+    "home": "Beranda",
+    "profile": "Profil",
+    "history": "Sejarah & Visi Misi",
+    "lecturers": "Dosen & Staf",
+    "facilities": "Fasilitas Lab",
+    "academics": "Akademik",
+    "curriculum": "Kurikulum & Peminatan",
+    "schedule": "Jadwal Perkuliahan",
+    "calendar": "Kalender Akademik",
+    "news": "Berita",
+    "downloads": "Unduhan",
+    "admissions": "Pendaftaran",
+    "internship": "Kerja Praktik / Magang",
+    "kkn": "Kuliah Kerja Nyata (KKN)",
+    "thesis": "Tugas Akhir / Skripsi",
+    "pmb": "Pendaftaran PMB",
+    "search": "Cari di website",
+    "more": "Lainnya"
+  },
+  "Common": {
+    "search": "Cari",
+    "searchPlaceholder": "Cari mata kuliah, berita, dosen...",
+    "downloadPdf": "Unduh PDF",
+    "viewDocument": "Lihat Dokumen",
+    "readMore": "Baca Selengkapnya",
+    "active": "Aktif",
+    "all": "Semua",
+    "close": "Tutup",
+    "sks": "SKS",
+    "semester": "Semester",
+    "stage": "Tahap",
+    "contact": "Kontak",
+    "address": "Alamat",
+    "phone": "Telepon",
+    "email": "Email"
+  },
+  "Curriculum": {
+    "title": "Kurikulum & Peminatan",
+    "subtitle": "Peta kurikulum berbasis OBE yang dirancang adaptif terhadap industri teknologi modern.",
+    "tracksTitle": "Bidang Minat & Spesialisasi",
+    "coursesTitle": "Distribusi Mata Kuliah Per Semester",
+    "activeNotice": "Kurikulum Aktif",
+    "noActive": "Belum ada kurikulum aktif yang dipublikasikan."
+  }
+}

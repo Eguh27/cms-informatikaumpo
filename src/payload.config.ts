@@ -21,13 +21,28 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 
 import { id } from '@payloadcms/translations/languages/id'
+import { en } from '@payloadcms/translations/languages/en'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  localization: {
+    locales: [
+      {
+        label: 'Bahasa Indonesia',
+        code: 'id',
+      },
+      {
+        label: 'English',
+        code: 'en',
+      },
+    ],
+    defaultLocale: 'id',
+    fallback: true,
+  },
   i18n: {
-    supportedLanguages: { id },
+    supportedLanguages: { id, en },
   },
   admin: {
     components: {
@@ -71,6 +86,7 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URL || '',
     },
+    push: false,
   }),
   collections: [Pages, Media, Categories, Users, Lecturers, News, Curriculums, Partners, Downloads],
   cors: [getServerSideURL()].filter(Boolean),
