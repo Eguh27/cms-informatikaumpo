@@ -29,7 +29,7 @@ export function SiteHeader({
   locale: initialLocale,
 }: {
   logoSrc?: string
-  headerData?: HeaderType
+  headerData?: HeaderType | null
   locale?: 'id' | 'en'
 }) {
   const [scrollY, setScrollY] = useState(0)

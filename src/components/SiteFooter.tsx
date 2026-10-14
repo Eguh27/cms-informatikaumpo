@@ -2,8 +2,19 @@ import React from 'react'
 import Link from 'next/link'
 import { MapPin, Phone, Mail, ChevronRight } from 'lucide-react'
 import { SITE_LINKS, SITE_MEDIA } from '@/data/siteMedia'
+import { resolveFooterContent } from '@/data/footerFallback'
 
-export function SiteFooter({ logoSrc }: { logoSrc?: string }) {
+export function SiteFooter({
+  logoSrc,
+  footerData,
+  locale = 'id',
+}: {
+  logoSrc?: string
+  footerData?: any
+  locale?: 'id' | 'en'
+}) {
+  const content = resolveFooterContent(footerData, locale)
+
   return (
     <footer className="bg-[#06183d] text-white pt-20 pb-10 mt-auto">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -25,52 +36,66 @@ export function SiteFooter({ logoSrc }: { logoSrc?: string }) {
               </span>
             </div>
             <p className="text-sm text-blue-100/70 leading-relaxed mb-6">
-              Program Studi Sarjana (S1) Teknik Informatika Universitas Muhammadiyah Ponorogo. Mencetak lulusan yang unggul, inovatif, dan berakhlak mulia di bidang teknologi informasi.
+              {content.description}
             </p>
           </div>
 
           {/* Navigasi */}
           <div>
-            <h4 className="font-display text-lg font-bold mb-6">Navigasi</h4>
+            <h4 className="font-display text-lg font-bold mb-6">{content.navTitle}</h4>
             <ul className="space-y-3 text-sm text-blue-100/70">
-              <li><Link href="/" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Beranda</Link></li>
-              <li><Link href="/profil" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Profil Program Studi</Link></li>
-              <li><Link href="/akademik" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Akademik & Kurikulum</Link></li>
-              <li><Link href="/akademik/jadwal-kuliah" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Jadwal Kuliah</Link></li>
-              <li><Link href="/dosen" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Dosen & Tendik</Link></li>
-              <li><Link href="/fasilitas" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Fasilitas Laboratorium</Link></li>
-              <li><Link href="/berita" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Berita & Pengumuman</Link></li>
-              <li><Link href="/download" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Pusat Unduhan</Link></li>
-              <li><Link href="/profil#kontak" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Kontak & Lokasi</Link></li>
-              <li><Link href="/pendaftaran/magang" className="hover:text-white transition flex items-center gap-2"><ChevronRight className="size-3" /> Pendaftaran Magang</Link></li>
+              {content.navItems.map((item) => (
+                <li key={item.url}>
+                  <Link href={item.url} className="hover:text-white transition flex items-center gap-2">
+                    <ChevronRight className="size-3" /> {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Kontak */}
           <div className="lg:col-span-2">
-            <h4 className="font-display text-lg font-bold mb-6">Kontak & Lokasi</h4>
+            <h4 className="font-display text-lg font-bold mb-6">{content.contactTitle}</h4>
             <ul className="space-y-4 text-sm text-blue-100/70">
               <li className="flex items-start gap-3">
                 <MapPin className="size-5 text-[#82aeff] shrink-0" />
-                <span>Kampus 1 Universitas Muhammadiyah Ponorogo<br/>Jl. Budi Utomo No.10, Ronowijayan, Kec. Siman, Kabupaten Ponorogo, Jawa Timur 63471</span>
+                <span className="whitespace-pre-line">{content.address}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="size-5 text-[#82aeff] shrink-0" />
-                <span>+62 822-6786-8648 (Sekretariat Prodi)</span>
+                <span>
+                  {content.phone}
+                  {content.phoneNote ? ` (${content.phoneNote})` : ''}
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="size-5 text-[#82aeff] shrink-0" />
-                <span>informatika@umpo.ac.id</span>
+                <span>{content.email}</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-8 flex flex-col md:flex-row items-center justify-between text-xs text-blue-100/50 gap-4">
-          <p>© {new Date().getFullYear()} Teknik Informatika Universitas Muhammadiyah Ponorogo.</p>
+          <p>© {new Date().getFullYear()} {content.copyrightText}</p>
           <div className="flex items-center gap-4">
-            <a href={SITE_LINKS.portalUmpo} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Portal UMPO</a>
-            <a href={SITE_LINKS.pmb} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">PMB Online</a>
+            <a
+              href={content.portalUrl || SITE_LINKS.portalUmpo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition"
+            >
+              {content.portalLabel}
+            </a>
+            <a
+              href={content.pmbUrl || SITE_LINKS.pmb}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition"
+            >
+              {content.pmbLabel}
+            </a>
           </div>
         </div>
       </div>

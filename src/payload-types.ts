@@ -1804,21 +1804,28 @@ export interface Header {
  */
 export interface Footer {
   id: number;
+  description?: string | null;
+  navTitle?: string | null;
+  /**
+   * Kelola tautan menu navigasi footer. Anda dapat menambah, menghapus, atau menggeser urutan.
+   */
   navItems?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: number | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-        };
+        label: string;
+        url: string;
         id?: string | null;
       }[]
     | null;
+  contactTitle?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  phoneNote?: string | null;
+  email?: string | null;
+  copyrightText?: string | null;
+  portalLabel?: string | null;
+  portalUrl?: string | null;
+  pmbLabel?: string | null;
+  pmbUrl?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1929,20 +1936,25 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  description?: T;
+  navTitle?: T;
   navItems?:
     | T
     | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
+        label?: T;
+        url?: T;
         id?: T;
       };
+  contactTitle?: T;
+  address?: T;
+  phone?: T;
+  phoneNote?: T;
+  email?: T;
+  copyrightText?: T;
+  portalLabel?: T;
+  portalUrl?: T;
+  pmbLabel?: T;
+  pmbUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
