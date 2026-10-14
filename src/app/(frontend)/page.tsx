@@ -22,44 +22,78 @@ import { SectionTag, WaveDivider } from '@/components/parallax/ParallaxBits'
 import { LecturerAvatar } from '@/components/LecturerAvatar'
 import { SITE_LINKS, resolveMediaUrl } from '@/data/siteMedia'
 import { getSiteMedia } from '@/utilities/getSiteMedia'
+import { getCurrentLocale } from '@/utilities/getLocale'
+import { resolveHomeContent } from '@/data/homeFallback'
 
-const FALLBACK_TRACKS = [
-  {
-    number: '01',
-    title: 'Kecerdasan Buatan & Sistem Cerdas',
-    copy: 'Algoritma komputasi mutakhir untuk otomasi industri: computer vision, machine learning, IoT, dan deep learning.',
-    tags: ['Computer Vision', 'Machine Learning', 'IoT', 'Deep Learning'],
-    prospects: 'AI Engineer, Data Scientist, IoT Architect',
-    icon: 'Cpu',
-  },
-  {
-    number: '02',
-    title: 'Rekayasa Perangkat Lunak & Data',
-    copy: 'Arsitektur sistem informasi modern: web & cloud, mobile apps, database systems, dan DevOps berskala besar.',
-    tags: ['Web & Cloud', 'Mobile Development', 'Database', 'DevOps'],
-    prospects: 'Software Engineer, Fullstack Developer, DBA',
-    icon: 'Code2',
-  },
-  {
-    number: '03',
-    title: 'Infrastruktur Jaringan & Keamanan Siber',
-    copy: 'Keamanan siber dan jaringan enterprise: Cisco routing, cyber security, cloud computing, dan ethical hacking.',
-    tags: ['Cisco & Mikrotik', 'Cyber Security', 'Cloud', 'Ethical Hacking'],
-    prospects: 'Network Engineer, SOC Analyst, Cloud Specialist',
-    icon: 'Network',
-  },
-]
+const FALLBACK_TRACKS: Record<'id' | 'en', any[]> = {
+  id: [
+    {
+      number: '01',
+      title: 'Kecerdasan Buatan & Sistem Cerdas',
+      copy: 'Algoritma komputasi mutakhir untuk otomasi industri: computer vision, machine learning, IoT, dan deep learning.',
+      tags: ['Computer Vision', 'Machine Learning', 'IoT', 'Deep Learning'],
+      prospects: 'AI Engineer, Data Scientist, IoT Architect',
+      icon: 'Cpu',
+    },
+    {
+      number: '02',
+      title: 'Rekayasa Perangkat Lunak & Data',
+      copy: 'Arsitektur sistem informasi modern: web & cloud, mobile apps, database systems, dan DevOps berskala besar.',
+      tags: ['Web & Cloud', 'Mobile Development', 'Database', 'DevOps'],
+      prospects: 'Software Engineer, Fullstack Developer, DBA',
+      icon: 'Code2',
+    },
+    {
+      number: '03',
+      title: 'Infrastruktur Jaringan & Keamanan Siber',
+      copy: 'Keamanan siber dan jaringan enterprise: Cisco routing, cyber security, cloud computing, dan ethical hacking.',
+      tags: ['Cisco & Mikrotik', 'Cyber Security', 'Cloud', 'Ethical Hacking'],
+      prospects: 'Network Engineer, SOC Analyst, Cloud Specialist',
+      icon: 'Network',
+    },
+  ],
+  en: [
+    {
+      number: '01',
+      title: 'Artificial Intelligence & Intelligent Systems',
+      copy: 'Cutting-edge computational algorithms for industrial automation: computer vision, machine learning, IoT, and deep learning.',
+      tags: ['Computer Vision', 'Machine Learning', 'IoT', 'Deep Learning'],
+      prospects: 'AI Engineer, Data Scientist, IoT Architect',
+      icon: 'Cpu',
+    },
+    {
+      number: '02',
+      title: 'Software Engineering & Data Architecture',
+      copy: 'Modern information systems architecture: web & cloud, mobile apps, database systems, and large-scale DevOps.',
+      tags: ['Web & Cloud', 'Mobile Development', 'Database', 'DevOps'],
+      prospects: 'Software Engineer, Fullstack Developer, DBA',
+      icon: 'Code2',
+    },
+    {
+      number: '03',
+      title: 'Network Infrastructure & Cybersecurity',
+      copy: 'Enterprise network security and systems: Cisco routing, cybersecurity, cloud computing, and ethical hacking.',
+      tags: ['Cisco & Mikrotik', 'Cyber Security', 'Cloud', 'Ethical Hacking'],
+      prospects: 'Network Engineer, SOC Analyst, Cloud Specialist',
+      icon: 'Network',
+    },
+  ],
+}
 
 export default async function HomePage() {
+  const locale = await getCurrentLocale()
   const payload = await getPayload({ config: configPromise })
   const siteMedia = await getSiteMedia()
 
-  const [lecturersRes, newsRes, tracksRes, partnersRes] = await Promise.all([
-    payload.find({ collection: 'lecturers', depth: 1, limit: 4 }).catch(() => ({ docs: [] })),
-    payload.find({ collection: 'news', depth: 1, limit: 3, sort: '-publishedAt' }).catch(() => ({ docs: [] })),
-    payload.find({ collection: 'curriculums', where: { isActive: { equals: true } }, depth: 1, limit: 1 }).catch(() => ({ docs: [] })),
-    payload.find({ collection: 'partners', depth: 1, limit: 10 }).catch(() => ({ docs: [] })),
+  const [homeRes, lecturersRes, newsRes, tracksRes, partnersRes] = await Promise.all([
+    payload.findGlobal({ slug: 'home-page', locale }).catch(() => null),
+    payload.find({ collection: 'lecturers', depth: 1, limit: 4, locale }).catch(() => ({ docs: [] })),
+    payload.find({ collection: 'news', depth: 1, limit: 3, sort: '-publishedAt', locale }).catch(() => ({ docs: [] })),
+    payload.find({ collection: 'curriculums', where: { isActive: { equals: true } }, depth: 1, limit: 1, locale }).catch(() => ({ docs: [] })),
+    payload.find({ collection: 'partners', depth: 1, limit: 10, locale }).catch(() => ({ docs: [] })),
   ])
+
+  const home = resolveHomeContent(homeRes, locale)
 
   const lecturers = (lecturersRes as { docs: any[] }).docs ?? []
   const news = (newsRes as { docs: any[] }).docs ?? []
@@ -78,7 +112,13 @@ export default async function HomePage() {
           prospects: t.prospects ?? '',
           icon: t.icon ?? 'Cpu',
         }))
-      : FALLBACK_TRACKS
+      : (FALLBACK_TRACKS[locale] || FALLBACK_TRACKS.id)
+
+  const isEn = locale === 'en'
+  const profilPath = isEn ? '/en/profil' : '/profil'
+  const dosenPath = isEn ? '/en/dosen' : '/dosen'
+  const beritaPath = isEn ? '/en/berita' : '/berita'
+  const downloadPath = isEn ? '/en/download' : (home.ctaSecondaryBtnUrl || '/download')
 
   return (
     <main className="px-canvas" id="konten-utama">
@@ -86,7 +126,11 @@ export default async function HomePage() {
       <div className="px-progress" aria-hidden="true">
         <div className="px-progress-bar" data-scroll-progress />
       </div>
-      <ParallaxHero images={{ building: siteMedia.heroBuilding, cloud: siteMedia.heroCloud }} />
+      <ParallaxHero
+        images={{ building: siteMedia.heroBuilding, cloud: siteMedia.heroCloud }}
+        content={home}
+        locale={locale}
+      />
 
       {/* ============ PROFIL ============ */}
       <section id="profil" aria-labelledby="profil-title" data-story-section className="px-depth py-24 lg:py-32">
@@ -124,53 +168,50 @@ export default async function HomePage() {
                   <GraduationCap className="size-5" aria-hidden="true" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold uppercase tracking-wider text-[#4B6B94]">Gelar Kelulusan</div>
-                  <div className="font-display text-base font-extrabold text-[#0B3A8C]">S.Kom. (Sarjana Komputer)</div>
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#4B6B94]">{home.degreeTag}</div>
+                  <div className="font-display text-base font-extrabold text-[#0B3A8C]">{home.degreeTitle}</div>
                 </div>
               </div>
               <p className="mt-2.5 text-xs leading-relaxed text-[#4B6B94]">
-                &ldquo;Membangun talenta digital berkarakter Islami untuk masa depan yang lebih baik.&rdquo;
+                {home.degreeQuote}
               </p>
             </div>
           </div>
 
           <div className="lg:pl-8">
             <div data-reveal-item>
-              <SectionTag>Profil Program Studi</SectionTag>
+              <SectionTag>{home.profileSectionTag}</SectionTag>
             </div>
             <h2 id="profil-title" data-split-reveal className="mt-5 font-display text-4xl font-extrabold leading-tight tracking-[-.04em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
-              Teknik Informatika UMPO
+              {home.profileTitle}
             </h2>
             <p data-reveal-item className="mt-6 text-base leading-relaxed text-[#4B6B94] md:text-lg">
-              Program studi Teknik Informatika merupakan salah satu prodi jenjang S1 unggulan
-              Universitas Muhammadiyah Ponorogo yang berdiri tahun 2005 dengan izin{' '}
-              <strong className="text-[#0B3A8C]">SK Ditjen DIKTI No. 378/D/T/2005</strong>. Telah
-              terakreditasi BAN-PT <strong className="text-[#0B3A8C]">Peringkat B</strong>.
+              {home.profileDescription}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/profil"
+                href={profilPath}
                 className="inline-flex items-center gap-2 rounded-full bg-[#1E6FD9] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:-translate-y-0.5 hover:bg-[#0B3A8C]"
               >
-                <BookOpen className="size-4" aria-hidden="true" /> Baca Sejarah Prodi
+                <BookOpen className="size-4" aria-hidden="true" /> {home.btnHistoryText}
               </Link>
               <Link
-                href="/profil#visimisi"
+                href={`${profilPath}#visimisi`}
                 className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[#1E6FD9]/30 bg-[#FFFBF5] px-7 py-3.5 text-sm font-bold text-[#0B3A8C] transition-all hover:-translate-y-0.5 hover:border-[#1E6FD9] hover:bg-[#EAF4FF]"
               >
-                <Award className="size-4 text-[#FFB84D]" aria-hidden="true" /> Visi, Misi &amp; Roadmap
+                <Award className="size-4 text-[#FFB84D]" aria-hidden="true" /> {home.btnVisiMisiText}
               </Link>
             </div>
             <div className="mt-9 grid grid-cols-2 gap-5">
               <div className="rounded-3xl border border-white/60 bg-white/70 p-6 shadow-[0_12px_32px_rgba(15,42,74,0.08)] backdrop-blur-xl">
-                <div className="font-display text-4xl font-extrabold text-[#1E6FD9]">2</div>
-                <div className="mt-2 text-sm font-bold text-[#0F2A4A]">Laboratorium Terpadu</div>
-                <div className="mt-0.5 text-xs text-[#4B6B94]">Lab Jaringan IoT &amp; Lab RPL</div>
+                <div className="font-display text-4xl font-extrabold text-[#1E6FD9]">{home.quickStat1Number}</div>
+                <div className="mt-2 text-sm font-bold text-[#0F2A4A]">{home.quickStat1Title}</div>
+                <div className="mt-0.5 text-xs text-[#4B6B94]">{home.quickStat1Desc}</div>
               </div>
               <div className="rounded-3xl border border-white/20 bg-[#1E6FD9]/85 p-6 text-white shadow-[0_16px_36px_rgba(30,111,217,0.25)] backdrop-blur-xl">
-                <div className="font-display text-4xl font-extrabold text-[#FFE8CC]">1:18</div>
-                <div className="mt-2 text-sm font-bold">Rasio Dosen &amp; Mahasiswa</div>
-                <div className="mt-0.5 text-xs text-white/80">Pendampingan intensif &amp; fokus</div>
+                <div className="font-display text-4xl font-extrabold text-[#FFE8CC]">{home.quickStat2Number}</div>
+                <div className="mt-2 text-sm font-bold">{home.quickStat2Title}</div>
+                <div className="mt-0.5 text-xs text-white/80">{home.quickStat2Desc}</div>
               </div>
             </div>
           </div>
@@ -198,14 +239,14 @@ export default async function HomePage() {
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <div data-reveal-item>
-                <SectionTag>Kurikulum Masa Depan</SectionTag>
+                <SectionTag>{home.curriculumSectionTag}</SectionTag>
               </div>
               <h2 id="kurikulum-title" data-split-reveal className="mt-4 max-w-2xl font-display text-3xl font-extrabold tracking-[-.04em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
-                Pilih fokusmu. Ciptakan terobosanmu.
+                {home.curriculumTitle}
               </h2>
             </div>
             <p data-reveal-item className="max-w-md text-base leading-relaxed text-[#4B6B94]">
-              Tiga rumpun kompetensi keilmuan yang dirancang bersama industri, ditampilkan berdampingan sehingga mudah dibandingkan.
+              {home.curriculumDescription}
             </p>
           </div>
 
@@ -235,7 +276,7 @@ export default async function HomePage() {
                   <div className="min-h-6 flex-1" aria-hidden="true" />
                   {!!program.prospects && (
                     <p className="flex items-center justify-between gap-3 border-t border-slate-100 pt-4 text-sm font-bold text-[#1E6FD9]">
-                      <span>Prospek: {program.prospects}</span>
+                      <span>{isEn ? 'Prospects:' : 'Prospek:'} {program.prospects}</span>
                       <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                     </p>
                   )}
@@ -251,8 +292,8 @@ export default async function HomePage() {
                   <BookOpen className="size-6 text-[#B45309]" aria-hidden="true" />
                 </div>
                 <div>
-                  <div className="font-bold text-[#0B3A8C]">Struktur Kurikulum &amp; Silabus Mata Kuliah</div>
-                  <div className="text-xs text-[#4B6B94]">Unduh dokumen kurikulum lengkap dari Google Drive resmi prodi</div>
+                  <div className="font-bold text-[#0B3A8C]">{home.driveCardTitle}</div>
+                  <div className="text-xs text-[#4B6B94]">{home.driveCardSubtitle}</div>
                 </div>
               </div>
               <a
@@ -261,7 +302,7 @@ export default async function HomePage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#1E6FD9] px-6 py-3 text-xs font-bold text-white shadow-md transition-all hover:bg-[#0B3A8C]"
               >
-                Unduh Kurikulum (Drive) <ExternalLink className="size-3.5" aria-hidden="true" />
+                {home.driveBtnText} <ExternalLink className="size-3.5" aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -280,21 +321,22 @@ export default async function HomePage() {
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <div data-reveal-item>
-                <SectionTag>Tenaga Pendidik &amp; Peneliti</SectionTag>
+                <SectionTag>{isEn ? 'Faculty & Researchers' : 'Tenaga Pendidik & Peneliti'}</SectionTag>
               </div>
               <h2 id="dosen-title" data-split-reveal className="mt-4 max-w-2xl font-display text-4xl font-extrabold tracking-[-.04em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
-                Dosen &amp; pakar teknologi berdedikasi.
+                {isEn ? 'Dedicated educators & tech experts.' : 'Dosen & pakar teknologi berdedikasi.'}
               </h2>
             </div>
             <div data-reveal-item className="max-w-md">
               <p className="text-sm leading-relaxed text-[#4B6B94] md:text-base">
-                Akademisi &amp; praktisi Fakultas Teknik UMPO yang aktif membimbing, meneliti, dan
-                membawa teknologi industri ke ruang kelas.
+                {isEn
+                  ? 'Faculty of Engineering UMPO academics & practitioners actively mentoring, researching, and bringing industry tech into classes.'
+                  : 'Akademisi & praktisi Fakultas Teknik UMPO yang aktif membimbing, meneliti, dan membawa teknologi industri ke ruang kelas.'}
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-[#4B6B94]">
-                <span className="inline-flex items-center gap-1.5"><Award className="size-3.5 text-[#FFB84D]" aria-hidden="true" /> Dosen Tetap</span>
-                <span className="inline-flex items-center gap-1.5"><BadgeCheck className="size-3.5 text-emerald-600" aria-hidden="true" /> Ber-NIDN</span>
-                <span className="inline-flex items-center gap-1.5"><Cpu className="size-3.5 text-[#1E6FD9]" aria-hidden="true" /> Riset AI, RPL &amp; IoT</span>
+                <span className="inline-flex items-center gap-1.5"><Award className="size-3.5 text-[#FFB84D]" aria-hidden="true" /> {isEn ? 'Permanent Faculty' : 'Dosen Tetap'}</span>
+                <span className="inline-flex items-center gap-1.5"><BadgeCheck className="size-3.5 text-emerald-600" aria-hidden="true" /> {isEn ? 'Certified NIDN' : 'Ber-NIDN'}</span>
+                <span className="inline-flex items-center gap-1.5"><Cpu className="size-3.5 text-[#1E6FD9]" aria-hidden="true" /> {isEn ? 'AI, SE & IoT Research' : 'Riset AI, RPL & IoT'}</span>
               </div>
             </div>
           </div>
@@ -302,8 +344,10 @@ export default async function HomePage() {
           <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {lecturers.length === 0 && (
               <p data-reveal-item className="rounded-3xl border border-dashed border-[#1E6FD9]/30 bg-white/60 p-8 text-sm text-[#4B6B94] sm:col-span-2 lg:col-span-4">
-                Data dosen dimuat dari CMS Payload. Tambahkan data di panel admin untuk menampilkan
-                direktori di sini. <Link href="/dosen" className="font-bold text-[#1E6FD9] hover:underline">Buka halaman Dosen</Link>
+                {isEn ? 'Faculty data is loaded from CMS Payload.' : 'Data dosen dimuat dari CMS Payload.'}{' '}
+                <Link href={dosenPath} className="font-bold text-[#1E6FD9] hover:underline">
+                  {isEn ? 'Open Faculty Directory' : 'Buka halaman Dosen'}
+                </Link>
               </p>
             )}
             {lecturers.map((lecturer: any) => {
@@ -357,10 +401,10 @@ export default async function HomePage() {
 
           <div data-reveal-item className="mt-12 flex justify-center">
             <Link
-              href="/dosen"
+              href={dosenPath}
               className="group inline-flex items-center gap-3 rounded-full bg-[#1E6FD9] px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-md transition hover:-translate-y-0.5 hover:bg-[#0B3A8C]"
             >
-              Buka Direktori Dosen TI UMPO
+              {isEn ? 'Open Informatics Faculty Directory' : 'Buka Direktori Dosen TI UMPO'}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
             </Link>
           </div>
@@ -387,22 +431,21 @@ export default async function HomePage() {
         <div className="px-banner-lines" aria-hidden="true" />
         <div className="relative mx-auto w-full max-w-7xl px-5 py-24 lg:px-8 lg:py-32">
           <div data-reveal-item className="max-w-2xl text-white">
-            <SectionTag intent="light">Kehidupan Mahasiswa &amp; HIMATIF</SectionTag>
+            <SectionTag intent="light">{home.himatifSectionTag}</SectionTag>
             <h2 id="himatif-title" data-split-reveal className="mt-5 font-display text-5xl font-extrabold leading-[1.05] tracking-[-.045em] md:text-7xl">
-              Eksperimen. Kolaborasi. Bertumbuh.
+              {home.himatifTitle}
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#d3e1ff]">
-              Dari HIMATIF, coding bootcamp, hackathon, kompetisi nasional, hingga riset
-              pengabdian masyarakat — pengalaman belajarmu jauh melampaui ruang kelas.
+              {home.himatifDescription}
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
               <a
-                href="https://instagram.com/informatika.umpo"
+                href={home.himatifUrl || 'https://instagram.com/informatika.umpo'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 rounded-full bg-white px-7 py-3.5 font-bold text-[#134dbf] shadow-lg transition hover:-translate-y-1 hover:bg-[#e7eeff]"
               >
-                Lihat Instagram @informatika.umpo <ArrowRight className="size-4" aria-hidden="true" />
+                {home.himatifBtnText} <ArrowRight className="size-4" aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -425,21 +468,20 @@ export default async function HomePage() {
         />
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div data-reveal-item className="text-center">
-            <div className="flex justify-center"><SectionTag>Sarana &amp; Prasarana</SectionTag></div>
+            <div className="flex justify-center"><SectionTag>{home.facilitySectionTag}</SectionTag></div>
             <h2 id="fasilitas-title" data-split-reveal className="mt-4 font-display text-4xl font-extrabold tracking-[-.04em] text-[#0B3A8C] md:text-5xl">
-              Laboratorium Komputer Terpadu
+              {home.facilityTitle}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[#4B6B94]">
-              Infrastruktur praktikum modern untuk riset rekayasa perangkat lunak, kecerdasan
-              buatan, dan jaringan komputer.
+              {home.facilityDescription}
             </p>
           </div>
 
           <div className="mt-14 grid gap-8 md:grid-cols-3">
             {[
-              { icon: Network, title: 'Lab Jaringan & IoT', desc: 'Simulasi jaringan enterprise, router/switch Cisco & Mikrotik, IoT kit, dan cyber security.', foot: 'Ka. Lab: Angga Prasetyo, S.T., M.Kom.' },
-              { icon: Code2, title: 'Lab Rekayasa Perangkat Lunak', desc: 'Pengembangan web, mobile apps, database architecture, dan sistem informasi enterprise.', foot: 'Ka. Lab: Ir. Moh. Bhanu Setyawan, S.T., M.Kom.' },
-              { icon: BookOpen, title: 'Perpustakaan Pusat UMPO', desc: 'Ribuan literatur TIK, jurnal internasional (IEEE, ScienceDirect), e-library, dan ruang kolaborasi.', foot: 'library.umpo.ac.id', link: 'https://library.umpo.ac.id/' },
+              { icon: Network, title: home.facility1Title, desc: home.facility1Desc, foot: home.facility1Foot },
+              { icon: Code2, title: home.facility2Title, desc: home.facility2Desc, foot: home.facility2Foot },
+              { icon: BookOpen, title: home.facility3Title, desc: home.facility3Desc, foot: home.facility3Foot, link: home.facility3Link },
             ].map((f) => {
               const Icon = f.icon
               return (
@@ -452,7 +494,7 @@ export default async function HomePage() {
                   <div className="mt-6 border-t border-slate-100 pt-4 text-xs font-semibold text-[#1E6FD9]">
                     {f.link ? (
                       <a href={f.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:underline">
-                        Buka Perpustakaan UMPO <ExternalLink className="size-3" aria-hidden="true" />
+                        {f.foot} <ExternalLink className="size-3" aria-hidden="true" />
                       </a>
                     ) : (
                       f.foot
@@ -469,9 +511,11 @@ export default async function HomePage() {
       <section aria-labelledby="mitra-title" data-story-section className="border-y border-slate-200 bg-white py-14">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div data-reveal-item className="text-center">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#1E6FD9]">Our Strategic Partners</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-[#1E6FD9]">
+              {isEn ? 'Our Strategic Partners' : 'Mitra Strategis Kami'}
+            </div>
             <h2 id="mitra-title" className="mt-2 font-display text-2xl font-bold text-[#0B3A8C]">
-              Kemitraan Industri &amp; Teknologi Global
+              {isEn ? 'Global Industry & Technology Partnerships' : 'Kemitraan Industri & Teknologi Global'}
             </h2>
           </div>
           <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
@@ -479,7 +523,9 @@ export default async function HomePage() {
               ['Oracle Academy', 'Cisco Academy', 'Microsoft Education', 'PAKO Group', 'Kemdiktisaintek'].map((name) => (
                 <div key={name} data-reveal-item className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
                   <div className="font-display text-base font-bold text-[#0B3A8C]">{name}</div>
-                  <div className="mt-1 text-[11px] text-[#4B6B94]">Mitra strategis prodi</div>
+                  <div className="mt-1 text-[11px] text-[#4B6B94]">
+                    {isEn ? 'Strategic partner' : 'Mitra strategis prodi'}
+                  </div>
                 </div>
               ))}
             {partners.map((partner: any) => (
@@ -506,22 +552,29 @@ export default async function HomePage() {
         />
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div data-reveal-item>
-            <SectionTag>Cerita &amp; Pengumuman</SectionTag>
+            <SectionTag>{isEn ? 'Stories & Announcements' : 'Cerita & Pengumuman'}</SectionTag>
             <h2 id="berita-title" data-split-reveal className="mt-5 font-display text-4xl font-extrabold tracking-[-.04em] text-[#0B3A8C] md:text-6xl">
-              Yang sedang terjadi.
+              {isEn ? 'What’s happening.' : 'Yang sedang terjadi.'}
             </h2>
           </div>
 
           <div className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
             {news.length === 0 && (
               <p data-reveal-item className="rounded-3xl border border-dashed border-[#1E6FD9]/30 bg-white p-8 text-sm text-[#4B6B94] md:col-span-2 lg:col-span-3">
-                Belum ada berita dari CMS. Tambahkan konten di koleksi News panel admin. <Link href="/berita" className="font-bold text-[#1E6FD9] hover:underline">Buka arsip Berita</Link>
+                {isEn ? 'No news articles available from CMS yet.' : 'Belum ada berita dari CMS.'}{' '}
+                <Link href={beritaPath} className="font-bold text-[#1E6FD9] hover:underline">
+                  {isEn ? 'Open News Archive' : 'Buka arsip Berita'}
+                </Link>
               </p>
             )}
             {news.map((item: any) => {
               const imageUrl = resolveMediaUrl(item.image, '')
               const dateStr = item.publishedAt
-                ? new Date(item.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+                ? new Date(item.publishedAt).toLocaleDateString(isEn ? 'en-US' : 'id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })
                 : ''
               return (
                 <article
@@ -532,9 +585,9 @@ export default async function HomePage() {
                   <div>
                     {imageUrl ? (
                       <div
-                          className="px-media relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-slate-100"
-                          data-parallax-media
-                        >
+                        className="px-media relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-slate-100"
+                        data-parallax-media
+                      >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={imageUrl}
@@ -544,12 +597,14 @@ export default async function HomePage() {
                           className="px-media-img transition-[scale] duration-700 group-hover:scale-105"
                         />
                         <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#1E6FD9]">
-                        {typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}
+                          {typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}
                         </span>
                       </div>
                     ) : (
                       <div className="flex aspect-[16/6] items-center justify-between rounded-2xl bg-[#0B3A8C] p-6 text-white">
-                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}</span>
+                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">
+                          {typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}
+                        </span>
                         <Bookmark className="size-5 text-white/50" aria-hidden="true" />
                       </div>
                     )}
@@ -568,10 +623,10 @@ export default async function HomePage() {
                   </div>
                   <div className="mt-4 border-t border-slate-100 pt-4">
                     <Link
-                      href={`/berita/${item.slug}`}
+                      href={isEn ? `/en/berita/${item.slug}` : `/berita/${item.slug}`}
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E6FD9] hover:text-[#0B3A8C]"
                     >
-                      Baca Selengkapnya <ArrowUpRight className="size-3.5" aria-hidden="true" />
+                      {isEn ? 'Read More' : 'Baca Selengkapnya'} <ArrowUpRight className="size-3.5" aria-hidden="true" />
                     </Link>
                   </div>
                 </article>
@@ -581,10 +636,10 @@ export default async function HomePage() {
 
           <div data-reveal-item className="mt-12 text-center">
             <Link
-              href="/berita"
+              href={beritaPath}
               className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
             >
-              Lihat Semua Berita <ArrowRight className="size-4" aria-hidden="true" />
+              {isEn ? 'View All News' : 'Lihat Semua Berita'} <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -600,26 +655,26 @@ export default async function HomePage() {
           <div className="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full border-[3rem] border-white/5" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-36 -right-20 size-96 rounded-full border-[4rem] border-white/5" aria-hidden="true" />
           <div className="relative">
-            <h2 id="pmb-title" className="mx-auto mt-5 max-w-3xl font-display text-4xl font-extrabold tracking-[-.045em] md:text-6xl">
-              Siap menjadi bagian dari Teknik Informatika UMPO?
+            <h2 id="pmb-title" className="mx-auto mt-5 max-w-3xl font-display text-4xl font-extrabold tracking-[-.04em] md:text-6xl">
+              {home.ctaTitle}
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-lg text-[#c9dcff]">
-              Mulai perjalananmu dan ciptakan inovasi teknologi yang bermakna bagi bangsa dan umat.
+              {home.ctaDescription}
             </p>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
               <a
-                href={SITE_LINKS.pmb}
+                href={home.ctaPrimaryBtnUrl || SITE_LINKS.pmb}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-full bg-white px-7 py-4 font-bold text-[#124bb8] shadow-xl transition hover:-translate-y-1"
               >
-                Daftar Sekarang (spmb.umpo.ac.id)
+                {home.ctaPrimaryBtnText}
               </a>
               <Link
-                href="/download"
+                href={downloadPath}
                 className="inline-flex items-center justify-center rounded-full border border-white/30 px-7 py-4 font-bold text-white transition hover:bg-white/10"
               >
-                Unduh Panduan &amp; Template
+                {home.ctaSecondaryBtnText}
               </Link>
             </div>
           </div>

@@ -121,11 +121,13 @@ export interface Config {
     header: Header;
     footer: Footer;
     'site-media': SiteMedia;
+    'home-page': HomePage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'site-media': SiteMediaSelect<false> | SiteMediaSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
   };
   locale: 'id' | 'en';
   widgets: {
@@ -1835,6 +1837,72 @@ export interface SiteMedia {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  heroTitle?: string | null;
+  heroLead?: string | null;
+  heroPrimaryCtaText?: string | null;
+  heroSecondaryCtaText?: string | null;
+  heroScrollCue?: string | null;
+  stat1Value?: string | null;
+  stat1Label?: string | null;
+  stat2Value?: string | null;
+  stat2Label?: string | null;
+  stat3Value?: string | null;
+  stat3Label?: string | null;
+  stat4Value?: string | null;
+  stat4Label?: string | null;
+  profileSectionTag?: string | null;
+  profileTitle?: string | null;
+  profileDescription?: string | null;
+  btnHistoryText?: string | null;
+  btnVisiMisiText?: string | null;
+  degreeTag?: string | null;
+  degreeTitle?: string | null;
+  degreeQuote?: string | null;
+  quickStat1Number?: string | null;
+  quickStat1Title?: string | null;
+  quickStat1Desc?: string | null;
+  quickStat2Number?: string | null;
+  quickStat2Title?: string | null;
+  quickStat2Desc?: string | null;
+  curriculumSectionTag?: string | null;
+  curriculumTitle?: string | null;
+  curriculumDescription?: string | null;
+  driveCardTitle?: string | null;
+  driveCardSubtitle?: string | null;
+  driveBtnText?: string | null;
+  himatifSectionTag?: string | null;
+  himatifTitle?: string | null;
+  himatifDescription?: string | null;
+  himatifBtnText?: string | null;
+  himatifUrl?: string | null;
+  facilitySectionTag?: string | null;
+  facilityTitle?: string | null;
+  facilityDescription?: string | null;
+  facility1Title?: string | null;
+  facility1Desc?: string | null;
+  facility1Foot?: string | null;
+  facility2Title?: string | null;
+  facility2Desc?: string | null;
+  facility2Foot?: string | null;
+  facility3Title?: string | null;
+  facility3Desc?: string | null;
+  facility3Foot?: string | null;
+  facility3Link?: string | null;
+  ctaTitle?: string | null;
+  ctaDescription?: string | null;
+  ctaPrimaryBtnText?: string | null;
+  ctaPrimaryBtnUrl?: string | null;
+  ctaSecondaryBtnText?: string | null;
+  ctaSecondaryBtnUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1888,6 +1956,72 @@ export interface SiteMediaSelect<T extends boolean = true> {
   heroBuilding?: T;
   heroCloud?: T;
   himatifBanner?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  heroTitle?: T;
+  heroLead?: T;
+  heroPrimaryCtaText?: T;
+  heroSecondaryCtaText?: T;
+  heroScrollCue?: T;
+  stat1Value?: T;
+  stat1Label?: T;
+  stat2Value?: T;
+  stat2Label?: T;
+  stat3Value?: T;
+  stat3Label?: T;
+  stat4Value?: T;
+  stat4Label?: T;
+  profileSectionTag?: T;
+  profileTitle?: T;
+  profileDescription?: T;
+  btnHistoryText?: T;
+  btnVisiMisiText?: T;
+  degreeTag?: T;
+  degreeTitle?: T;
+  degreeQuote?: T;
+  quickStat1Number?: T;
+  quickStat1Title?: T;
+  quickStat1Desc?: T;
+  quickStat2Number?: T;
+  quickStat2Title?: T;
+  quickStat2Desc?: T;
+  curriculumSectionTag?: T;
+  curriculumTitle?: T;
+  curriculumDescription?: T;
+  driveCardTitle?: T;
+  driveCardSubtitle?: T;
+  driveBtnText?: T;
+  himatifSectionTag?: T;
+  himatifTitle?: T;
+  himatifDescription?: T;
+  himatifBtnText?: T;
+  himatifUrl?: T;
+  facilitySectionTag?: T;
+  facilityTitle?: T;
+  facilityDescription?: T;
+  facility1Title?: T;
+  facility1Desc?: T;
+  facility1Foot?: T;
+  facility2Title?: T;
+  facility2Desc?: T;
+  facility2Foot?: T;
+  facility3Title?: T;
+  facility3Desc?: T;
+  facility3Foot?: T;
+  facility3Link?: T;
+  ctaTitle?: T;
+  ctaDescription?: T;
+  ctaPrimaryBtnText?: T;
+  ctaPrimaryBtnUrl?: T;
+  ctaSecondaryBtnText?: T;
+  ctaSecondaryBtnUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
