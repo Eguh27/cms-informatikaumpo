@@ -42,17 +42,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Default locale is 'id'
-  const requestHeaders = new Headers(req.headers)
-  requestHeaders.set('x-locale', 'id')
-
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  })
-  response.cookies.set('NEXT_LOCALE', 'id', { path: '/' })
-  return response
+  return NextResponse.next()
 }
 
 export const config = {
