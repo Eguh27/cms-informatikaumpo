@@ -1,3 +1,15 @@
+export interface MisiItem {
+  no: string
+  title: string
+  desc: string
+}
+
+export interface TujuanItem {
+  no: string
+  title: string
+  desc: string
+}
+
 export interface ProfileContent {
   // Banner & Breadcrumbs
   bannerTitle: string
@@ -35,6 +47,16 @@ export interface ProfileContent {
   legal3Sub: string
   statNumber: string
   statCaption: string
+
+  // Tab 2: Visi Misi & Tujuan
+  visiBadge: string
+  visiText: string
+  misiTag: string
+  misiTitle: string
+  misiItems: MisiItem[]
+  tujuanTag: string
+  tujuanTitle: string
+  tujuanItems: TujuanItem[]
 }
 
 export const FALLBACK_PROFILE_CONTENT: Record<'id' | 'en', ProfileContent> = {
@@ -75,6 +97,59 @@ export const FALLBACK_PROFILE_CONTENT: Record<'id' | 'en', ProfileContent> = {
     legal3Sub: 'Beban Studi 144 SKS (8 Semester)',
     statNumber: '20+ Tahun',
     statCaption: 'Dedikasi Pengabdian & Riset Komputasi',
+
+    // Tab 2: Visi Misi & Tujuan
+    visiBadge: 'Visi Keunggulan 2030',
+    visiText:
+      'Menjadi Program Studi Teknik Informatika yang unggul di tingkat nasional dalam pengembangan Kecerdasan Buatan (Artificial Intelligence) dan Rekayasa Perangkat Lunak berbasis nilai-nilai keislaman pada tahun 2030.',
+    misiTag: 'Tridharma Perguruan Tinggi',
+    misiTitle: 'Misi Program Studi',
+    misiItems: [
+      {
+        no: '1',
+        title: 'Pendidikan Berkualitas OBE',
+        desc: 'Menyelenggarakan pendidikan sarjana informatika berbasis kurikulum Outcome-Based Education dengan penguasaan AI dan Software Engineering mutakhir.',
+      },
+      {
+        no: '2',
+        title: 'Riset dan Inovasi Bereputasi',
+        desc: 'Melaksanakan penelitian bereputasi nasional dan internasional di bidang komputasi cerdas, sistem terdistribusi, dan keamanan siber.',
+      },
+      {
+        no: '3',
+        title: 'Pengabdian Berdampak Nyata',
+        desc: 'Menerapkan teknologi tepat guna dan solusi komputasi untuk kemaslahatan masyarakat dan persyarikatan Muhammadiyah.',
+      },
+      {
+        no: '4',
+        title: 'Internalisasi Karakter Islami',
+        desc: 'Menanamkan nilai-nilai Al-Islam dan Kemuhammadiyahan serta etika profesional bagi seluruh sivitas akademika.',
+      },
+    ],
+    tujuanTag: 'Sasaran Kompetensi',
+    tujuanTitle: 'Tujuan Strategis Lulusan',
+    tujuanItems: [
+      {
+        no: '1',
+        title: 'Kompetensi Profesional',
+        desc: 'Menghasilkan lulusan yang menguasai analisis, perancangan, implementasi, dan pengujian sistem komputasi berstandar industri.',
+      },
+      {
+        no: '2',
+        title: 'Inovator dan Peneliti Muda',
+        desc: 'Menghasilkan sarjana yang mampu melakukan riset terapan di bidang Artificial Intelligence dan Big Data Analytics.',
+      },
+      {
+        no: '3',
+        title: 'Technopreneurship',
+        desc: 'Mencetak wirausahawan teknologi yang kreatif, adaptif terhadap disrupsi digital, dan berdaya saing global.',
+      },
+      {
+        no: '4',
+        title: 'Integritas Moral & Etika',
+        desc: 'Menghasilkan lulusan yang berakhlak mulia, amanah, dan mampu menjadi teladan di lingkungan kerja dan masyarakat.',
+      },
+    ],
   },
   en: {
     bannerTitle: 'Department Profile',
@@ -113,6 +188,59 @@ export const FALLBACK_PROFILE_CONTENT: Record<'id' | 'en', ProfileContent> = {
     legal3Sub: 'Study Load 144 Credits (8 Semesters)',
     statNumber: '20+ Years',
     statCaption: 'Dedication to Service & Computing Research',
+
+    // Tab 2: Visi Misi & Tujuan (EN)
+    visiBadge: 'Vision of Excellence 2030',
+    visiText:
+      'To become an Informatics Engineering Study Program of national excellence in the development of Artificial Intelligence and Software Engineering grounded in Islamic values by 2030.',
+    misiTag: 'Higher Education Tridharma',
+    misiTitle: 'Department Missions',
+    misiItems: [
+      {
+        no: '1',
+        title: 'Quality OBE Education',
+        desc: 'Organizing undergraduate informatics education grounded in Outcome-Based Education curriculum with cutting-edge AI and Software Engineering mastery.',
+      },
+      {
+        no: '2',
+        title: 'Reputable Research & Innovation',
+        desc: 'Conducting nationally and internationally recognized research in intelligent computing, distributed systems, and cybersecurity.',
+      },
+      {
+        no: '3',
+        title: 'High-Impact Community Service',
+        desc: 'Applying appropriate computing technologies and solutions for the benefit of society and the Muhammadiyah organization.',
+      },
+      {
+        no: '4',
+        title: 'Islamic Character Internalization',
+        desc: 'Instilling Al-Islam and Kemuhammadiyahan values as well as professional ethics across all academic members.',
+      },
+    ],
+    tujuanTag: 'Competency Objectives',
+    tujuanTitle: 'Strategic Graduate Goals',
+    tujuanItems: [
+      {
+        no: '1',
+        title: 'Professional Competence',
+        desc: 'Producing graduates who master analysis, design, implementation, and testing of industry-standard computational systems.',
+      },
+      {
+        no: '2',
+        title: 'Young Innovators & Researchers',
+        desc: 'Producing scholars capable of conducting applied research in Artificial Intelligence and Big Data Analytics.',
+      },
+      {
+        no: '3',
+        title: 'Technopreneurship',
+        desc: 'Fostering technology entrepreneurs who are creative, adaptive to digital disruption, and globally competitive.',
+      },
+      {
+        no: '4',
+        title: 'Moral & Ethical Integrity',
+        desc: 'Producing graduates with noble morals, trustworthiness, and leadership capability in their workplaces and communities.',
+      },
+    ],
   },
 }
 
@@ -153,5 +281,29 @@ export function resolveProfileContent(cmsData: any, locale: 'id' | 'en'): Profil
     legal3Sub: d.legal3Sub || fallback.legal3Sub,
     statNumber: d.statNumber || fallback.statNumber,
     statCaption: d.statCaption || fallback.statCaption,
+
+    // Tab 2: Visi Misi & Tujuan
+    visiBadge: d.visiBadge || fallback.visiBadge,
+    visiText: d.visiText || fallback.visiText,
+    misiTag: d.misiTag || fallback.misiTag,
+    misiTitle: d.misiTitle || fallback.misiTitle,
+    misiItems:
+      Array.isArray(d.misiItems) && d.misiItems.length > 0
+        ? d.misiItems.map((item: any, idx: number) => ({
+            no: item?.no || String(idx + 1),
+            title: item?.title || '',
+            desc: item?.desc || '',
+          }))
+        : fallback.misiItems,
+    tujuanTag: d.tujuanTag || fallback.tujuanTag,
+    tujuanTitle: d.tujuanTitle || fallback.tujuanTitle,
+    tujuanItems:
+      Array.isArray(d.tujuanItems) && d.tujuanItems.length > 0
+        ? d.tujuanItems.map((item: any, idx: number) => ({
+            no: item?.no || String(idx + 1),
+            title: item?.title || '',
+            desc: item?.desc || '',
+          }))
+        : fallback.tujuanItems,
   }
 }

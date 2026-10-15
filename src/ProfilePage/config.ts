@@ -165,6 +165,75 @@ export const ProfilePage: GlobalConfig = {
             },
           ],
         },
+        {
+          label: 'Tab 2: Visi, Misi & Tujuan',
+          fields: [
+            {
+              type: 'collapsible',
+              label: 'Visi Program Studi',
+              fields: [
+                {
+                  name: 'visiBadge',
+                  type: 'text',
+                  localized: true,
+                  label: 'Badge Visi',
+                },
+                {
+                  name: 'visiText',
+                  type: 'textarea',
+                  localized: true,
+                  label: 'Pernyataan Visi Keunggulan',
+                },
+              ],
+            },
+            {
+              type: 'collapsible',
+              label: 'Misi Program Studi',
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'misiTag', type: 'text', localized: true, label: 'Tagline Misi', admin: { width: '50%' } },
+                    { name: 'misiTitle', type: 'text', localized: true, label: 'Judul Bagian Misi', admin: { width: '50%' } },
+                  ],
+                },
+                {
+                  name: 'misiItems',
+                  type: 'array',
+                  label: 'Daftar Butir Misi',
+                  fields: [
+                    { name: 'no', type: 'text', label: 'Nomor Urut', admin: { width: '20%' } },
+                    { name: 'title', type: 'text', localized: true, label: 'Judul Misi', admin: { width: '80%' } },
+                    { name: 'desc', type: 'textarea', localized: true, label: 'Deskripsi Misi' },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'collapsible',
+              label: 'Tujuan Strategis Lulusan',
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'tujuanTag', type: 'text', localized: true, label: 'Tagline Tujuan', admin: { width: '50%' } },
+                    { name: 'tujuanTitle', type: 'text', localized: true, label: 'Judul Bagian Tujuan', admin: { width: '50%' } },
+                  ],
+                },
+                {
+                  name: 'tujuanItems',
+                  type: 'array',
+                  label: 'Daftar Butir Tujuan',
+                  fields: [
+                    { name: 'no', type: 'text', label: 'Nomor Urut', admin: { width: '20%' } },
+                    { name: 'title', type: 'text', localized: true, label: 'Judul Tujuan', admin: { width: '80%' } },
+                    { name: 'desc', type: 'textarea', localized: true, label: 'Deskripsi Tujuan' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
   ],

@@ -217,12 +217,10 @@ export function ProfilClient({
             <div className="rounded-3xl border border-blue-200 bg-gradient-to-br from-[#06183d] to-[#0c317c] p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
               <div className="absolute -right-16 -top-16 size-64 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" />
               <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#6edbff] border border-white/20">
-                <Sparkles className="size-3.5" /> Visi Keunggulan 2030
+                <Sparkles className="size-3.5" /> {data.visiBadge}
               </div>
               <h2 className="mt-4 font-display text-2xl md:text-4xl font-bold leading-tight text-white max-w-4xl">
-                &ldquo;Menjadi Program Studi Teknik Informatika yang unggul di tingkat nasional dalam pengembangan
-                Kecerdasan Buatan (Artificial Intelligence) dan Rekayasa Perangkat Lunak berbasis nilai-nilai keislaman
-                pada tahun 2030.&rdquo;
+                &ldquo;{data.visiText}&rdquo;
               </h2>
             </div>
 
@@ -230,32 +228,18 @@ export function ProfilClient({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Misi */}
               <div className="rounded-3xl border border-slate-200/80 bg-white p-7 md:p-9 shadow-sm">
-                <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Tridharma Perguruan Tinggi</div>
-                <h3 className="mt-2 font-display text-2xl font-bold text-[#08235b]">Misi Program Studi</h3>
+                <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">
+                  {data.misiTag}
+                </div>
+                <h3 className="mt-2 font-display text-2xl font-bold text-[#08235b]">
+                  {data.misiTitle}
+                </h3>
                 <div className="mt-6 space-y-4">
-                  {[
-                    {
-                      no: "1",
-                      title: "Pendidikan Berkualitas OBE",
-                      desc: "Menyelenggarakan pendidikan sarjana informatika berbasis kurikulum Outcome-Based Education dengan penguasaan AI dan Software Engineering mutakhir.",
-                    },
-                    {
-                      no: "2",
-                      title: "Riset dan Inovasi Bereputasi",
-                      desc: "Melaksanakan penelitian bereputasi nasional dan internasional di bidang komputasi cerdas, sistem terdistribusi, dan keamanan siber.",
-                    },
-                    {
-                      no: "3",
-                      title: "Pengabdian Berdampak Nyata",
-                      desc: "Menerapkan teknologi tepat guna dan solusi komputasi untuk kemaslahatan masyarakat dan persyarikatan Muhammadiyah.",
-                    },
-                    {
-                      no: "4",
-                      title: "Internalisasi Karakter Islami",
-                      desc: "Menanamkan nilai-nilai Al-Islam dan Kemuhammadiyahan serta etika profesional bagi seluruh sivitas akademika.",
-                    },
-                  ].map((m) => (
-                    <div key={m.no} className="flex items-start gap-4 rounded-2xl bg-slate-50 p-4 border border-slate-100">
+                  {data.misiItems.map((m) => (
+                    <div
+                      key={m.no}
+                      className="flex items-start gap-4 rounded-2xl bg-slate-50 p-4 border border-slate-100"
+                    >
                       <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-[#1453d6] font-display text-xs font-bold text-white shadow-xs">
                         {m.no}
                       </span>
@@ -270,32 +254,18 @@ export function ProfilClient({
 
               {/* Tujuan */}
               <div className="rounded-3xl border border-slate-200/80 bg-white p-7 md:p-9 shadow-sm">
-                <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Sasaran Kompetensi</div>
-                <h3 className="mt-2 font-display text-2xl font-bold text-[#08235b]">Tujuan Strategis Lulusan</h3>
+                <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">
+                  {data.tujuanTag}
+                </div>
+                <h3 className="mt-2 font-display text-2xl font-bold text-[#08235b]">
+                  {data.tujuanTitle}
+                </h3>
                 <div className="mt-6 space-y-4">
-                  {[
-                    {
-                      no: "1",
-                      title: "Kompetensi Profesional",
-                      desc: "Menghasilkan lulusan yang menguasai analisis, perancangan, implementasi, dan pengujian sistem komputasi berstandar industri.",
-                    },
-                    {
-                      no: "2",
-                      title: "Inovator dan Peneliti Muda",
-                      desc: "Menghasilkan sarjana yang mampu melakukan riset terapan di bidang Artificial Intelligence dan Big Data Analytics.",
-                    },
-                    {
-                      no: "3",
-                      title: "Technopreneurship",
-                      desc: "Mencetak wirausahawan teknologi yang kreatif, adaptif terhadap disrupsi digital, dan berdaya saing global.",
-                    },
-                    {
-                      no: "4",
-                      title: "Integritas Moral & Etika",
-                      desc: "Menghasilkan lulusan yang berakhlak mulia, amanah, dan mampu menjadi teladan di lingkungan kerja dan masyarakat.",
-                    },
-                  ].map((t) => (
-                    <div key={t.no} className="flex items-start gap-4 rounded-2xl bg-slate-50 p-4 border border-slate-100">
+                  {data.tujuanItems.map((t) => (
+                    <div
+                      key={t.no}
+                      className="flex items-start gap-4 rounded-2xl bg-slate-50 p-4 border border-slate-100"
+                    >
                       <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-[#08235b] font-display text-xs font-bold text-white shadow-xs">
                         {t.no}
                       </span>

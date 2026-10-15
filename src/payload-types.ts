@@ -1945,6 +1945,28 @@ export interface ProfilePage {
   legal3Sub?: string | null;
   statNumber?: string | null;
   statCaption?: string | null;
+  visiBadge?: string | null;
+  visiText?: string | null;
+  misiTag?: string | null;
+  misiTitle?: string | null;
+  misiItems?:
+    | {
+        no?: string | null;
+        title?: string | null;
+        desc?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  tujuanTag?: string | null;
+  tujuanTitle?: string | null;
+  tujuanItems?:
+    | {
+        no?: string | null;
+        title?: string | null;
+        desc?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2112,6 +2134,28 @@ export interface ProfilePageSelect<T extends boolean = true> {
   legal3Sub?: T;
   statNumber?: T;
   statCaption?: T;
+  visiBadge?: T;
+  visiText?: T;
+  misiTag?: T;
+  misiTitle?: T;
+  misiItems?:
+    | T
+    | {
+        no?: T;
+        title?: T;
+        desc?: T;
+        id?: T;
+      };
+  tujuanTag?: T;
+  tujuanTitle?: T;
+  tujuanItems?:
+    | T
+    | {
+        no?: T;
+        title?: T;
+        desc?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
