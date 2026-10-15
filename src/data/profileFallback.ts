@@ -10,6 +10,11 @@ export interface TujuanItem {
   desc: string
 }
 
+export interface FaqItem {
+  q: string
+  a: string
+}
+
 export interface ProfileContent {
   // Banner & Breadcrumbs
   bannerTitle: string
@@ -57,6 +62,69 @@ export interface ProfileContent {
   tujuanTag: string
   tujuanTitle: string
   tujuanItems: TujuanItem[]
+
+  // Tab 3: Struktur Organisasi
+  strukturTag: string
+  strukturTitle: string
+  strukturDesc: string
+  kaprodiRole: string
+  kaprodiName: string
+  kaprodiNidn: string
+  sekprodiRole: string
+  sekprodiName: string
+  sekprodiNidn: string
+  gkmRole: string
+  gkmName: string
+  gkmSub: string
+  lab1Role: string
+  lab1Name: string
+  lab1Nidn: string
+  lab2Role: string
+  lab2Name: string
+  lab2Nidn: string
+  dosenBoxTitle: string
+  dosenBoxDesc: string
+  dosenBoxBtnLabel: string
+
+  // Tab 4: Akreditasi
+  akreditasiBadge: string
+  akreditasiTitle: string
+  akreditasiParagraph1: string
+  akreditasiParagraph2: string
+  akreditasiPoints: string[]
+  btnDocUrl: string
+  btnDocLabel: string
+  btnKonsultasiLabel: string
+  certGrade: string
+  certAgency: string
+  certSk: string
+  certScope: string
+
+  // Tab 5: Kontak & Lokasi
+  hotlineTitle: string
+  hotlineNotice: string
+  waNumber: string
+  waPhone: string
+  emailLabel: string
+  emailValue: string
+  emailAlt: string
+  hoursLabel: string
+  hoursValue: string
+  hoursAlt: string
+  locationLabel: string
+  locationValue: string
+  locationAlt: string
+  mapsEmbed: string
+  mapsDirections: string
+  mapsTitle: string
+  mapsAddress: string
+  faqTitle: string
+  faqSubtitle: string
+  faqs: FaqItem[]
+  pmbCardTitle: string
+  pmbCardDesc: string
+  pmbCardBtnLabel: string
+  pmbCardUrl: string
 }
 
 export const FALLBACK_PROFILE_CONTENT: Record<'id' | 'en', ProfileContent> = {
@@ -150,6 +218,99 @@ export const FALLBACK_PROFILE_CONTENT: Record<'id' | 'en', ProfileContent> = {
         desc: 'Menghasilkan lulusan yang berakhlak mulia, amanah, dan mampu menjadi teladan di lingkungan kerja dan masyarakat.',
       },
     ],
+
+    // Tab 3: Struktur Organisasi
+    strukturTag: 'Pimpinan & Pengelola Prodi',
+    strukturTitle: 'Struktur Organisasi Program Studi',
+    strukturDesc:
+      'Tata kelola kepemimpinan akademik Program Studi S1 Teknik Informatika Fakultas Teknik Universitas Muhammadiyah Ponorogo.',
+    kaprodiRole: 'Ketua Program Studi',
+    kaprodiName: 'Adi Fajaryanto Cobantoro, S.Kom., M.Kom.',
+    kaprodiNidn: 'NIDN: 0724098406',
+    sekprodiRole: 'Sekretaris Program Studi',
+    sekprodiName: 'Ismail Abdurrazzaq Zulkarnain, S.Kom., M.Kom.',
+    sekprodiNidn: 'NIDN: 0728078805',
+    gkmRole: 'Gugus Kendali Mutu (GKM)',
+    gkmName: 'Tim Penjaminan Mutu Akademik Prodi',
+    gkmSub: 'Audit & Pengendalian Standar SPMI',
+    lab1Role: 'Ka. Lab Jaringan Komputer & IoT',
+    lab1Name: 'Angga Prasetyo, S.T., M.Kom.',
+    lab1Nidn: 'NIDN: 0719088202',
+    lab2Role: 'Ka. Lab RPL & Komputer',
+    lab2Name: 'Ir. Moh. Bhanu Setyawan, S.T., M.Kom.',
+    lab2Nidn: 'NIDN: 0725028002',
+    dosenBoxTitle: 'Dosen Pengajar & Peneliti (21 Dosen Tetap)',
+    dosenBoxDesc:
+      'Tenaga pendidik berkualifikasi S2 dan S3 pada bidang Artificial Intelligence, Software Engineering, Jaringan, dan Data Science.',
+    dosenBoxBtnLabel: 'Buka Direktori Lengkap 21 Dosen',
+
+    // Tab 4: Akreditasi
+    akreditasiBadge: 'Status Resmi Terakreditasi',
+    akreditasiTitle: 'Peringkat Akreditasi BAN-PT & Komitmen Mutu',
+    akreditasiParagraph1:
+      'Program Studi S1 Teknik Informatika Fakultas Teknik Universitas Muhammadiyah Ponorogo telah meraih status Terakreditasi Peringkat B dari Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) berdasarkan SK BAN-PT No. 3418/SK/BAN-PT/Akred/S/IX/2019.',
+    akreditasiParagraph2:
+      'Pencapaian akreditasi ini membuktikan bahwa penyelenggaraan tridharma perguruan tinggi di Program Studi Teknik Informatika UMPO telah memenuhi standar nasional pendidikan tinggi dalam aspek:',
+    akreditasiPoints: [
+      'Kualifikasi dan kompetensi dosen pengajar berpendidikan S2 dan S3.',
+      'Kurikulum adaptif berbasis Outcome-Based Education (OBE) yang selaras dengan industri.',
+      'Ketersediaan sarana laboratorium komputasi dan jaringan yang representatif.',
+      'Produktivitas publikasi ilmiah, penelitian, dan pengabdian kepada masyarakat.',
+      'Sistem penjaminan mutu internal (SPMI) yang berjalan secara berkesinambungan.',
+    ],
+    btnDocUrl: 'https://teknik.umpo.ac.id/layanan-terpadu/',
+    btnDocLabel: 'Unduh Dokumen Akreditasi',
+    btnKonsultasiLabel: 'Konsultasi dengan Prodi',
+    certGrade: 'Peringkat “B”',
+    certAgency: 'BAN-PT Indonesia',
+    certSk: 'SK No. 3418/SK/BAN-PT/Akred/S/IX/2019',
+    certScope: 'Berlaku Nasional',
+
+    // Tab 5: Kontak & Lokasi
+    hotlineTitle: 'Hotline Sekretariat Prodi',
+    hotlineNotice: 'Di luar jam layanan, pesan dibalas pada hari kerja berikutnya.',
+    waNumber: '6282267868648',
+    waPhone: '0822-6786-8648',
+    emailLabel: 'Email resmi',
+    emailValue: 'informatika@umpo.ac.id',
+    emailAlt: 'teknik@umpo.ac.id',
+    hoursLabel: 'Jam layanan',
+    hoursValue: 'Senin–Jumat',
+    hoursAlt: '08.00–15.30 WIB',
+    locationLabel: 'Lokasi',
+    locationValue: 'Gedung Fakultas Teknik Lt. 2',
+    locationAlt: 'Jl. Budi Utomo No. 10, Ponorogo 63471',
+    mapsEmbed:
+      'https://www.google.com/maps?q=Universitas%20Muhammadiyah%20Ponorogo%20Jl.%20Budi%20Utomo%20No.10&output=embed',
+    mapsDirections:
+      'https://www.google.com/maps/dir/?api=1&destination=Universitas+Muhammadiyah+Ponorogo+Jl.+Budi+Utomo+No.+10',
+    mapsTitle: 'Kampus 1 UMPO — Fakultas Teknik',
+    mapsAddress: 'Jl. Budi Utomo No. 10, Ronowijayan, Siman, Ponorogo, Jawa Timur 63471',
+    faqTitle: 'Pertanyaan umum',
+    faqSubtitle: 'Jawaban singkat sebelum menghubungi admin.',
+    faqs: [
+      {
+        q: 'Bagaimana status akreditasi S1 Teknik Informatika UMPO?',
+        a: 'Terakreditasi resmi Peringkat B oleh BAN-PT, SK No. 3418/SK/BAN-PT/Akred/S/IX/2019. Sertifikatnya bisa diunduh di halaman unduhan.',
+      },
+      {
+        q: 'Di mana lokasi bimbingan skripsi dan konsultasi dosen?',
+        a: 'Tatap muka di Ruang Dosen Gedung Fakultas Teknik lantai 2, sesuai jadwal masing-masing pembimbing. Enrollment dan unggah bab dilakukan lewat portal SISKRIP.',
+      },
+      {
+        q: 'Apakah ada program magang industri bersertifikat?',
+        a: 'Ada. Semester 6–7 dapat mengikuti Kerja Praktik di perusahaan mitra, atau program Magang dan Studi Independen Bersertifikat (MSIB).',
+      },
+      {
+        q: 'Bagaimana cara mendaftar sebagai mahasiswa baru?',
+        a: 'Pendaftaran online lewat spmb.umpo.ac.id. Untuk panduan jalur dan biaya, hubungi hotline prodi di 0822-6786-8648.',
+      },
+    ],
+    pmbCardTitle: 'Calon mahasiswa baru',
+    pmbCardDesc:
+      'Pendaftaran PMB dilakukan online. Siapkan ijazah/SKL dan pas foto sebelum mengisi formulir.',
+    pmbCardBtnLabel: 'Daftar di spmb.umpo.ac.id',
+    pmbCardUrl: 'https://spmb.umpo.ac.id',
   },
   en: {
     bannerTitle: 'Department Profile',
@@ -241,6 +402,99 @@ export const FALLBACK_PROFILE_CONTENT: Record<'id' | 'en', ProfileContent> = {
         desc: 'Producing graduates with noble morals, trustworthiness, and leadership capability in their workplaces and communities.',
       },
     ],
+
+    // Tab 3: Struktur Organisasi (EN)
+    strukturTag: 'Department Leadership & Management',
+    strukturTitle: 'Department Organizational Structure',
+    strukturDesc:
+      'Academic leadership governance of the Undergraduate (S1) Informatics Engineering Department, Faculty of Engineering, Universitas Muhammadiyah Ponorogo.',
+    kaprodiRole: 'Head of Study Program / Department Chair',
+    kaprodiName: 'Adi Fajaryanto Cobantoro, S.Kom., M.Kom.',
+    kaprodiNidn: 'NIDN: 0724098406',
+    sekprodiRole: 'Department Secretary',
+    sekprodiName: 'Ismail Abdurrazzaq Zulkarnain, S.Kom., M.Kom.',
+    sekprodiNidn: 'NIDN: 0728078805',
+    gkmRole: 'Quality Assurance Unit (GKM)',
+    gkmName: 'Academic Quality Assurance Team',
+    gkmSub: 'SPMI Audit & Standards Control',
+    lab1Role: 'Head of Computer Networks & IoT Lab',
+    lab1Name: 'Angga Prasetyo, S.T., M.Kom.',
+    lab1Nidn: 'NIDN: 0719088202',
+    lab2Role: 'Head of Software Engineering & Computing Lab',
+    lab2Name: 'Ir. Moh. Bhanu Setyawan, S.T., M.Kom.',
+    lab2Nidn: 'NIDN: 0725028002',
+    dosenBoxTitle: 'Faculty Members & Researchers (21 Permanent Lecturers)',
+    dosenBoxDesc:
+      'Faculty members holding Master and Doctoral qualifications in Artificial Intelligence, Software Engineering, Networks, and Data Science.',
+    dosenBoxBtnLabel: 'Open Full Directory of 21 Lecturers',
+
+    // Tab 4: Akreditasi (EN)
+    akreditasiBadge: 'Officially Accredited Status',
+    akreditasiTitle: 'BAN-PT Accreditation Rank & Quality Commitment',
+    akreditasiParagraph1:
+      'The Undergraduate (S1) Informatics Engineering Study Program, Faculty of Engineering, Universitas Muhammadiyah Ponorogo has achieved Accreditation Rank B status from the National Accreditation Board for Higher Education (BAN-PT) under Decree No. 3418/SK/BAN-PT/Akred/S/IX/2019.',
+    akreditasiParagraph2:
+      'This accreditation achievement demonstrates that the execution of higher education tridharma in Informatics Engineering UMPO complies with national higher education standards across multiple dimensions:',
+    akreditasiPoints: [
+      'Lecturer qualifications and competencies holding Master and Doctoral degrees.',
+      'Adaptive Outcome-Based Education (OBE) curriculum closely aligned with industry demands.',
+      'Availability of representative computing and network laboratory facilities.',
+      'Scientific publication productivity, cutting-edge research, and impactful community service.',
+      'Sustainable and continuous Internal Quality Assurance System (SPMI).',
+    ],
+    btnDocUrl: 'https://teknik.umpo.ac.id/layanan-terpadu/',
+    btnDocLabel: 'Download Accreditation Document',
+    btnKonsultasiLabel: 'Consult with Department',
+    certGrade: 'Rank “B”',
+    certAgency: 'BAN-PT Indonesia',
+    certSk: 'Decree No. 3418/SK/BAN-PT/Akred/S/IX/2019',
+    certScope: 'Nationally Recognized',
+
+    // Tab 5: Kontak & Lokasi (EN)
+    hotlineTitle: 'Department Secretariat Hotline',
+    hotlineNotice: 'Outside service hours, messages will be responded to on the next working day.',
+    waNumber: '6282267868648',
+    waPhone: '0822-6786-8648',
+    emailLabel: 'Official Email',
+    emailValue: 'informatika@umpo.ac.id',
+    emailAlt: 'teknik@umpo.ac.id',
+    hoursLabel: 'Office Hours',
+    hoursValue: 'Monday–Friday',
+    hoursAlt: '08.00–15.30 WIB',
+    locationLabel: 'Location',
+    locationValue: 'Faculty of Engineering Building, 2nd Fl.',
+    locationAlt: 'Jl. Budi Utomo No. 10, Ponorogo 63471',
+    mapsEmbed:
+      'https://www.google.com/maps?q=Universitas%20Muhammadiyah%20Ponorogo%20Jl.%20Budi%20Utomo%20No.10&output=embed',
+    mapsDirections:
+      'https://www.google.com/maps/dir/?api=1&destination=Universitas+Muhammadiyah+Ponorogo+Jl.+Budi+Utomo+No.+10',
+    mapsTitle: 'UMPO Campus 1 — Faculty of Engineering',
+    mapsAddress: 'Jl. Budi Utomo No. 10, Ronowijayan, Siman, Ponorogo, East Java 63471',
+    faqTitle: 'Frequently Asked Questions',
+    faqSubtitle: 'Quick answers before contacting the admin.',
+    faqs: [
+      {
+        q: 'What is the accreditation status of Informatics Engineering UMPO?',
+        a: 'Officially accredited Rank B by BAN-PT, Decree No. 3418/SK/BAN-PT/Akred/S/IX/2019. The official certificate can be downloaded from the download center.',
+      },
+      {
+        q: 'Where are thesis supervision and faculty consultations held?',
+        a: "Face-to-face consultations take place in the Faculty Staff Room, Faculty of Engineering Building, 2nd floor, according to each advisor's schedule. Enrollment and chapter submissions are managed via the SISKRIP portal.",
+      },
+      {
+        q: 'Are certified industrial internship programs available?',
+        a: 'Yes. Students in semesters 6–7 can participate in Practical Work (KP) at industry partner companies or the Certified Internship and Independent Study (MSIB) program.',
+      },
+      {
+        q: 'How do I register as a prospective new student?',
+        a: 'Online registration is conducted via spmb.umpo.ac.id. For admission tracks and tuition guidelines, contact the department hotline at 0822-6786-8648.',
+      },
+    ],
+    pmbCardTitle: 'Prospective New Students',
+    pmbCardDesc:
+      'New student registration is conducted online. Prepare your high school diploma/certificate and formal photo before registering.',
+    pmbCardBtnLabel: 'Register at spmb.umpo.ac.id',
+    pmbCardUrl: 'https://spmb.umpo.ac.id',
   },
 }
 
@@ -305,5 +559,79 @@ export function resolveProfileContent(cmsData: any, locale: 'id' | 'en'): Profil
             desc: item?.desc || '',
           }))
         : fallback.tujuanItems,
+
+    // Tab 3: Struktur Organisasi
+    strukturTag: d.strukturTag || fallback.strukturTag,
+    strukturTitle: d.strukturTitle || fallback.strukturTitle,
+    strukturDesc: d.strukturDesc || fallback.strukturDesc,
+    kaprodiRole: d.kaprodiRole || fallback.kaprodiRole,
+    kaprodiName: d.kaprodiName || fallback.kaprodiName,
+    kaprodiNidn: d.kaprodiNidn || fallback.kaprodiNidn,
+    sekprodiRole: d.sekprodiRole || fallback.sekprodiRole,
+    sekprodiName: d.sekprodiName || fallback.sekprodiName,
+    sekprodiNidn: d.sekprodiNidn || fallback.sekprodiNidn,
+    gkmRole: d.gkmRole || fallback.gkmRole,
+    gkmName: d.gkmName || fallback.gkmName,
+    gkmSub: d.gkmSub || fallback.gkmSub,
+    lab1Role: d.lab1Role || fallback.lab1Role,
+    lab1Name: d.lab1Name || fallback.lab1Name,
+    lab1Nidn: d.lab1Nidn || fallback.lab1Nidn,
+    lab2Role: d.lab2Role || fallback.lab2Role,
+    lab2Name: d.lab2Name || fallback.lab2Name,
+    lab2Nidn: d.lab2Nidn || fallback.lab2Nidn,
+    dosenBoxTitle: d.dosenBoxTitle || fallback.dosenBoxTitle,
+    dosenBoxDesc: d.dosenBoxDesc || fallback.dosenBoxDesc,
+    dosenBoxBtnLabel: d.dosenBoxBtnLabel || fallback.dosenBoxBtnLabel,
+
+    // Tab 4: Akreditasi
+    akreditasiBadge: d.akreditasiBadge || fallback.akreditasiBadge,
+    akreditasiTitle: d.akreditasiTitle || fallback.akreditasiTitle,
+    akreditasiParagraph1: d.akreditasiParagraph1 || fallback.akreditasiParagraph1,
+    akreditasiParagraph2: d.akreditasiParagraph2 || fallback.akreditasiParagraph2,
+    akreditasiPoints:
+      Array.isArray(d.akreditasiPoints) && d.akreditasiPoints.length > 0
+        ? d.akreditasiPoints.map((item: any) =>
+            typeof item === 'string' ? item : item?.text || ''
+          )
+        : fallback.akreditasiPoints,
+    btnDocUrl: d.btnDocUrl || fallback.btnDocUrl,
+    btnDocLabel: d.btnDocLabel || fallback.btnDocLabel,
+    btnKonsultasiLabel: d.btnKonsultasiLabel || fallback.btnKonsultasiLabel,
+    certGrade: d.certGrade || fallback.certGrade,
+    certAgency: d.certAgency || fallback.certAgency,
+    certSk: d.certSk || fallback.certSk,
+    certScope: d.certScope || fallback.certScope,
+
+    // Tab 5: Kontak & Lokasi
+    hotlineTitle: d.hotlineTitle || fallback.hotlineTitle,
+    hotlineNotice: d.hotlineNotice || fallback.hotlineNotice,
+    waNumber: d.waNumber || fallback.waNumber,
+    waPhone: d.waPhone || fallback.waPhone,
+    emailLabel: d.emailLabel || fallback.emailLabel,
+    emailValue: d.emailValue || fallback.emailValue,
+    emailAlt: d.emailAlt || fallback.emailAlt,
+    hoursLabel: d.hoursLabel || fallback.hoursLabel,
+    hoursValue: d.hoursValue || fallback.hoursValue,
+    hoursAlt: d.hoursAlt || fallback.hoursAlt,
+    locationLabel: d.locationLabel || fallback.locationLabel,
+    locationValue: d.locationValue || fallback.locationValue,
+    locationAlt: d.locationAlt || fallback.locationAlt,
+    mapsEmbed: d.mapsEmbed || fallback.mapsEmbed,
+    mapsDirections: d.mapsDirections || fallback.mapsDirections,
+    mapsTitle: d.mapsTitle || fallback.mapsTitle,
+    mapsAddress: d.mapsAddress || fallback.mapsAddress,
+    faqTitle: d.faqTitle || fallback.faqTitle,
+    faqSubtitle: d.faqSubtitle || fallback.faqSubtitle,
+    faqs:
+      Array.isArray(d.faqs) && d.faqs.length > 0
+        ? d.faqs.map((f: any) => ({
+            q: f?.q || '',
+            a: f?.a || '',
+          }))
+        : fallback.faqs,
+    pmbCardTitle: d.pmbCardTitle || fallback.pmbCardTitle,
+    pmbCardDesc: d.pmbCardDesc || fallback.pmbCardDesc,
+    pmbCardBtnLabel: d.pmbCardBtnLabel || fallback.pmbCardBtnLabel,
+    pmbCardUrl: d.pmbCardUrl || fallback.pmbCardUrl,
   }
 }

@@ -291,12 +291,14 @@ export function ProfilClient({
             className="space-y-8 animate-in fade-in duration-300 focus:outline-none"
           >
             <div className="rounded-3xl border border-slate-200/80 bg-white p-7 md:p-10 shadow-sm">
-              <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Pimpinan & Pengelola Prodi</div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">
+                {data.strukturTag}
+              </div>
               <h2 className="mt-2 font-display text-2xl md:text-3xl font-bold text-[#08235b]">
-                Struktur Organisasi Program Studi
+                {data.strukturTitle}
               </h2>
               <p className="mt-2 text-sm text-slate-500">
-                Tata kelola kepemimpinan akademik Program Studi S1 Teknik Informatika Fakultas Teknik Universitas Muhammadiyah Ponorogo.
+                {data.strukturDesc}
               </p>
 
               {/* Hierarchy Tree Visual */}
@@ -304,63 +306,85 @@ export function ProfilClient({
                 {/* Level 1: Dekan & Ka Prodi */}
                 <div className="flex flex-col items-center">
                   <div className="rounded-2xl border-2 border-[#1453d6] bg-blue-50/70 p-5 text-center max-w-sm w-full shadow-sm">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">Ketua Program Studi</div>
-                    <div className="mt-1 font-display text-base font-bold text-[#08235b]">
-                      Adi Fajaryanto Cobantoro, S.Kom., M.Kom.
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">
+                      {data.kaprodiRole}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0724098406</div>
+                    <div className="mt-1 font-display text-base font-bold text-[#08235b]">
+                      {data.kaprodiName}
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">
+                      {data.kaprodiNidn}
+                    </div>
                   </div>
                 </div>
 
                 {/* Level 2: Sekprodi & Penjaminan Mutu */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
                   <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-teal-600">Sekretaris Program Studi</div>
-                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
-                      Ismail Abdurrazzaq Zulkarnain, S.Kom., M.Kom.
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-teal-600">
+                      {data.sekprodiRole}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0728078805</div>
+                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
+                      {data.sekprodiName}
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">
+                      {data.sekprodiNidn}
+                    </div>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-amber-600">Gugus Kendali Mutu (GKM)</div>
-                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
-                      Tim Penjaminan Mutu Akademik Prodi
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                      {data.gkmRole}
                     </div>
-                    <div className="text-[11px] text-slate-500 mt-1">Audit & Pengendalian Standar SPMI</div>
+                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
+                      {data.gkmName}
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-1">
+                      {data.gkmSub}
+                    </div>
                   </div>
                 </div>
 
                 {/* Level 3: Kepala Laboratorium */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                   <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 text-center">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">Ka. Lab Jaringan Komputer & IoT</div>
-                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
-                      Angga Prasetyo, S.T., M.Kom.
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">
+                      {data.lab1Role}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0719088202</div>
+                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
+                      {data.lab1Name}
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">
+                      {data.lab1Nidn}
+                    </div>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 text-center">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">Ka. Lab RPL & Komputer</div>
-                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
-                      Ir. Moh. Bhanu Setyawan, S.T., M.Kom.
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">
+                      {data.lab2Role}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0725028002</div>
+                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
+                      {data.lab2Name}
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">
+                      {data.lab2Nidn}
+                    </div>
                   </div>
                 </div>
 
                 {/* Level 4: Dosen & Tendik */}
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center max-w-4xl mx-auto">
-                  <div className="text-xs font-bold text-slate-700">Dosen Pengajar & Peneliti (21 Dosen Tetap)</div>
+                  <div className="text-xs font-bold text-slate-700">
+                    {data.dosenBoxTitle}
+                  </div>
                   <p className="mt-1 text-xs text-slate-500">
-                    Tenaga pendidik berkualifikasi S2 dan S3 pada bidang Artificial Intelligence, Software Engineering, Jaringan, dan Data Science.
+                    {data.dosenBoxDesc}
                   </p>
                   <Link
                     href={dosenUrl}
                     className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#08235b] transition"
                   >
-                    Buka Direktori Lengkap 21 Dosen <ArrowRight className="size-3.5" />
+                    {data.dosenBoxBtnLabel} <ArrowRight className="size-3.5" />
                   </Link>
                 </div>
               </div>
@@ -380,45 +404,35 @@ export function ProfilClient({
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-8 rounded-3xl border border-slate-200/80 bg-white p-7 md:p-10 shadow-sm">
                 <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">
-                  <CheckCircle2 className="size-3.5" /> Status Resmi Terakreditasi
+                  <CheckCircle2 className="size-3.5" /> {data.akreditasiBadge}
                 </div>
                 <h2 className="mt-4 font-display text-2xl md:text-3xl font-bold text-[#08235b]">
-                  Peringkat Akreditasi BAN-PT & Komitmen Mutu
+                  {data.akreditasiTitle}
                 </h2>
                 <div className="mt-6 space-y-4 text-sm md:text-base leading-relaxed text-slate-600">
-                  <p>
-                    Program Studi S1 Teknik Informatika Fakultas Teknik Universitas Muhammadiyah Ponorogo telah meraih
-                    status <strong className="text-slate-900">Terakreditasi Peringkat B</strong> dari Badan Akreditasi
-                    Nasional Perguruan Tinggi (BAN-PT) berdasarkan{" "}
-                    <strong className="text-[#1453d6]">SK BAN-PT No. 3418/SK/BAN-PT/Akred/S/IX/2019</strong>.
-                  </p>
-                  <p>
-                    Pencapaian akreditasi ini membuktikan bahwa penyelenggaraan tridharma perguruan tinggi di Program
-                    Studi Teknik Informatika UMPO telah memenuhi standar nasional pendidikan tinggi dalam aspek:
-                  </p>
+                  <p>{data.akreditasiParagraph1}</p>
+                  <p>{data.akreditasiParagraph2}</p>
                   <ul className="space-y-2 text-sm text-slate-700 list-disc pl-5">
-                    <li>Kualifikasi dan kompetensi dosen pengajar berpendidikan S2 dan S3.</li>
-                    <li>Kurikulum adaptif berbasis Outcome-Based Education (OBE) yang selaras dengan industri.</li>
-                    <li>Ketersediaan sarana laboratorium komputasi dan jaringan yang representatif.</li>
-                    <li>Produktivitas publikasi ilmiah, penelitian, dan pengabdian kepada masyarakat.</li>
-                    <li>Sistem penjaminan mutu internal (SPMI) yang berjalan secara berkesinambungan.</li>
+                    {data.akreditasiPoints.map((point, idx) => (
+                      <li key={idx}>{point}</li>
+                    ))}
                   </ul>
                 </div>
 
                 <div className="mt-8 flex flex-wrap gap-4 pt-6 border-t border-slate-100">
                   <a
-                    href="https://teknik.umpo.ac.id/layanan-terpadu/"
+                    href={data.btnDocUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#08235b] transition"
                   >
-                    Unduh Dokumen Akreditasi <ExternalLink className="size-3.5" />
+                    {data.btnDocLabel} <ExternalLink className="size-3.5" />
                   </a>
                   <button
                     onClick={() => selectTab("kontak")}
                     className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:border-[#1453d6] hover:text-[#1453d6] transition"
                   >
-                    Konsultasi dengan Prodi
+                    {data.btnKonsultasiLabel}
                   </button>
                 </div>
               </div>
@@ -428,11 +442,15 @@ export function ProfilClient({
                 <div className="grid size-16 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md mx-auto">
                   <ShieldCheck className="size-9" />
                 </div>
-                <div className="mt-4 font-display text-4xl font-bold text-emerald-800">Peringkat &ldquo;B&rdquo;</div>
-                <div className="mt-1 text-xs font-bold uppercase tracking-wider text-emerald-700">BAN-PT Indonesia</div>
+                <div className="mt-4 font-display text-4xl font-bold text-emerald-800">
+                  {data.certGrade}
+                </div>
+                <div className="mt-1 text-xs font-bold uppercase tracking-wider text-emerald-700">
+                  {data.certAgency}
+                </div>
                 <div className="mt-4 border-t border-emerald-200 pt-4 text-xs text-slate-600">
-                  <div>SK No. 3418/SK/BAN-PT/Akred/S/IX/2019</div>
-                  <div className="mt-1 text-emerald-700 font-semibold">Berlaku Nasional</div>
+                  <div>{data.certSk}</div>
+                  <div className="mt-1 text-emerald-700 font-semibold">{data.certScope}</div>
                 </div>
               </div>
             </div>
@@ -448,7 +466,7 @@ export function ProfilClient({
             tabIndex={0}
             className="animate-in fade-in duration-300 focus:outline-none"
           >
-            <KontakContent />
+            <KontakContent data={data} locale={locale} />
           </div>
         )}
       </div>

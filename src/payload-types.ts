@@ -1967,6 +1967,74 @@ export interface ProfilePage {
         id?: string | null;
       }[]
     | null;
+  strukturTag?: string | null;
+  strukturTitle?: string | null;
+  strukturDesc?: string | null;
+  kaprodiRole?: string | null;
+  kaprodiName?: string | null;
+  kaprodiNidn?: string | null;
+  sekprodiRole?: string | null;
+  sekprodiName?: string | null;
+  sekprodiNidn?: string | null;
+  gkmRole?: string | null;
+  gkmName?: string | null;
+  gkmSub?: string | null;
+  lab1Role?: string | null;
+  lab1Name?: string | null;
+  lab1Nidn?: string | null;
+  lab2Role?: string | null;
+  lab2Name?: string | null;
+  lab2Nidn?: string | null;
+  dosenBoxTitle?: string | null;
+  dosenBoxBtnLabel?: string | null;
+  dosenBoxDesc?: string | null;
+  akreditasiBadge?: string | null;
+  akreditasiTitle?: string | null;
+  akreditasiParagraph1?: string | null;
+  akreditasiParagraph2?: string | null;
+  akreditasiPoints?:
+    | {
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  btnDocLabel?: string | null;
+  btnDocUrl?: string | null;
+  btnKonsultasiLabel?: string | null;
+  certGrade?: string | null;
+  certAgency?: string | null;
+  certSk?: string | null;
+  certScope?: string | null;
+  hotlineTitle?: string | null;
+  hotlineNotice?: string | null;
+  waNumber?: string | null;
+  waPhone?: string | null;
+  emailLabel?: string | null;
+  emailValue?: string | null;
+  emailAlt?: string | null;
+  hoursLabel?: string | null;
+  hoursValue?: string | null;
+  hoursAlt?: string | null;
+  locationLabel?: string | null;
+  locationValue?: string | null;
+  locationAlt?: string | null;
+  mapsEmbed?: string | null;
+  mapsDirections?: string | null;
+  mapsTitle?: string | null;
+  mapsAddress?: string | null;
+  faqTitle?: string | null;
+  faqSubtitle?: string | null;
+  faqs?:
+    | {
+        q?: string | null;
+        a?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  pmbCardTitle?: string | null;
+  pmbCardBtnLabel?: string | null;
+  pmbCardDesc?: string | null;
+  pmbCardUrl?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2156,6 +2224,74 @@ export interface ProfilePageSelect<T extends boolean = true> {
         desc?: T;
         id?: T;
       };
+  strukturTag?: T;
+  strukturTitle?: T;
+  strukturDesc?: T;
+  kaprodiRole?: T;
+  kaprodiName?: T;
+  kaprodiNidn?: T;
+  sekprodiRole?: T;
+  sekprodiName?: T;
+  sekprodiNidn?: T;
+  gkmRole?: T;
+  gkmName?: T;
+  gkmSub?: T;
+  lab1Role?: T;
+  lab1Name?: T;
+  lab1Nidn?: T;
+  lab2Role?: T;
+  lab2Name?: T;
+  lab2Nidn?: T;
+  dosenBoxTitle?: T;
+  dosenBoxBtnLabel?: T;
+  dosenBoxDesc?: T;
+  akreditasiBadge?: T;
+  akreditasiTitle?: T;
+  akreditasiParagraph1?: T;
+  akreditasiParagraph2?: T;
+  akreditasiPoints?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  btnDocLabel?: T;
+  btnDocUrl?: T;
+  btnKonsultasiLabel?: T;
+  certGrade?: T;
+  certAgency?: T;
+  certSk?: T;
+  certScope?: T;
+  hotlineTitle?: T;
+  hotlineNotice?: T;
+  waNumber?: T;
+  waPhone?: T;
+  emailLabel?: T;
+  emailValue?: T;
+  emailAlt?: T;
+  hoursLabel?: T;
+  hoursValue?: T;
+  hoursAlt?: T;
+  locationLabel?: T;
+  locationValue?: T;
+  locationAlt?: T;
+  mapsEmbed?: T;
+  mapsDirections?: T;
+  mapsTitle?: T;
+  mapsAddress?: T;
+  faqTitle?: T;
+  faqSubtitle?: T;
+  faqs?:
+    | T
+    | {
+        q?: T;
+        a?: T;
+        id?: T;
+      };
+  pmbCardTitle?: T;
+  pmbCardBtnLabel?: T;
+  pmbCardDesc?: T;
+  pmbCardUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
