@@ -266,7 +266,7 @@ export const ProfilePage: GlobalConfig = {
             },
             {
               type: 'collapsible',
-              label: 'Level 2: Sekretaris Prodi & Penjaminan Mutu (GKM)',
+              label: 'Level 2: Sekretaris Program Studi',
               fields: [
                 {
                   type: 'row',
@@ -274,14 +274,6 @@ export const ProfilePage: GlobalConfig = {
                     { name: 'sekprodiRole', type: 'text', localized: true, label: 'Jabatan Sekprodi', admin: { width: '33.33%' } },
                     { name: 'sekprodiName', type: 'text', localized: true, label: 'Nama Sekprodi & Gelar', admin: { width: '33.33%' } },
                     { name: 'sekprodiNidn', type: 'text', localized: true, label: 'NIDN Sekprodi', admin: { width: '33.33%' } },
-                  ],
-                },
-                {
-                  type: 'row',
-                  fields: [
-                    { name: 'gkmRole', type: 'text', localized: true, label: 'Unit Mutu (GKM)', admin: { width: '33.33%' } },
-                    { name: 'gkmName', type: 'text', localized: true, label: 'Nama Tim / Keterangan', admin: { width: '33.33%' } },
-                    { name: 'gkmSub', type: 'text', localized: true, label: 'Fungsi / Standar SPMI', admin: { width: '33.33%' } },
                   ],
                 },
               ],

@@ -29,12 +29,22 @@ function tabFromHash(): ProfilTab | null {
   return (TABS as string[]).includes(h) ? (h as ProfilTab) : null;
 }
 
+export interface LeadershipInfo {
+  kaprodi?: { name: string; nidn?: string | null } | null
+  sekprodi?: { name: string; nidn?: string | null } | null
+  labJaringan?: { name: string; nidn?: string | null } | null
+  labRpl?: { name: string; nidn?: string | null } | null
+  totalLecturers?: number
+}
+
 export function ProfilClient({
   data,
   locale = "id",
+  leadership,
 }: {
   data: ProfileContent;
   locale?: "id" | "en";
+  leadership?: LeadershipInfo;
 }) {
   const [activeTab, setActiveTab] = useState<ProfilTab>("sejarah");
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -310,37 +320,25 @@ export function ProfilClient({
                       {data.kaprodiRole}
                     </div>
                     <div className="mt-1 font-display text-base font-bold text-[#08235b]">
-                      {data.kaprodiName}
+                      {leadership?.kaprodi?.name || data.kaprodiName}
                     </div>
                     <div className="text-[11px] font-mono text-slate-500 mt-1">
-                      {data.kaprodiNidn}
+                      {leadership?.kaprodi?.nidn ? `NIDN: ${leadership.kaprodi.nidn}` : data.kaprodiNidn}
                     </div>
                   </div>
                 </div>
 
-                {/* Level 2: Sekprodi & Penjaminan Mutu */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-                  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
+                {/* Level 2: Sekretaris Program Studi (Centered Layout) */}
+                <div className="flex flex-col items-center">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center max-w-sm w-full shadow-xs">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-teal-600">
                       {data.sekprodiRole}
                     </div>
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
-                      {data.sekprodiName}
+                      {leadership?.sekprodi?.name || data.sekprodiName}
                     </div>
                     <div className="text-[11px] font-mono text-slate-500 mt-1">
-                      {data.sekprodiNidn}
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
-                      {data.gkmRole}
-                    </div>
-                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
-                      {data.gkmName}
-                    </div>
-                    <div className="text-[11px] text-slate-500 mt-1">
-                      {data.gkmSub}
+                      {leadership?.sekprodi?.nidn ? `NIDN: ${leadership.sekprodi.nidn}` : data.sekprodiNidn}
                     </div>
                   </div>
                 </div>
@@ -352,10 +350,10 @@ export function ProfilClient({
                       {data.lab1Role}
                     </div>
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
-                      {data.lab1Name}
+                      {leadership?.labJaringan?.name || data.lab1Name}
                     </div>
                     <div className="text-[11px] font-mono text-slate-500 mt-1">
-                      {data.lab1Nidn}
+                      {leadership?.labJaringan?.nidn ? `NIDN: ${leadership.labJaringan.nidn}` : data.lab1Nidn}
                     </div>
                   </div>
 
@@ -364,10 +362,10 @@ export function ProfilClient({
                       {data.lab2Role}
                     </div>
                     <div className="mt-1 font-display text-sm font-bold text-slate-800">
-                      {data.lab2Name}
+                      {leadership?.labRpl?.name || data.lab2Name}
                     </div>
                     <div className="text-[11px] font-mono text-slate-500 mt-1">
-                      {data.lab2Nidn}
+                      {leadership?.labRpl?.nidn ? `NIDN: ${leadership.labRpl.nidn}` : data.lab2Nidn}
                     </div>
                   </div>
                 </div>

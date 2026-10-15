@@ -1976,9 +1976,6 @@ export interface ProfilePage {
   sekprodiRole?: string | null;
   sekprodiName?: string | null;
   sekprodiNidn?: string | null;
-  gkmRole?: string | null;
-  gkmName?: string | null;
-  gkmSub?: string | null;
   lab1Role?: string | null;
   lab1Name?: string | null;
   lab1Nidn?: string | null;
@@ -2233,9 +2230,6 @@ export interface ProfilePageSelect<T extends boolean = true> {
   sekprodiRole?: T;
   sekprodiName?: T;
   sekprodiNidn?: T;
-  gkmRole?: T;
-  gkmName?: T;
-  gkmSub?: T;
   lab1Role?: T;
   lab1Name?: T;
   lab1Nidn?: T;

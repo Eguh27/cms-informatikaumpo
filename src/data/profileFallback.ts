@@ -73,9 +73,6 @@ export interface ProfileContent {
   sekprodiRole: string
   sekprodiName: string
   sekprodiNidn: string
-  gkmRole: string
-  gkmName: string
-  gkmSub: string
   lab1Role: string
   lab1Name: string
   lab1Nidn: string
@@ -230,9 +227,6 @@ export const FALLBACK_PROFILE_CONTENT: Record<'id' | 'en', ProfileContent> = {
     sekprodiRole: 'Sekretaris Program Studi',
     sekprodiName: 'Ismail Abdurrazzaq Zulkarnain, S.Kom., M.Kom.',
     sekprodiNidn: 'NIDN: 0728078805',
-    gkmRole: 'Gugus Kendali Mutu (GKM)',
-    gkmName: 'Tim Penjaminan Mutu Akademik Prodi',
-    gkmSub: 'Audit & Pengendalian Standar SPMI',
     lab1Role: 'Ka. Lab Jaringan Komputer & IoT',
     lab1Name: 'Angga Prasetyo, S.T., M.Kom.',
     lab1Nidn: 'NIDN: 0719088202',
@@ -414,9 +408,6 @@ export const FALLBACK_PROFILE_CONTENT: Record<'id' | 'en', ProfileContent> = {
     sekprodiRole: 'Department Secretary',
     sekprodiName: 'Ismail Abdurrazzaq Zulkarnain, S.Kom., M.Kom.',
     sekprodiNidn: 'NIDN: 0728078805',
-    gkmRole: 'Quality Assurance Unit (GKM)',
-    gkmName: 'Academic Quality Assurance Team',
-    gkmSub: 'SPMI Audit & Standards Control',
     lab1Role: 'Head of Computer Networks & IoT Lab',
     lab1Name: 'Angga Prasetyo, S.T., M.Kom.',
     lab1Nidn: 'NIDN: 0719088202',
@@ -570,9 +561,6 @@ export function resolveProfileContent(cmsData: any, locale: 'id' | 'en'): Profil
     sekprodiRole: d.sekprodiRole || fallback.sekprodiRole,
     sekprodiName: d.sekprodiName || fallback.sekprodiName,
     sekprodiNidn: d.sekprodiNidn || fallback.sekprodiNidn,
-    gkmRole: d.gkmRole || fallback.gkmRole,
-    gkmName: d.gkmName || fallback.gkmName,
-    gkmSub: d.gkmSub || fallback.gkmSub,
     lab1Role: d.lab1Role || fallback.lab1Role,
     lab1Name: d.lab1Name || fallback.lab1Name,
     lab1Nidn: d.lab1Nidn || fallback.lab1Nidn,
