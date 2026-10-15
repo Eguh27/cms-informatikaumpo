@@ -1,0 +1,487 @@
+"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { PageBanner } from "@/components/PageBanner";
+import { KontakContent } from "@/components/KontakContent";
+import type { ProfileContent } from "@/data/profileFallback";
+import {
+  BookOpen,
+  Award,
+  Layers,
+  ShieldCheck,
+  CheckCircle2,
+  Calendar,
+  ExternalLink,
+  MapPin,
+  Users,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
+
+type ProfilTab = "sejarah" | "visimisi" | "struktur" | "akreditasi" | "kontak";
+
+const TABS: ProfilTab[] = ["sejarah", "visimisi", "struktur", "akreditasi", "kontak"];
+
+function tabFromHash(): ProfilTab | null {
+  if (typeof window === "undefined") return null;
+  const h = window.location.hash.replace("#", "");
+  return (TABS as string[]).includes(h) ? (h as ProfilTab) : null;
+}
+
+export function ProfilClient({
+  data,
+  locale = "id",
+}: {
+  data: ProfileContent;
+  locale?: "id" | "en";
+}) {
+  const [activeTab, setActiveTab] = useState<ProfilTab>("sejarah");
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  // Deep-link support: /profil#visimisi or /profil#kontak opens the right tab
+  useEffect(() => {
+    const apply = () => {
+      const t = tabFromHash();
+      if (t) {
+        setActiveTab(t);
+        document.getElementById(`tabpanel-${t}`)?.scrollIntoView({ block: "nearest" });
+      }
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, []);
+
+  const selectTab = (tab: ProfilTab) => {
+    setActiveTab(tab);
+    if (window.location.hash !== `#${tab}`) {
+      window.history.replaceState(null, "", `#${tab}`);
+    }
+  };
+
+  const onTabKeyDown = (e: React.KeyboardEvent, index: number) => {
+    let next: number | null = null;
+    if (e.key === "ArrowRight") next = (index + 1) % TABS.length;
+    else if (e.key === "ArrowLeft") next = (index - 1 + TABS.length) % TABS.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = TABS.length - 1;
+    if (next !== null) {
+      e.preventDefault();
+      selectTab(TABS[next]);
+      tabRefs.current[next]?.focus();
+    }
+  };
+
+  const isEn = locale === "en";
+  const dosenUrl = isEn ? "/en/dosen" : "/dosen";
+  const homeUrl = isEn ? "/en" : "/";
+
+  return (
+    <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
+      {/* Banner */}
+      <PageBanner
+        title={data.bannerTitle}
+        subtitle={data.bannerSubtitle}
+        breadcrumbs={[
+          { label: data.breadcrumbHome, href: homeUrl },
+          { label: data.breadcrumbCurrent },
+        ]}
+        category=""
+      />
+
+      <div className="relative mx-auto max-w-7xl px-5 lg:px-8 mt-4">
+        {/* Navigation Tabs */}
+        <div
+          role="tablist"
+          aria-label="Bagian profil program studi"
+          className="flex flex-wrap items-center gap-2 rounded-2xl bg-white p-2 shadow-sm border border-slate-200/80 mb-10"
+        >
+          {[
+            { id: "sejarah", label: data.tabSejarahLabel, icon: BookOpen },
+            { id: "visimisi", label: data.tabVisimisiLabel, icon: Award },
+            { id: "struktur", label: data.tabStrukturLabel, icon: Layers },
+            { id: "akreditasi", label: data.tabAkreditasiLabel, icon: ShieldCheck },
+            { id: "kontak", label: data.tabKontakLabel, icon: MapPin },
+          ].map((tab, index) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                ref={(el) => {
+                  tabRefs.current[index] = el;
+                }}
+                role="tab"
+                id={`tab-${tab.id}`}
+                aria-selected={isActive}
+                aria-controls={`tabpanel-${tab.id}`}
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => selectTab(tab.id as ProfilTab)}
+                onKeyDown={(e) => onTabKeyDown(e, index)}
+                className={`inline-flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9] ${
+                  isActive
+                    ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                }`}
+              >
+                <Icon className="size-4" aria-hidden="true" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tab 1: Sejarah (Dynamic via CMS) */}
+        {activeTab === "sejarah" && (
+          <div
+            role="tabpanel"
+            id="tabpanel-sejarah"
+            aria-labelledby="tab-sejarah"
+            tabIndex={0}
+            className="space-y-10 animate-in fade-in duration-300 focus:outline-none"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              <div className="lg:col-span-8 rounded-3xl border border-slate-200/80 bg-white p-7 md:p-10 shadow-sm">
+                <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold text-[#1453d6] border border-blue-100">
+                  <Calendar className="size-3.5" /> {data.sejarahBadge}
+                </div>
+                <h2 className="mt-4 font-display text-2xl md:text-3xl font-bold text-[#08235b]">
+                  {data.sejarahTitle}
+                </h2>
+                <div className="mt-6 space-y-4 text-sm md:text-base leading-relaxed text-slate-600">
+                  <p>{data.sejarahParagraph1}</p>
+                  <p>{data.sejarahParagraph2}</p>
+                  <p>{data.sejarahParagraph3}</p>
+                </div>
+
+                <div className="mt-8 flex flex-wrap gap-4 pt-6 border-t border-slate-100">
+                  <button
+                    onClick={() => selectTab("visimisi")}
+                    className="inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#08235b] transition"
+                  >
+                    {data.btnNextTabLabel} <ArrowRight className="size-3.5" />
+                  </button>
+                  <Link
+                    href={dosenUrl}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:border-[#1453d6] hover:text-[#1453d6] transition"
+                  >
+                    <Users className="size-3.5" /> {data.btnDosenLabel}
+                  </Link>
+                </div>
+              </div>
+
+              {/* Sidebar Quick Legal Card */}
+              <div className="lg:col-span-4 space-y-6">
+                <div className="rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-indigo-50/40 p-6 shadow-sm">
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">{data.sidebarLegalTag}</div>
+                  <h3 className="mt-2 font-display text-lg font-bold text-[#08235b]">{data.sidebarLegalTitle}</h3>
+                  <div className="mt-4 space-y-3 text-xs">
+                    <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
+                      <div className="text-slate-500 font-medium">{data.legal1Label}</div>
+                      <div className="font-bold text-slate-800 mt-0.5">{data.legal1Value}</div>
+                      <div className="text-[10px] text-slate-500 mt-1">{data.legal1Sub}</div>
+                    </div>
+                    <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
+                      <div className="text-slate-500 font-medium">{data.legal2Label}</div>
+                      <div className="font-bold text-[#1453d6] mt-0.5">{data.legal2Value}</div>
+                      <div className="text-[10px] text-slate-500 mt-1">{data.legal2Sub}</div>
+                    </div>
+                    <div className="rounded-2xl bg-white p-3.5 border border-blue-100/60 shadow-xs">
+                      <div className="text-slate-500 font-medium">{data.legal3Label}</div>
+                      <div className="font-bold text-slate-800 mt-0.5">{data.legal3Value}</div>
+                      <div className="text-[10px] text-slate-500 mt-1">{data.legal3Sub}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm text-center">
+                  <div className="font-display text-3xl font-bold text-[#1453d6]">{data.statNumber}</div>
+                  <div className="mt-1 text-xs font-semibold text-slate-500">{data.statCaption}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 2: Visi Misi */}
+        {activeTab === "visimisi" && (
+          <div
+            role="tabpanel"
+            id="tabpanel-visimisi"
+            aria-labelledby="tab-visimisi"
+            tabIndex={0}
+            className="space-y-10 animate-in fade-in duration-300 focus:outline-none"
+          >
+            {/* Visi */}
+            <div className="rounded-3xl border border-blue-200 bg-gradient-to-br from-[#06183d] to-[#0c317c] p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
+              <div className="absolute -right-16 -top-16 size-64 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" />
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#6edbff] border border-white/20">
+                <Sparkles className="size-3.5" /> Visi Keunggulan 2030
+              </div>
+              <h2 className="mt-4 font-display text-2xl md:text-4xl font-bold leading-tight text-white max-w-4xl">
+                &ldquo;Menjadi Program Studi Teknik Informatika yang unggul di tingkat nasional dalam pengembangan
+                Kecerdasan Buatan (Artificial Intelligence) dan Rekayasa Perangkat Lunak berbasis nilai-nilai keislaman
+                pada tahun 2030.&rdquo;
+              </h2>
+            </div>
+
+            {/* Misi & Tujuan Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Misi */}
+              <div className="rounded-3xl border border-slate-200/80 bg-white p-7 md:p-9 shadow-sm">
+                <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Tridharma Perguruan Tinggi</div>
+                <h3 className="mt-2 font-display text-2xl font-bold text-[#08235b]">Misi Program Studi</h3>
+                <div className="mt-6 space-y-4">
+                  {[
+                    {
+                      no: "1",
+                      title: "Pendidikan Berkualitas OBE",
+                      desc: "Menyelenggarakan pendidikan sarjana informatika berbasis kurikulum Outcome-Based Education dengan penguasaan AI dan Software Engineering mutakhir.",
+                    },
+                    {
+                      no: "2",
+                      title: "Riset dan Inovasi Bereputasi",
+                      desc: "Melaksanakan penelitian bereputasi nasional dan internasional di bidang komputasi cerdas, sistem terdistribusi, dan keamanan siber.",
+                    },
+                    {
+                      no: "3",
+                      title: "Pengabdian Berdampak Nyata",
+                      desc: "Menerapkan teknologi tepat guna dan solusi komputasi untuk kemaslahatan masyarakat dan persyarikatan Muhammadiyah.",
+                    },
+                    {
+                      no: "4",
+                      title: "Internalisasi Karakter Islami",
+                      desc: "Menanamkan nilai-nilai Al-Islam dan Kemuhammadiyahan serta etika profesional bagi seluruh sivitas akademika.",
+                    },
+                  ].map((m) => (
+                    <div key={m.no} className="flex items-start gap-4 rounded-2xl bg-slate-50 p-4 border border-slate-100">
+                      <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-[#1453d6] font-display text-xs font-bold text-white shadow-xs">
+                        {m.no}
+                      </span>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900">{m.title}</h4>
+                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">{m.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tujuan */}
+              <div className="rounded-3xl border border-slate-200/80 bg-white p-7 md:p-9 shadow-sm">
+                <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Sasaran Kompetensi</div>
+                <h3 className="mt-2 font-display text-2xl font-bold text-[#08235b]">Tujuan Strategis Lulusan</h3>
+                <div className="mt-6 space-y-4">
+                  {[
+                    {
+                      no: "1",
+                      title: "Kompetensi Profesional",
+                      desc: "Menghasilkan lulusan yang menguasai analisis, perancangan, implementasi, dan pengujian sistem komputasi berstandar industri.",
+                    },
+                    {
+                      no: "2",
+                      title: "Inovator dan Peneliti Muda",
+                      desc: "Menghasilkan sarjana yang mampu melakukan riset terapan di bidang Artificial Intelligence dan Big Data Analytics.",
+                    },
+                    {
+                      no: "3",
+                      title: "Technopreneurship",
+                      desc: "Mencetak wirausahawan teknologi yang kreatif, adaptif terhadap disrupsi digital, dan berdaya saing global.",
+                    },
+                    {
+                      no: "4",
+                      title: "Integritas Moral & Etika",
+                      desc: "Menghasilkan lulusan yang berakhlak mulia, amanah, dan mampu menjadi teladan di lingkungan kerja dan masyarakat.",
+                    },
+                  ].map((t) => (
+                    <div key={t.no} className="flex items-start gap-4 rounded-2xl bg-slate-50 p-4 border border-slate-100">
+                      <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-[#08235b] font-display text-xs font-bold text-white shadow-xs">
+                        {t.no}
+                      </span>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900">{t.title}</h4>
+                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">{t.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: Struktur Organisasi */}
+        {activeTab === "struktur" && (
+          <div
+            role="tabpanel"
+            id="tabpanel-struktur"
+            aria-labelledby="tab-struktur"
+            tabIndex={0}
+            className="space-y-8 animate-in fade-in duration-300 focus:outline-none"
+          >
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-7 md:p-10 shadow-sm">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Pimpinan & Pengelola Prodi</div>
+              <h2 className="mt-2 font-display text-2xl md:text-3xl font-bold text-[#08235b]">
+                Struktur Organisasi Program Studi
+              </h2>
+              <p className="mt-2 text-sm text-slate-500">
+                Tata kelola kepemimpinan akademik Program Studi S1 Teknik Informatika Fakultas Teknik Universitas Muhammadiyah Ponorogo.
+              </p>
+
+              {/* Hierarchy Tree Visual */}
+              <div className="mt-10 space-y-8">
+                {/* Level 1: Dekan & Ka Prodi */}
+                <div className="flex flex-col items-center">
+                  <div className="rounded-2xl border-2 border-[#1453d6] bg-blue-50/70 p-5 text-center max-w-sm w-full shadow-sm">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">Ketua Program Studi</div>
+                    <div className="mt-1 font-display text-base font-bold text-[#08235b]">
+                      Adi Fajaryanto Cobantoro, S.Kom., M.Kom.
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0724098406</div>
+                  </div>
+                </div>
+
+                {/* Level 2: Sekprodi & Penjaminan Mutu */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-teal-600">Sekretaris Program Studi</div>
+                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
+                      Ismail Abdurrazzaq Zulkarnain, S.Kom., M.Kom.
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0728078805</div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-amber-600">Gugus Kendali Mutu (GKM)</div>
+                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
+                      Tim Penjaminan Mutu Akademik Prodi
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-1">Audit & Pengendalian Standar SPMI</div>
+                  </div>
+                </div>
+
+                {/* Level 3: Kepala Laboratorium */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 text-center">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">Ka. Lab Jaringan Komputer & IoT</div>
+                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
+                      Angga Prasetyo, S.T., M.Kom.
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0719088202</div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 text-center">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#1453d6]">Ka. Lab RPL & Komputer</div>
+                    <div className="mt-1 font-display text-sm font-bold text-slate-800">
+                      Ir. Moh. Bhanu Setyawan, S.T., M.Kom.
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-500 mt-1">NIDN: 0725028002</div>
+                  </div>
+                </div>
+
+                {/* Level 4: Dosen & Tendik */}
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center max-w-4xl mx-auto">
+                  <div className="text-xs font-bold text-slate-700">Dosen Pengajar & Peneliti (21 Dosen Tetap)</div>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Tenaga pendidik berkualifikasi S2 dan S3 pada bidang Artificial Intelligence, Software Engineering, Jaringan, dan Data Science.
+                  </p>
+                  <Link
+                    href={dosenUrl}
+                    className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#08235b] transition"
+                  >
+                    Buka Direktori Lengkap 21 Dosen <ArrowRight className="size-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 4: Akreditasi */}
+        {activeTab === "akreditasi" && (
+          <div
+            role="tabpanel"
+            id="tabpanel-akreditasi"
+            aria-labelledby="tab-akreditasi"
+            tabIndex={0}
+            className="space-y-8 animate-in fade-in duration-300 focus:outline-none"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              <div className="lg:col-span-8 rounded-3xl border border-slate-200/80 bg-white p-7 md:p-10 shadow-sm">
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">
+                  <CheckCircle2 className="size-3.5" /> Status Resmi Terakreditasi
+                </div>
+                <h2 className="mt-4 font-display text-2xl md:text-3xl font-bold text-[#08235b]">
+                  Peringkat Akreditasi BAN-PT & Komitmen Mutu
+                </h2>
+                <div className="mt-6 space-y-4 text-sm md:text-base leading-relaxed text-slate-600">
+                  <p>
+                    Program Studi S1 Teknik Informatika Fakultas Teknik Universitas Muhammadiyah Ponorogo telah meraih
+                    status <strong className="text-slate-900">Terakreditasi Peringkat B</strong> dari Badan Akreditasi
+                    Nasional Perguruan Tinggi (BAN-PT) berdasarkan{" "}
+                    <strong className="text-[#1453d6]">SK BAN-PT No. 3418/SK/BAN-PT/Akred/S/IX/2019</strong>.
+                  </p>
+                  <p>
+                    Pencapaian akreditasi ini membuktikan bahwa penyelenggaraan tridharma perguruan tinggi di Program
+                    Studi Teknik Informatika UMPO telah memenuhi standar nasional pendidikan tinggi dalam aspek:
+                  </p>
+                  <ul className="space-y-2 text-sm text-slate-700 list-disc pl-5">
+                    <li>Kualifikasi dan kompetensi dosen pengajar berpendidikan S2 dan S3.</li>
+                    <li>Kurikulum adaptif berbasis Outcome-Based Education (OBE) yang selaras dengan industri.</li>
+                    <li>Ketersediaan sarana laboratorium komputasi dan jaringan yang representatif.</li>
+                    <li>Produktivitas publikasi ilmiah, penelitian, dan pengabdian kepada masyarakat.</li>
+                    <li>Sistem penjaminan mutu internal (SPMI) yang berjalan secara berkesinambungan.</li>
+                  </ul>
+                </div>
+
+                <div className="mt-8 flex flex-wrap gap-4 pt-6 border-t border-slate-100">
+                  <a
+                    href="https://teknik.umpo.ac.id/layanan-terpadu/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#08235b] transition"
+                  >
+                    Unduh Dokumen Akreditasi <ExternalLink className="size-3.5" />
+                  </a>
+                  <button
+                    onClick={() => selectTab("kontak")}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:border-[#1453d6] hover:text-[#1453d6] transition"
+                  >
+                    Konsultasi dengan Prodi
+                  </button>
+                </div>
+              </div>
+
+              {/* Certificate badge card */}
+              <div className="lg:col-span-4 rounded-3xl border-2 border-emerald-200 bg-gradient-to-b from-emerald-50/80 to-white p-7 shadow-sm text-center">
+                <div className="grid size-16 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md mx-auto">
+                  <ShieldCheck className="size-9" />
+                </div>
+                <div className="mt-4 font-display text-4xl font-bold text-emerald-800">Peringkat &ldquo;B&rdquo;</div>
+                <div className="mt-1 text-xs font-bold uppercase tracking-wider text-emerald-700">BAN-PT Indonesia</div>
+                <div className="mt-4 border-t border-emerald-200 pt-4 text-xs text-slate-600">
+                  <div>SK No. 3418/SK/BAN-PT/Akred/S/IX/2019</div>
+                  <div className="mt-1 text-emerald-700 font-semibold">Berlaku Nasional</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 5: Kontak & Lokasi */}
+        {activeTab === "kontak" && (
+          <div
+            role="tabpanel"
+            id="tabpanel-kontak"
+            aria-labelledby="tab-kontak"
+            tabIndex={0}
+            className="animate-in fade-in duration-300 focus:outline-none"
+          >
+            <KontakContent />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

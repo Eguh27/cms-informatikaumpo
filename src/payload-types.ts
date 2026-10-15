@@ -122,12 +122,14 @@ export interface Config {
     footer: Footer;
     'site-media': SiteMedia;
     'home-page': HomePage;
+    'profile-page': ProfilePage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'site-media': SiteMediaSelect<false> | SiteMediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'profile-page': ProfilePageSelect<false> | ProfilePageSelect<true>;
   };
   locale: 'id' | 'en';
   widgets: {
@@ -1910,6 +1912,44 @@ export interface HomePage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profile-page".
+ */
+export interface ProfilePage {
+  id: number;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  tabSejarahLabel?: string | null;
+  tabVisimisiLabel?: string | null;
+  tabStrukturLabel?: string | null;
+  tabAkreditasiLabel?: string | null;
+  tabKontakLabel?: string | null;
+  sejarahBadge?: string | null;
+  sejarahTitle?: string | null;
+  sejarahParagraph1?: string | null;
+  sejarahParagraph2?: string | null;
+  sejarahParagraph3?: string | null;
+  btnNextTabLabel?: string | null;
+  btnDosenLabel?: string | null;
+  sidebarLegalTag?: string | null;
+  sidebarLegalTitle?: string | null;
+  legal1Label?: string | null;
+  legal1Value?: string | null;
+  legal1Sub?: string | null;
+  legal2Label?: string | null;
+  legal2Value?: string | null;
+  legal2Sub?: string | null;
+  legal3Label?: string | null;
+  legal3Value?: string | null;
+  legal3Sub?: string | null;
+  statNumber?: string | null;
+  statCaption?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2034,6 +2074,44 @@ export interface HomePageSelect<T extends boolean = true> {
   ctaPrimaryBtnUrl?: T;
   ctaSecondaryBtnText?: T;
   ctaSecondaryBtnUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profile-page_select".
+ */
+export interface ProfilePageSelect<T extends boolean = true> {
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  tabSejarahLabel?: T;
+  tabVisimisiLabel?: T;
+  tabStrukturLabel?: T;
+  tabAkreditasiLabel?: T;
+  tabKontakLabel?: T;
+  sejarahBadge?: T;
+  sejarahTitle?: T;
+  sejarahParagraph1?: T;
+  sejarahParagraph2?: T;
+  sejarahParagraph3?: T;
+  btnNextTabLabel?: T;
+  btnDosenLabel?: T;
+  sidebarLegalTag?: T;
+  sidebarLegalTitle?: T;
+  legal1Label?: T;
+  legal1Value?: T;
+  legal1Sub?: T;
+  legal2Label?: T;
+  legal2Value?: T;
+  legal2Sub?: T;
+  legal3Label?: T;
+  legal3Value?: T;
+  legal3Sub?: T;
+  statNumber?: T;
+  statCaption?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
