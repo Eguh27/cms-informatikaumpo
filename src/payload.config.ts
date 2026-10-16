@@ -18,6 +18,7 @@ import { Header } from './Header/config'
 import { SiteMedia } from './SiteMedia/config'
 import { HomePage } from './HomePage/config'
 import { ProfilePage } from './ProfilePage/config'
+import { DosenPage } from './DosenPage/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -92,7 +93,7 @@ export default buildConfig({
   }),
   collections: [Pages, Media, Categories, Users, Lecturers, News, Curriculums, Partners, Downloads],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, SiteMedia, HomePage, ProfilePage],
+  globals: [Header, Footer, SiteMedia, HomePage, ProfilePage, DosenPage],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,

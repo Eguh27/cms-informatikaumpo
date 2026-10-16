@@ -123,6 +123,7 @@ export interface Config {
     'site-media': SiteMedia;
     'home-page': HomePage;
     'profile-page': ProfilePage;
+    'dosen-page': DosenPage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
@@ -130,6 +131,7 @@ export interface Config {
     'site-media': SiteMediaSelect<false> | SiteMediaSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'profile-page': ProfilePageSelect<false> | ProfilePageSelect<true>;
+    'dosen-page': DosenPageSelect<false> | DosenPageSelect<true>;
   };
   locale: 'id' | 'en';
   widgets: {
@@ -2037,6 +2039,44 @@ export interface ProfilePage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dosen-page".
+ */
+export interface DosenPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  tabSemua?: string | null;
+  tabPimpinan?: string | null;
+  tabLab?: string | null;
+  tabDosen?: string | null;
+  searchPlaceholder?: string | null;
+  searchAriaLabel?: string | null;
+  counterShowing?: string | null;
+  counterOf?: string | null;
+  counterLecturers?: string | null;
+  counterForKeyword?: string | null;
+  resetFilterBtn?: string | null;
+  badgePimpinan?: string | null;
+  badgeLab?: string | null;
+  badgeDosen?: string | null;
+  pddiktiTooltip?: string | null;
+  researchAreaLabel?: string | null;
+  waButtonLabel?: string | null;
+  emailButtonLabel?: string | null;
+  waDefaultMessage?: string | null;
+  emptyTitle?: string | null;
+  emptyDesc?: string | null;
+  resetSearchBtn?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2286,6 +2326,44 @@ export interface ProfilePageSelect<T extends boolean = true> {
   pmbCardBtnLabel?: T;
   pmbCardDesc?: T;
   pmbCardUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dosen-page_select".
+ */
+export interface DosenPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  tabSemua?: T;
+  tabPimpinan?: T;
+  tabLab?: T;
+  tabDosen?: T;
+  searchPlaceholder?: T;
+  searchAriaLabel?: T;
+  counterShowing?: T;
+  counterOf?: T;
+  counterLecturers?: T;
+  counterForKeyword?: T;
+  resetFilterBtn?: T;
+  badgePimpinan?: T;
+  badgeLab?: T;
+  badgeDosen?: T;
+  pddiktiTooltip?: T;
+  researchAreaLabel?: T;
+  waButtonLabel?: T;
+  emailButtonLabel?: T;
+  waDefaultMessage?: T;
+  emptyTitle?: T;
+  emptyDesc?: T;
+  resetSearchBtn?: T;
+  metaTitle?: T;
+  metaDescription?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
