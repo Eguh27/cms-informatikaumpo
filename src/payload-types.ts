@@ -124,6 +124,7 @@ export interface Config {
     'home-page': HomePage;
     'profile-page': ProfilePage;
     'dosen-page': DosenPage;
+    'fasilitas-page': FasilitasPage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
@@ -132,6 +133,7 @@ export interface Config {
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'profile-page': ProfilePageSelect<false> | ProfilePageSelect<true>;
     'dosen-page': DosenPageSelect<false> | DosenPageSelect<true>;
+    'fasilitas-page': FasilitasPageSelect<false> | FasilitasPageSelect<true>;
   };
   locale: 'id' | 'en';
   widgets: {
@@ -2077,6 +2079,61 @@ export interface DosenPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fasilitas-page".
+ */
+export interface FasilitasPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  lab1Badge?: string | null;
+  lab1Title?: string | null;
+  lab1HeadRoleLabel?: string | null;
+  lab1HeadName?: string | null;
+  lab1Desc?: string | null;
+  lab1Point1?: string | null;
+  lab1Point2?: string | null;
+  lab1Point3?: string | null;
+  lab1Point4?: string | null;
+  lab1Capacity?: string | null;
+  lab1Connection?: string | null;
+  lab1Location?: string | null;
+  lab1Image?: (number | null) | Media;
+  lab1ImageTag?: string | null;
+  lab1ImageSub?: string | null;
+  lab2Badge?: string | null;
+  lab2Title?: string | null;
+  lab2HeadRoleLabel?: string | null;
+  lab2HeadName?: string | null;
+  lab2Desc?: string | null;
+  lab2Point1?: string | null;
+  lab2Point2?: string | null;
+  lab2Point3?: string | null;
+  lab2Point4?: string | null;
+  lab2Capacity?: string | null;
+  lab2Ac?: string | null;
+  lab2Location?: string | null;
+  lab2Image?: (number | null) | Media;
+  lab2ImageTag?: string | null;
+  lab2ImageSub?: string | null;
+  supportTag?: string | null;
+  supportTitle?: string | null;
+  supportDesc?: string | null;
+  support1Title?: string | null;
+  support1Desc?: string | null;
+  support2Title?: string | null;
+  support2Desc?: string | null;
+  support3Title?: string | null;
+  support3Desc?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2362,6 +2419,61 @@ export interface DosenPageSelect<T extends boolean = true> {
   emptyTitle?: T;
   emptyDesc?: T;
   resetSearchBtn?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fasilitas-page_select".
+ */
+export interface FasilitasPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  lab1Badge?: T;
+  lab1Title?: T;
+  lab1HeadRoleLabel?: T;
+  lab1HeadName?: T;
+  lab1Desc?: T;
+  lab1Point1?: T;
+  lab1Point2?: T;
+  lab1Point3?: T;
+  lab1Point4?: T;
+  lab1Capacity?: T;
+  lab1Connection?: T;
+  lab1Location?: T;
+  lab1Image?: T;
+  lab1ImageTag?: T;
+  lab1ImageSub?: T;
+  lab2Badge?: T;
+  lab2Title?: T;
+  lab2HeadRoleLabel?: T;
+  lab2HeadName?: T;
+  lab2Desc?: T;
+  lab2Point1?: T;
+  lab2Point2?: T;
+  lab2Point3?: T;
+  lab2Point4?: T;
+  lab2Capacity?: T;
+  lab2Ac?: T;
+  lab2Location?: T;
+  lab2Image?: T;
+  lab2ImageTag?: T;
+  lab2ImageSub?: T;
+  supportTag?: T;
+  supportTitle?: T;
+  supportDesc?: T;
+  support1Title?: T;
+  support1Desc?: T;
+  support2Title?: T;
+  support2Desc?: T;
+  support3Title?: T;
+  support3Desc?: T;
   metaTitle?: T;
   metaDescription?: T;
   updatedAt?: T;
