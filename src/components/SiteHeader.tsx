@@ -53,7 +53,7 @@ export function SiteHeader({
   }
 
   const localize = (href: string) => {
-    if (!href || href.startsWith('http') || href.startsWith('#')) return href
+    if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('/admin') || href.startsWith('/api')) return href
     if (currentLocale === 'en') {
       return href.startsWith('/en') ? href : `/en${href === '/' ? '' : href}`
     }

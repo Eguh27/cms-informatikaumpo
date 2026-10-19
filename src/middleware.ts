@@ -16,6 +16,14 @@ export function middleware(req: NextRequest) {
     return NextResponse.next()
   }
 
+  // Redirect /en/admin directly to /admin so Payload CMS client router does not conflict
+  if (pathname === '/en/admin' || pathname.startsWith('/en/admin/')) {
+    const adminPath = pathname.replace(/^\/en/, '')
+    const url = req.nextUrl.clone()
+    url.pathname = adminPath
+    return NextResponse.redirect(url)
+  }
+
   // Check if pathname starts with /en
   if (pathname === '/en' || pathname.startsWith('/en/')) {
     const strippedPath = pathname.replace(/^\/en/, '') || '/'
