@@ -12,37 +12,75 @@ import {
   FileText,
 } from "lucide-react";
 import type { News } from "@/payload-types";
+import type { BeritaPageContent } from "@/data/beritaFallback";
 import Link from "next/link";
 
-type BeritaClientProps = {
-  initialNews: News[];
+type CategoryItem = {
+  id?: number | string;
+  slug?: string;
+  title: string;
 };
 
-export function BeritaClient({ initialNews }: BeritaClientProps) {
-  const [filter, setFilter] = useState<"Semua" | "Agenda" | "Akademik" | "Pengumuman">("Semua");
+type BeritaClientProps = {
+  content: BeritaPageContent;
+  categories: CategoryItem[];
+  initialNews: News[];
+  locale?: "id" | "en";
+};
+
+export function BeritaClient({
+  content,
+  categories = [],
+  initialNews = [],
+  locale = "id",
+}: BeritaClientProps) {
+  const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
+
+  const tabs = useMemo(() => {
+    return [
+      { slug: "all", title: content.filterAllLabel },
+      ...categories.map((c) => ({
+        slug: c.slug || String(c.id),
+        title: c.title,
+      })),
+    ];
+  }, [categories, content.filterAllLabel]);
 
   const filtered = useMemo(() => {
     return initialNews.filter((item) => {
-      const itemCategory = typeof item.category === 'object' && item.category !== null ? item.category.title : item.category;
-      const matchCat = filter === "Semua" || itemCategory === filter;
+      const itemCatObj =
+        typeof item.category === "object" && item.category !== null
+          ? item.category
+          : null;
+      const catSlug = itemCatObj?.slug;
+      const catId = itemCatObj ? itemCatObj.id : item.category;
+
+      const matchCat =
+        filter === "all" ||
+        catSlug === filter ||
+        String(catId) === filter;
+
       const matchSearch =
-        item.title.toLowerCase().includes(search.toLowerCase()) ||
+        (item.title && item.title.toLowerCase().includes(search.toLowerCase())) ||
         (item.excerpt && item.excerpt.toLowerCase().includes(search.toLowerCase()));
+
       return matchCat && matchSearch;
     });
   }, [filter, search, initialNews]);
+
+  const dateLocale = locale === "en" ? "en-US" : "id-ID";
 
   return (
     <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
-        category="Warta & Informasi"
-        title="Berita & Pengumuman Resmi"
-        subtitle="Dapatkan informasi terbaru seputar agenda seminar, lokakarya, capaian prestasi mahasiswa, dan pengumuman akademik Teknik Informatika UMPO."
+        category={content.bannerCategory}
+        title={content.bannerTitle}
+        subtitle={content.bannerSubtitle}
         breadcrumbs={[
-          { label: "Beranda", href: "/" },
-          { label: "Berita & Pengumuman" },
+          { label: content.breadcrumbHome, href: locale === "en" ? "/en" : "/" },
+          { label: content.breadcrumbCurrent },
         ]}
       />
 
@@ -50,17 +88,17 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
         {/* Filter and Search Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl bg-white p-3.5 shadow-sm border border-slate-200/80 mb-10">
           <div className="flex flex-wrap items-center gap-2">
-            {(["Semua", "Agenda", "Akademik", "Pengumuman"] as const).map((tab) => (
+            {tabs.map((tab) => (
               <button
-                key={tab}
-                onClick={() => setFilter(tab)}
+                key={tab.slug}
+                onClick={() => setFilter(tab.slug)}
                 className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 min-h-[44px] inline-flex items-center ${
-                  filter === tab
+                  filter === tab.slug
                     ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
-                {tab}
+                {tab.title}
               </button>
             ))}
           </div>
@@ -71,8 +109,8 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari berita atau agenda..."
-              aria-label="Cari berita atau agenda"
+              placeholder={content.searchPlaceholder}
+              aria-label={content.searchPlaceholder}
               className="w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2 pl-9 pr-8 text-xs font-medium text-slate-800 transition focus:border-[#1453d6] focus:bg-white focus:outline-none"
             />
             {search && (
@@ -89,32 +127,43 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
         {/* News Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filtered.map((item) => {
-            const imageUrl = typeof item.image === 'object' && item.image?.url ? item.image.url : null;
-            const dateStr = item.publishedAt 
-              ? new Date(item.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-              : '';
+            const imageUrl =
+              typeof item.image === "object" && item.image?.url
+                ? item.image.url
+                : null;
+            const dateStr = item.publishedAt
+              ? new Date(item.publishedAt).toLocaleDateString(dateLocale, {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "";
+            const catTitle =
+              typeof item.category === "object" && item.category !== null
+                ? item.category.title
+                : "";
+            const linkHref =
+              locale === "en" ? `/en/berita/${item.slug}` : `/berita/${item.slug}`;
 
             return (
-              <Link href={`/berita/${item.slug}`} key={item.id}>
-                <article
-                  className="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-[#1453d6]/40 hover:shadow-[0_20px_40px_-15px_rgba(20,83,214,0.15)] cursor-pointer h-full"
-                >
+              <Link href={linkHref} key={item.id}>
+                <article className="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-[#1453d6]/40 hover:shadow-[0_20px_40px_-15px_rgba(20,83,214,0.15)] cursor-pointer h-full">
                   <div>
                     {/* Image */}
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={
-                          imageUrl || SITE_MEDIA.labSoftware
-                        }
+                        src={imageUrl || SITE_MEDIA.labSoftware}
                         alt={item.title}
                         className="size-full object-cover transition duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute left-3.5 top-3.5">
-                        <span className="rounded-full bg-white/95 px-3 py-1 text-[11px] font-bold text-[#1453d6] shadow-sm backdrop-blur-md">
-                          {typeof item.category === 'object' && item.category !== null ? item.category.title : item.category}
-                        </span>
-                      </div>
+                      {catTitle && (
+                        <div className="absolute left-3.5 top-3.5">
+                          <span className="rounded-full bg-white/95 px-3 py-1 text-[11px] font-bold text-[#1453d6] shadow-sm backdrop-blur-md">
+                            {catTitle}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Content */}
@@ -125,7 +174,8 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
                         </span>
                         <span>•</span>
                         <span className="flex items-center gap-1 font-medium">
-                          <Clock className="size-3.5" /> {item.readTime || 3} min read
+                          <Clock className="size-3.5" /> {item.readTime || 3}{" "}
+                          {content.readTimePrefix}
                         </span>
                       </div>
 
@@ -141,7 +191,7 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
 
                   {/* Action link */}
                   <div className="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#1453d6]">
-                    <span>Baca Selengkapnya</span>
+                    <span>{content.readMoreLabel}</span>
                     <span className="grid size-7 place-items-center rounded-full bg-blue-50 text-[#1453d6] transition-transform group-hover:translate-x-1">
                       <ArrowRight className="size-3.5" />
                     </span>
@@ -154,18 +204,18 @@ export function BeritaClient({ initialNews }: BeritaClientProps) {
           {filtered.length === 0 && (
             <div className="col-span-full rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs">
               <FileText className="mx-auto size-12 text-slate-300" />
-              <h4 className="mt-4 font-display text-lg font-bold text-slate-700">Tidak ada berita yang cocok</h4>
-              <p className="mt-1 text-sm text-slate-500">
-                Coba ubah kata kunci pencarian atau pilih kategori yang berbeda.
-              </p>
+              <h4 className="mt-4 font-display text-lg font-bold text-slate-700">
+                {content.emptyTitle}
+              </h4>
+              <p className="mt-1 text-sm text-slate-500">{content.emptyDesc}</p>
               <button
                 onClick={() => {
-                  setFilter("Semua");
+                  setFilter("all");
                   setSearch("");
                 }}
                 className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#08235b]"
               >
-                Reset Pencarian
+                {content.emptyResetLabel}
               </button>
             </div>
           )}

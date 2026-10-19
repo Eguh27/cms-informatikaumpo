@@ -125,6 +125,7 @@ export interface Config {
     'profile-page': ProfilePage;
     'dosen-page': DosenPage;
     'fasilitas-page': FasilitasPage;
+    'berita-page': BeritaPage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
@@ -134,6 +135,7 @@ export interface Config {
     'profile-page': ProfilePageSelect<false> | ProfilePageSelect<true>;
     'dosen-page': DosenPageSelect<false> | DosenPageSelect<true>;
     'fasilitas-page': FasilitasPageSelect<false> | FasilitasPageSelect<true>;
+    'berita-page': BeritaPageSelect<false> | BeritaPageSelect<true>;
   };
   locale: 'id' | 'en';
   widgets: {
@@ -2134,6 +2136,33 @@ export interface FasilitasPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "berita-page".
+ */
+export interface BeritaPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  filterAllLabel?: string | null;
+  searchPlaceholder?: string | null;
+  readTimePrefix?: string | null;
+  readMoreLabel?: string | null;
+  emptyTitle?: string | null;
+  emptyDesc?: string | null;
+  emptyResetLabel?: string | null;
+  detailBackLabel?: string | null;
+  detailRelatedTitle?: string | null;
+  detailAllNewsLabel?: string | null;
+  detailEmptyContent?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2474,6 +2503,33 @@ export interface FasilitasPageSelect<T extends boolean = true> {
   support2Desc?: T;
   support3Title?: T;
   support3Desc?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "berita-page_select".
+ */
+export interface BeritaPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  filterAllLabel?: T;
+  searchPlaceholder?: T;
+  readTimePrefix?: T;
+  readMoreLabel?: T;
+  emptyTitle?: T;
+  emptyDesc?: T;
+  emptyResetLabel?: T;
+  detailBackLabel?: T;
+  detailRelatedTitle?: T;
+  detailAllNewsLabel?: T;
+  detailEmptyContent?: T;
   metaTitle?: T;
   metaDescription?: T;
   updatedAt?: T;

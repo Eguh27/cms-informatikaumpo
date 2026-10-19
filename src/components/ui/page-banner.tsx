@@ -90,7 +90,11 @@ export function PageBanner({
         </nav>
 
         <div className="max-w-3xl">
-          
+          {category && (
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#1E6FD9]/10 px-3.5 py-1 text-xs font-bold text-[#1E6FD9] border border-[#1E6FD9]/20 mb-1">
+              {category}
+            </div>
+          )}
           <h1 className="mt-4 font-display text-4xl font-extrabold tracking-[-.03em] text-[#0B3A8C] md:text-5xl lg:text-6xl">
             {title}
           </h1>
