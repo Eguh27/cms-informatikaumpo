@@ -21,6 +21,7 @@ import { ProfilePage } from './ProfilePage/config'
 import { DosenPage } from './DosenPage/config'
 import { FasilitasPage } from './FasilitasPage/config'
 import { BeritaPage } from './BeritaPage/config'
+import { DownloadPage } from './DownloadPage/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -95,7 +96,7 @@ export default buildConfig({
   }),
   collections: [Pages, Media, Categories, Users, Lecturers, News, Curriculums, Partners, Downloads],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, SiteMedia, HomePage, ProfilePage, DosenPage, FasilitasPage, BeritaPage],
+  globals: [Header, Footer, SiteMedia, HomePage, ProfilePage, DosenPage, FasilitasPage, BeritaPage, DownloadPage],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,

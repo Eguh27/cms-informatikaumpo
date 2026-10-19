@@ -15,6 +15,7 @@ export const Downloads: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       label: 'Nama Dokumen',
     },
     {

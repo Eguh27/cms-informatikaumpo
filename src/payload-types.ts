@@ -126,6 +126,7 @@ export interface Config {
     'dosen-page': DosenPage;
     'fasilitas-page': FasilitasPage;
     'berita-page': BeritaPage;
+    'download-page': DownloadPage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
@@ -136,6 +137,7 @@ export interface Config {
     'dosen-page': DosenPageSelect<false> | DosenPageSelect<true>;
     'fasilitas-page': FasilitasPageSelect<false> | FasilitasPageSelect<true>;
     'berita-page': BeritaPageSelect<false> | BeritaPageSelect<true>;
+    'download-page': DownloadPageSelect<false> | DownloadPageSelect<true>;
   };
   locale: 'id' | 'en';
   widgets: {
@@ -2163,6 +2165,36 @@ export interface BeritaPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "download-page".
+ */
+export interface DownloadPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  filterAllLabel?: string | null;
+  searchPlaceholder?: string | null;
+  btnDownloadLabel?: string | null;
+  btnComingSoonLabel?: string | null;
+  emptyTitle?: string | null;
+  emptyDesc?: string | null;
+  guideTag?: string | null;
+  guideTitle?: string | null;
+  step1Title?: string | null;
+  step1Desc?: string | null;
+  step2Title?: string | null;
+  step2Desc?: string | null;
+  step3Title?: string | null;
+  step3Desc?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2530,6 +2562,36 @@ export interface BeritaPageSelect<T extends boolean = true> {
   detailRelatedTitle?: T;
   detailAllNewsLabel?: T;
   detailEmptyContent?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "download-page_select".
+ */
+export interface DownloadPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  filterAllLabel?: T;
+  searchPlaceholder?: T;
+  btnDownloadLabel?: T;
+  btnComingSoonLabel?: T;
+  emptyTitle?: T;
+  emptyDesc?: T;
+  guideTag?: T;
+  guideTitle?: T;
+  step1Title?: T;
+  step1Desc?: T;
+  step2Title?: T;
+  step2Desc?: T;
+  step3Title?: T;
+  step3Desc?: T;
   metaTitle?: T;
   metaDescription?: T;
   updatedAt?: T;

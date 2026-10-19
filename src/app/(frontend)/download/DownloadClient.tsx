@@ -9,41 +9,61 @@ import {
   Search,
 } from "lucide-react";
 import type { Download } from "@/payload-types";
+import {
+  type DownloadPageContent,
+  DOWNLOAD_CATEGORY_LABELS,
+} from "@/data/downloadFallback";
 
 type DownloadClientProps = {
+  content: DownloadPageContent;
   initialDownloads: Download[];
+  locale?: "id" | "en";
 };
 
 function formatBytes(bytes: number, decimals = 2) {
-  if (!+bytes) return '0 Bytes';
+  if (!+bytes) return "0 Bytes";
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
 function getFileExtension(mimeType?: string | null, filename?: string | null) {
   if (filename) {
-    const ext = filename.split('.').pop();
+    const ext = filename.split(".").pop();
     if (ext) return ext.toUpperCase();
   }
   if (mimeType) {
-    if (mimeType === 'application/pdf') return 'PDF';
-    if (mimeType === 'application/msword' || mimeType.includes('wordprocessingml')) return 'DOCX';
+    if (mimeType === "application/pdf") return "PDF";
+    if (mimeType === "application/msword" || mimeType.includes("wordprocessingml"))
+      return "DOCX";
   }
-  return 'FILE';
+  return "FILE";
 }
 
-export function DownloadClient({ initialDownloads }: DownloadClientProps) {
+export function DownloadClient({
+  content,
+  initialDownloads = [],
+  locale = "id",
+}: DownloadClientProps) {
   const [selectedCat, setSelectedCat] = useState("Semua");
   const [search, setSearch] = useState("");
 
-  const categories = ["Semua", "Pedoman", "Skripsi", "Magang", "KKN", "Publikasi"];
+  const categories = [
+    "Semua",
+    "Pedoman",
+    "Skripsi",
+    "Magang",
+    "KKN",
+    "Jadwal Kuliah",
+    "Publikasi",
+  ] as const;
 
   const filtered = initialDownloads.filter((d) => {
     const matchCat = selectedCat === "Semua" || d.category === selectedCat;
-    const matchSearch = d.title.toLowerCase().includes(search.toLowerCase());
+    const matchSearch =
+      d.title && d.title.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchSearch;
   });
 
@@ -51,12 +71,12 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
     <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       {/* Banner */}
       <PageBanner
-        category="Layanan Mahasiswa & Dosen"
-        title="Pusat Unduhan Dokumen Resmi"
-        subtitle="Unduh buku pedoman akademik, template skripsi SISKRIP, formulir kerja praktik/magang, dan template jurnal resmi Program Studi S1 Teknik Informatika UMPO."
+        category={content.bannerCategory}
+        title={content.bannerTitle}
+        subtitle={content.bannerSubtitle}
         breadcrumbs={[
-          { label: "Beranda", href: "/" },
-          { label: "Download Center" },
+          { label: content.breadcrumbHome, href: locale === "en" ? "/en" : "/" },
+          { label: content.breadcrumbCurrent },
         ]}
       />
 
@@ -64,19 +84,23 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
         {/* Filter and Search Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl bg-white p-3.5 shadow-sm border border-slate-200/80 mb-10">
           <div className="flex flex-wrap items-center gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCat(cat)}
-                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 min-h-[44px] ${
-                  selectedCat === cat
-                    ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const label =
+                DOWNLOAD_CATEGORY_LABELS[locale]?.[cat] || cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCat(cat)}
+                  className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 min-h-[44px] ${
+                    selectedCat === cat
+                      ? "bg-[#1453d6] text-white shadow-md shadow-blue-600/25"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
 
           <div className="relative w-full md:w-72">
@@ -85,8 +109,8 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari nama formulir atau template..."
-              aria-label="Cari nama formulir atau template dokumen"
+              placeholder={content.searchPlaceholder}
+              aria-label={content.searchPlaceholder}
               className="w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2 pl-9 pr-4 text-xs font-medium text-slate-800 transition focus:border-[#1453d6] focus:bg-white focus:outline-none"
             />
           </div>
@@ -95,14 +119,18 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
         {/* Documents Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-14">
           {filtered.map((doc, idx) => {
-            const media = typeof doc.file === 'object' ? doc.file : null;
+            const media = typeof doc.file === "object" ? doc.file : null;
             const fileUrl = media?.url || null;
             const fileExt = getFileExtension(media?.mimeType, media?.filename);
-            const fileSize = media?.filesize ? formatBytes(media.filesize) : 'Unknown size';
+            const fileSize = media?.filesize
+              ? formatBytes(media.filesize)
+              : "Unknown size";
+            const catLabel =
+              DOWNLOAD_CATEGORY_LABELS[locale]?.[doc.category] || doc.category;
 
             return (
               <div
-                key={idx}
+                key={doc.id || idx}
                 className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:border-[#1453d6]/40 hover:shadow-md"
               >
                 <div className="flex items-center gap-4 min-w-0 pr-4">
@@ -110,7 +138,9 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
                     <FileText className="size-6" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-sm font-bold text-[#08235b] line-clamp-1">{doc.title}</h4>
+                    <h4 className="text-sm font-bold text-[#08235b] line-clamp-1">
+                      {doc.title}
+                    </h4>
                     <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
                       <span className="rounded-md bg-slate-100 px-2 py-0.5 font-bold uppercase text-[#1453d6]">
                         {fileExt}
@@ -118,7 +148,7 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
                       <span>•</span>
                       <span>{fileSize}</span>
                       <span>•</span>
-                      <span className="font-medium text-slate-600">{doc.category}</span>
+                      <span className="font-medium text-slate-600">{catLabel}</span>
                     </div>
                   </div>
                 </div>
@@ -130,7 +160,8 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
                     rel="noopener noreferrer"
                     className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#1453d6] px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#08235b] transition"
                   >
-                    Unduh <DownloadIcon className="size-3.5" aria-hidden="true" />
+                    {content.btnDownloadLabel}{" "}
+                    <DownloadIcon className="size-3.5" aria-hidden="true" />
                   </a>
                 ) : (
                   <span
@@ -138,7 +169,8 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
                     title="Berkas belum tersedia"
                     className="inline-flex shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-slate-200 px-4 py-2.5 text-xs font-bold text-slate-500"
                   >
-                    Segera <DownloadIcon className="size-3.5" aria-hidden="true" />
+                    {content.btnComingSoonLabel}{" "}
+                    <DownloadIcon className="size-3.5" aria-hidden="true" />
                   </span>
                 )}
               </div>
@@ -148,9 +180,13 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
           {filtered.length === 0 && (
             <div className="col-span-full rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs">
               <FileCheck className="mx-auto size-12 text-slate-300" />
-              <h4 className="mt-4 font-display text-lg font-bold text-slate-700">Dokumen tidak ditemukan</h4>
+              <h4 className="mt-4 font-display text-lg font-bold text-slate-700">
+                {content.emptyTitle}
+              </h4>
               <p className="mt-1 text-sm text-slate-500">
-                Tidak ada dokumen yang cocok dengan kata kunci &ldquo;{search}&rdquo;.
+                {search
+                  ? `${content.emptyDesc} ("${search}")`
+                  : content.emptyDesc}
               </p>
             </div>
           )}
@@ -158,30 +194,35 @@ export function DownloadClient({ initialDownloads }: DownloadClientProps) {
 
         {/* Petunjuk Penggunaan Dokumen */}
         <div className="rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/70 to-indigo-50/40 p-7 md:p-9 shadow-sm">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">Panduan Administrasi</div>
+          <div className="text-xs font-bold uppercase tracking-wider text-[#1453d6]">
+            {content.guideTag}
+          </div>
           <h3 className="mt-1 font-display text-xl font-bold text-[#08235b]">
-            Prosedur Pengajuan & Pengunggahan Dokumen Akademik
+            {content.guideTitle}
           </h3>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-700">
             <div className="rounded-2xl bg-white p-4 border border-blue-100/60 shadow-xs">
-              <div className="font-bold text-[#1453d6] text-sm">1. Unduh & Isi Template</div>
+              <div className="font-bold text-[#1453d6] text-sm">
+                {content.step1Title}
+              </div>
               <p className="mt-1.5 leading-relaxed text-slate-600">
-                Gunakan template resmi terbaru tanpa mengubah format tata letak, margin, dan jenis huruf yang telah
-                distandarisasi prodi.
+                {content.step1Desc}
               </p>
             </div>
             <div className="rounded-2xl bg-white p-4 border border-blue-100/60 shadow-xs">
-              <div className="font-bold text-[#1453d6] text-sm">2. Verifikasi Dosen PA / Pembimbing</div>
+              <div className="font-bold text-[#1453d6] text-sm">
+                {content.step2Title}
+              </div>
               <p className="mt-1.5 leading-relaxed text-slate-600">
-                Konsultasikan dokumen Anda kepada Dosen Pembimbing Akademik (PA) atau Pembimbing Skripsi untuk
-                mendapatkan persetujuan.
+                {content.step2Desc}
               </p>
             </div>
             <div className="rounded-2xl bg-white p-4 border border-blue-100/60 shadow-xs">
-              <div className="font-bold text-[#1453d6] text-sm">3. Unggah ke SIMTIK / SISKRIP</div>
+              <div className="font-bold text-[#1453d6] text-sm">
+                {content.step3Title}
+              </div>
               <p className="mt-1.5 leading-relaxed text-slate-600">
-                Unggah berkas dalam format PDF melalui portal resmi SISKRIP atau sampaikan ke tata usaha Fakultas Teknik
-                UMPO.
+                {content.step3Desc}
               </p>
             </div>
           </div>
