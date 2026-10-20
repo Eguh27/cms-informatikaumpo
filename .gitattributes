@@ -144,3 +144,6 @@
 *.stl                filter=lfs diff=lfs merge=lfs -text
 *.nc                 filter=lfs diff=lfs merge=lfs -text
 *.mat                filter=lfs diff=lfs merge=lfs -text
+
+# Runtime assets must be stored as real files: Vercel does not fetch Git LFS objects.
+public/** -filter -diff -merge
