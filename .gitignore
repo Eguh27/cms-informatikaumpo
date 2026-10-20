@@ -1,14 +1,18 @@
 build
 dist / media
 node_modules
+.d
 .DS_Store
 .env
 .next
 next-env.d.ts
 .vercel
 
-# Payload default media upload directory
-public/media/
+# Payload media upload directory. Uploads made through the admin panel stay
+# ignored, except the schedule PDF the Jadwal Kuliah page links to — that one
+# has to be tracked or the download 404s on read-only deployments (Vercel).
+public/media/*
+!public/media/JADWAL-KULIAH-KELAS-REGULER-20262027.pdf
 
 public/robots.txt
 public/sitemap*.xml
