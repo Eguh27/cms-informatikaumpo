@@ -53,6 +53,11 @@ const nextConfig: NextConfig = {
   sassOptions: {
     loadPaths: ['./node_modules/@payloadcms/ui/dist/scss/'],
   },
+  // Vercel functions only receive traced files. The SQLite database is opened
+  // at runtime through DATABASE_URL, which tracing cannot detect statically.
+  outputFileTracingIncludes: {
+    '/*': ['./.d'],
+  },
   images: {
     localPatterns: [
       {

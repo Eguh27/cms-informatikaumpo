@@ -1,5 +1,6 @@
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import sharp from 'sharp'
+import { existsSync } from 'fs'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
@@ -35,23 +36,24 @@ const dirname = path.dirname(filename)
 
 const databaseURL = process.env.DATABASE_URL || ''
 
-// Vercel serverless functions run on a read-only filesystem, so a local SQLite
-// file cannot serve the app there: it is never persisted and is recreated empty
-// (or fails to open), making every route return 500 at runtime. Fail the build
-// early with an actionable message instead of deploying a broken site.
-if (process.env.VERCEL) {
-  if (databaseURL.startsWith('file:')) {
+// Vercel serverless functions have a read-only filesystem (except /tmp), so a
+// local SQLite file only works there when the file is bundled with the
+// deployment (see `outputFileTracingIncludes` in next.config.ts). Fail the build
+// early if it is missing instead of deploying a site that returns 500.
+if (process.env.VERCEL && databaseURL.startsWith('file:')) {
+  const databaseFile = path.resolve(process.cwd(), databaseURL.slice('file:'.length))
+  if (!existsSync(databaseFile)) {
     throw new Error(
-      'DATABASE_URL uses a local SQLite file ("file:..."), which does not work on Vercel. ' +
-        'Set DATABASE_URL to a persistent LibSQL/Turso database (libsql://...) in the Vercel project settings.',
+      `DATABASE_URL points to a local SQLite file that does not exist: ${databaseFile}. ` +
+        'Commit the database file or set DATABASE_URL to a persistent LibSQL/Turso database (libsql://...).',
     )
   }
-  if (databaseURL.startsWith('libsql://') && !process.env.DATABASE_AUTH_TOKEN) {
-    throw new Error(
-      'DATABASE_URL points to a remote LibSQL database but DATABASE_AUTH_TOKEN is missing. ' +
-        'Set DATABASE_AUTH_TOKEN in the Vercel project settings.',
-    )
-  }
+}
+if (process.env.VERCEL && databaseURL.startsWith('libsql://') && !process.env.DATABASE_AUTH_TOKEN) {
+  throw new Error(
+    'DATABASE_URL points to a remote LibSQL database but DATABASE_AUTH_TOKEN is missing. ' +
+      'Set DATABASE_AUTH_TOKEN in the Vercel project settings.',
+  )
 }
 
 export default buildConfig({
