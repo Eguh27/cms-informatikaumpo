@@ -7,6 +7,8 @@ import { resolveMediaUrl } from '@/data/siteMedia'
 import { CalendarDays, Download, ArrowLeft, FileText } from 'lucide-react'
 import Link from 'next/link'
 
+import { getCurrentLocale } from '@/utilities/getLocale'
+
 export const metadata: Metadata = {
   title: 'Jadwal Kuliah | TI UMPO',
   description:
@@ -30,6 +32,8 @@ async function getSchedules() {
 }
 
 export default async function JadwalKuliahPage() {
+  const locale = await getCurrentLocale()
+  const isEn = locale === 'en'
   const schedules = await getSchedules()
   const latestSchedule = schedules[0]
   const latestFileUrl = latestSchedule ? resolveMediaUrl(latestSchedule.file, '') : ''
@@ -37,22 +41,27 @@ export default async function JadwalKuliahPage() {
   return (
     <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       <PageBanner
-        category="Akademik & Kurikulum"
-        title="Jadwal Kuliah"
-        subtitle="Lihat langsung jadwal perkuliahan semester berjalan. Selalu cek versi terbaru karena ruang dan jam dapat berubah."
+        category={isEn ? "Academics & Curriculum" : "Akademik & Kurikulum"}
+        title={isEn ? "Class Schedule" : "Jadwal Kuliah"}
+        subtitle={
+          isEn
+            ? "View ongoing semester class schedules. Always check the latest version as room and hours may change."
+            : "Lihat langsung jadwal perkuliahan semester berjalan. Selalu cek versi terbaru karena ruang dan jam dapat berubah."
+        }
         breadcrumbs={[
-          { label: 'Beranda', href: '/' },
-          { label: 'Akademik', href: '/akademik' },
-          { label: 'Jadwal Kuliah' },
+          { label: isEn ? "Home" : "Beranda", href: isEn ? "/en" : "/" },
+          { label: isEn ? "Academics" : "Akademik", href: isEn ? "/en/akademik" : "/akademik" },
+          { label: isEn ? "Class Schedule" : "Jadwal Kuliah" },
         ]}
       />
 
       <div className="relative mx-auto max-w-5xl px-5 lg:px-8 mt-4">
         <Link
-          href="/akademik"
+          href={isEn ? "/en/akademik" : "/akademik"}
           className="mb-8 inline-flex min-h-[44px] items-center gap-2 text-sm font-bold text-[#1453d6] transition hover:text-[#08235b]"
         >
-          <ArrowLeft className="size-4" aria-hidden="true" /> Kembali ke Akademik
+          <ArrowLeft className="size-4" aria-hidden="true" />{" "}
+          {isEn ? "Back to Academics" : "Kembali ke Akademik"}
         </Link>
 
         {schedules.length > 0 ? (

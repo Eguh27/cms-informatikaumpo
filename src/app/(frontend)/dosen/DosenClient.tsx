@@ -5,6 +5,7 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { LecturerAvatar } from "@/components/LecturerAvatar";
 import { resolveMediaUrl } from "@/data/siteMedia";
 import type { Lecturer } from "@/payload-types";
+import type { DosenPageContent } from "@/data/dosenFallback";
 import {
   Award,
   BadgeCheck,
@@ -12,7 +13,6 @@ import {
   GraduationCap,
   Mail,
   Search,
-  // Sparkles,
   Users,
   X,
 } from "lucide-react";
@@ -22,9 +22,16 @@ type DosenClientProps = {
   initialLecturers: Lecturer[];
   /** Prefills the filter when arriving from the navbar search panel (?q=). */
   initialQuery?: string;
+  content: DosenPageContent;
+  locale?: "id" | "en";
 };
 
-export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClientProps) {
+export function DosenClient({
+  initialLecturers,
+  initialQuery = "",
+  content,
+  locale = "id",
+}: DosenClientProps) {
   const [category, setCategory] = useState<"semua" | "pimpinan" | "lab" | "dosen">("semua");
   const [search, setSearch] = useState(initialQuery);
 
@@ -49,27 +56,26 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
     }).sort((a, b) => {
       const rank = (c: string) => (c === "pimpinan" ? 0 : c === "lab" ? 1 : 2);
       const r = rank(a.category) - rank(b.category);
-      return r !== 0 ? r : a.name.localeCompare(b.name, "id");
+      return r !== 0 ? r : a.name.localeCompare(b.name, locale === "en" ? "en" : "id");
     });
-  }, [category, search, initialLecturers]);
+  }, [category, search, initialLecturers, locale]);
 
   const getWhatsAppUrl = (whatsapp?: string | null) => {
     if (!whatsapp) return null;
-    // Bersihkan karakter non-digit jika ada (selain + di awal)
     const cleanNumber = whatsapp.replace(/[^\d+]/g, '');
-    const text = encodeURIComponent(`Halo, saya ingin bertanya mengenai program studi Teknik Informatika.`);
+    const text = encodeURIComponent(content.waDefaultMessage);
     return `https://wa.me/${cleanNumber}?text=${text}`;
   };
 
   return (
     <div className="min-h-screen bg-[#FFFBF5] pb-28" id="konten-utama">
       <PageBanner
-        category="Tenaga Pendidik & Peneliti"
-        title="Dosen & Peneliti Profesional"
-        subtitle="Belajar langsung dari akademisi berpendidikan S2 dan S3 yang aktif meneliti, membimbing, dan membawa pengalaman industri ke dalam kelas."
+        category={content.bannerCategory}
+        title={content.bannerTitle}
+        subtitle={content.bannerSubtitle}
         breadcrumbs={[
-          { label: "Beranda", href: "/" },
-          { label: "Dosen & Tendik" },
+          { label: content.breadcrumbHome, href: locale === "en" ? "/en" : "/" },
+          { label: content.breadcrumbCurrent },
         ]}
       />
 
@@ -79,10 +85,10 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
           {/* Category Tabs */}
           <div className="flex flex-wrap items-center gap-1.5">
             {[
-              { key: "semua", label: "Semua Dosen", count: counts.semua },
-              { key: "pimpinan", label: "Pimpinan Prodi", count: counts.pimpinan },
-              { key: "lab", label: "Ka. Laboratorium", count: counts.lab },
-              { key: "dosen", label: "Dosen Pengajar", count: counts.dosen },
+              { key: "semua", label: content.tabSemua, count: counts.semua },
+              { key: "pimpinan", label: content.tabPimpinan, count: counts.pimpinan },
+              { key: "lab", label: content.tabLab, count: counts.lab },
+              { key: "dosen", label: content.tabDosen, count: counts.dosen },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -112,8 +118,8 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari nama dosen, NIDN, kepakaran..."
-              aria-label="Cari nama dosen, NIDN, atau bidang kepakaran"
+              placeholder={content.searchPlaceholder}
+              aria-label={content.searchAriaLabel}
               className="w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2.5 pl-10 pr-9 text-xs font-medium text-slate-800 transition focus:border-[#1453d6] focus:bg-white focus:outline-none"
             />
             {search && (
@@ -131,8 +137,8 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
         {(search.trim() || category !== "semua") && (
           <div className="mb-6 flex items-center justify-between text-xs text-slate-500 px-1">
             <div>
-              Menampilkan <span className="font-bold text-[#08235b]">{filtered.length}</span> dari {initialLecturers.length} dosen
-              {search && <span> untuk kata kunci &ldquo;<strong className="text-slate-700">{search}</strong>&rdquo;</span>}
+              {content.counterShowing} <span className="font-bold text-[#08235b]">{filtered.length}</span> {content.counterOf} {initialLecturers.length} {content.counterLecturers}
+              {search && <span> {content.counterForKeyword} &ldquo;<strong className="text-slate-700">{search}</strong>&rdquo;</span>}
             </div>
             <button
               onClick={() => {
@@ -141,7 +147,7 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
               }}
               className="font-bold text-[#1453d6] hover:underline"
             >
-              Reset Filter
+              {content.resetFilterBtn}
             </button>
           </div>
         )}
@@ -176,17 +182,17 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
                   <div className="absolute left-3 top-3">
                     {lecturer.category === "pimpinan" && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-[#B45309] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
-                        <Award className="size-3" /> Pimpinan
+                        <Award className="size-3" /> {content.badgePimpinan}
                       </span>
                     )}
                     {lecturer.category === "lab" && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-[#0F766E] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
-                        <Cpu className="size-3" /> Ka. Lab
+                        <Cpu className="size-3" /> {content.badgeLab}
                       </span>
                     )}
                     {lecturer.category === "dosen" && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-[#1453d6] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
-                        <GraduationCap className="size-3" /> Dosen
+                        <GraduationCap className="size-3" /> {content.badgeDosen}
                       </span>
                     )}
                   </div>
@@ -195,7 +201,7 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
                   <div className="absolute right-3 top-3">
                     <span
                       className="grid size-7 place-items-center rounded-full bg-white/90 text-emerald-600 shadow-sm border border-white"
-                      title="Dosen Tetap Terverifikasi PDDIKTI"
+                      title={content.pddiktiTooltip}
                     >
                       <BadgeCheck className="size-4" />
                     </span>
@@ -235,7 +241,9 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
                   {/* Bidang Riset */}
                   {lecturer.focus && (
                     <div className="rounded-lg border border-blue-100 bg-blue-50/60 px-3 py-2">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#1E6FD9] mb-1">Bidang Riset &amp; Fokus</p>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#1E6FD9] mb-1">
+                        {content.researchAreaLabel}
+                      </p>
                       <p className="line-clamp-2 text-[11px] font-medium leading-relaxed text-slate-600" title={lecturer.focus}>
                         {lecturer.focus}
                       </p>
@@ -252,11 +260,11 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          title={`Chat WhatsApp dengan ${lecturer.name}`}
+                          title={`${content.waButtonLabel} — ${lecturer.name}`}
                           className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#15803D] py-2 text-[11px] font-bold text-white shadow-sm transition hover:bg-[#166534] hover:scale-105 active:scale-95"
                         >
                           <WhatsAppIcon className="size-3.5" />
-                          WhatsApp
+                          {content.waButtonLabel}
                         </a>
                       ) : null;
                     })()}
@@ -264,11 +272,11 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
                       <a
                         href={`mailto:${lecturer.email}`}
                         onClick={(e) => e.stopPropagation()}
-                        title={`Email ${lecturer.name}`}
+                        title={`${content.emailButtonLabel} — ${lecturer.name}`}
                         className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-[11px] font-bold text-slate-600 transition hover:border-[#1453d6] hover:text-[#1453d6] hover:scale-105 active:scale-95"
                       >
                         <Mail className="size-3.5" />
-                        Email
+                        {content.emailButtonLabel}
                       </a>
                     )}
                   </div>
@@ -280,9 +288,9 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
           {filtered.length === 0 && (
             <div className="col-span-full rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs">
               <Users className="mx-auto size-12 text-slate-300" aria-hidden="true" />
-              <h4 className="mt-4 font-display text-lg font-bold text-slate-700">Dosen tidak ditemukan</h4>
+              <h4 className="mt-4 font-display text-lg font-bold text-slate-700">{content.emptyTitle}</h4>
               <p className="mt-1 text-sm text-slate-500">
-                Tidak ada data dosen yang sesuai dengan kata kunci &ldquo;{search}&rdquo;.
+                {content.emptyDesc} &ldquo;{search}&rdquo;.
               </p>
               <button
                 onClick={() => {
@@ -291,14 +299,12 @@ export function DosenClient({ initialLecturers, initialQuery = "" }: DosenClient
                 }}
                 className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#1453d6] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#08235b]"
               >
-                Reset Pencarian
+                {content.resetSearchBtn}
               </button>
             </div>
           )}
         </div>
       </div>
-
-
     </div>
   );
 }

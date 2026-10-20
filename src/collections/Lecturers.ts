@@ -21,6 +21,7 @@ export const Lecturers: CollectionConfig = {
       name: 'role',
       type: 'text',
       required: true,
+      localized: true,
       label: 'Jabatan',
     },
     {
@@ -57,6 +58,7 @@ export const Lecturers: CollectionConfig = {
     {
       name: 'focus',
       type: 'text',
+      localized: true,
       label: 'Bidang Keahlian / Riset',
     },
     {

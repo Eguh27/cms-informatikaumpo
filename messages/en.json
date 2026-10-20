@@ -1,0 +1,47 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "profile": "Profile",
+    "history": "History & Vision",
+    "lecturers": "Faculty & Staff",
+    "facilities": "Laboratories",
+    "academics": "Academics",
+    "curriculum": "Curriculum & Specializations",
+    "schedule": "Class Schedule",
+    "calendar": "Academic Calendar",
+    "news": "News",
+    "downloads": "Downloads",
+    "admissions": "Admissions",
+    "internship": "Internship / Practical Work",
+    "kkn": "Community Service (KKN)",
+    "thesis": "Undergraduate Thesis",
+    "pmb": "Admission Portal",
+    "search": "Search website",
+    "more": "More"
+  },
+  "Common": {
+    "search": "Search",
+    "searchPlaceholder": "Search courses, news, faculty...",
+    "downloadPdf": "Download PDF",
+    "viewDocument": "View Document",
+    "readMore": "Read More",
+    "active": "Active",
+    "all": "All",
+    "close": "Close",
+    "sks": "Credits (SKS)",
+    "semester": "Semester",
+    "stage": "Stage",
+    "contact": "Contact",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email"
+  },
+  "Curriculum": {
+    "title": "Curriculum & Specializations",
+    "subtitle": "OBE-based curriculum map designed adaptively for the modern technology industry.",
+    "tracksTitle": "Specializations & Tracks",
+    "coursesTitle": "Course Distribution by Semester",
+    "activeNotice": "Active Curriculum",
+    "noActive": "No active curriculum published yet."
+  }
+}

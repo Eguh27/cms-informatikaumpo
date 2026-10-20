@@ -16,12 +16,47 @@ export interface ParallaxHeroImages {
   cloud: string
 }
 
-export function ParallaxHero({ images }: { images?: ParallaxHeroImages }) {
+export interface ParallaxHeroContent {
+  title?: string
+  heroTitle?: string
+  lead?: string
+  heroLead?: string
+  primaryCtaText?: string
+  heroPrimaryCtaText?: string
+  secondaryCtaText?: string
+  heroSecondaryCtaText?: string
+  scrollCue?: string
+  heroScrollCue?: string
+  stats?: Array<[string, string]>
+}
+
+export function ParallaxHero({
+  images,
+  content,
+  locale = 'id',
+}: {
+  images?: ParallaxHeroImages
+  content?: ParallaxHeroContent
+  locale?: 'id' | 'en'
+}) {
   const buildingSrc = images?.building || SITE_MEDIA.heroBuilding
   const cloudSrc = images?.cloud || SITE_MEDIA.heroCloud
   const scrollToProfil = () => {
     document.getElementById('profil')?.scrollIntoView({ behavior: 'smooth' })
   }
+
+  const title = content?.heroTitle || content?.title || 'Teknik Informatika UNMUH Ponorogo'
+  const lead =
+    content?.heroLead ||
+    content?.lead ||
+    'Program Studi Teknik Informatika Universitas Muhammadiyah Ponorogo, menghubungkan teknologi, kreativitas, dan dampak nyata berbasis nilai-nilai keislaman.'
+  const primaryCta = content?.heroPrimaryCtaText || content?.primaryCtaText || 'Eksplorasi Kurikulum'
+  const secondaryCta = content?.heroSecondaryCtaText || content?.secondaryCtaText || 'Profil & Visi Keilmuan'
+  const scrollCue = content?.heroScrollCue || content?.scrollCue || 'Jelajahi'
+  const stats = content?.stats && content.stats.length > 0 ? content.stats : STATS
+
+  const akademikHref = locale === 'en' ? '/en/akademik' : '/akademik'
+  const profilHref = locale === 'en' ? '/en/profil' : '/profil'
 
   return (
     <section
@@ -83,22 +118,20 @@ export function ParallaxHero({ images }: { images?: ParallaxHeroImages }) {
       <div className="px-hero-inner">
         <div className="px-hero-card" data-px-hero-card>
           <h1 id="hero-title">
-            Teknik Informatika UNMUH Ponorogo
+            {title}
           </h1>
           <p className="px-lead" data-px-hero-meta>
-            Program Studi Teknik Informatika Universitas Muhammadiyah Ponorogo, 
-            menghubungkan teknologi, kreativitas, dan dampak nyata berbasis
-            nilai-nilai keislaman.
+            {lead}
           </p>
           <div className="px-actions" data-px-hero-meta>
-            <Link href="/akademik" className="px-btn-primary">
-              Eksplorasi Kurikulum
+            <Link href={akademikHref} className="px-btn-primary">
+              {primaryCta}
               <span aria-hidden="true">
                 <ArrowRight className="size-4" />
               </span>
             </Link>
-            <Link href="/profil" className="px-btn-secondary">
-              Profil &amp; Visi Keilmuan <ChevronRight className="size-4 opacity-70" aria-hidden="true" />
+            <Link href={profilHref} className="px-btn-secondary">
+              {secondaryCta} <ChevronRight className="size-4 opacity-70" aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -106,7 +139,7 @@ export function ParallaxHero({ images }: { images?: ParallaxHeroImages }) {
         {/* Stats */}
         <div className="px-stats" data-px-stats>
           <dl className="px-stat-group">
-            {STATS.map(([value, label], i) => (
+            {stats.map(([value, label], i) => (
               <div key={label} className={`px-stat${i === 0 ? ' px-stat-featured' : ''}`}>
                 <dt className="sr-only">{label}</dt>
                 <dd className="px-stat-value" aria-label={`${value} ${label}`}>
@@ -120,8 +153,13 @@ export function ParallaxHero({ images }: { images?: ParallaxHeroImages }) {
       </div>
 
       {/* Scroll cue */}
-      <button type="button" className="px-scroll-cue" onClick={scrollToProfil} aria-label="Gulir ke profil prodi">
-        <span>Jelajahi</span>
+      <button
+        type="button"
+        className="px-scroll-cue"
+        onClick={scrollToProfil}
+        aria-label={locale === 'en' ? 'Scroll to department profile' : 'Gulir ke profil prodi'}
+      >
+        <span>{scrollCue}</span>
         <i aria-hidden="true">
           <b />
         </i>

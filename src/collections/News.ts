@@ -15,6 +15,7 @@ export const News: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       label: 'Judul Berita',
     },
     {
@@ -48,12 +49,14 @@ export const News: CollectionConfig = {
       name: 'excerpt',
       type: 'textarea',
       required: true,
+      localized: true,
       label: 'Ringkasan Singkat (Excerpt)',
     },
     {
       name: 'content',
       type: 'richText',
       required: true,
+      localized: true,
       label: 'Isi Konten',
     },
     {

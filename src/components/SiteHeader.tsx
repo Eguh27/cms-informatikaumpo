@@ -23,12 +23,42 @@ function NavLink({ href, label, isActive }: { href: string; label: string; isAct
   )
 }
 
-export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerData?: HeaderType }) {
+export function SiteHeader({
+  logoSrc,
+  headerData,
+  locale: initialLocale,
+}: {
+  logoSrc?: string
+  headerData?: HeaderType | null
+  locale?: 'id' | 'en'
+}) {
   const [scrollY, setScrollY] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileExpanded, setMobileExpanded] = useState<'akademik' | 'pendaftaran' | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const pathname = usePathname()
+
+  const isEn = pathname.startsWith('/en') || initialLocale === 'en'
+  const currentLocale: 'id' | 'en' = isEn ? 'en' : 'id'
+
+  const switchLocale = (target: 'id' | 'en') => {
+    if (target === currentLocale) return
+    if (target === 'en') {
+      const newPath = pathname === '/' ? '/en' : `/en${pathname}`
+      window.location.href = newPath
+    } else {
+      const newPath = pathname.replace(/^\/en/, '') || '/'
+      window.location.href = newPath
+    }
+  }
+
+  const localize = (href: string) => {
+    if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('/admin') || href.startsWith('/api')) return href
+    if (currentLocale === 'en') {
+      return href.startsWith('/en') ? href : `/en${href === '/' ? '' : href}`
+    }
+    return href
+  }
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY)
@@ -54,7 +84,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 lg:px-8">
           {/* Logo & Identity */}
-          <Link href="/" className="group flex items-center gap-3 text-left focus:outline-none">
+          <Link href={localize('/')} className="group flex items-center gap-3 text-left focus:outline-none">
             <span className="grid size-11 place-items-center rounded-2xl border border-[#E7DECB] bg-[#F9F6EE] p-1.5 shadow-sm transition-colors">
               <img
                 src={logoSrc || SITE_MEDIA.logoUmpo}
@@ -71,43 +101,42 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
             </span>
           </Link>
 
-          {/* Desktop Navigation Links — ordered by how visitors arrive:
-              orientasi, identitas, isi akademik, lalu sumber daya & aksi. */}
+          {/* Desktop Navigation Links */}
           <div className="hidden items-center gap-0.5 xl:flex">
-            <NavLink href="/" label="Beranda" isActive={pathname === '/'} />
-            <NavLink href="/profil" label="Profil" isActive={pathname.startsWith('/profil')} />
+            <NavLink href={localize('/')} label={currentLocale === 'en' ? 'Home' : 'Beranda'} isActive={pathname === '/' || pathname === '/en'} />
+            <NavLink href={localize('/profil')} label={currentLocale === 'en' ? 'Profile' : 'Profil'} isActive={pathname.includes('/profil')} />
 
             <NavDropdown
-              label="Akademik"
-              href="/akademik"
-              isActive={pathname.startsWith('/akademik')}
+              label={currentLocale === 'en' ? 'Academics' : 'Akademik'}
+              href={localize('/akademik')}
+              isActive={pathname.includes('/akademik')}
               items={[
                 {
-                  label: 'Kurikulum & CPL',
-                  desc: 'Konsentrasi, peta semester, capaian lulusan',
-                  href: '/akademik',
+                  label: currentLocale === 'en' ? 'Curriculum & Tracks' : 'Kurikulum & CPL',
+                  desc: currentLocale === 'en' ? 'Specializations, semester maps, learning outcomes' : 'Konsentrasi, peta semester, capaian lulusan',
+                  href: localize('/akademik'),
                 },
                 {
-                  label: 'Jadwal Kuliah',
-                  desc: 'Unduh jadwal per semester dari CMS',
-                  href: '/akademik/jadwal-kuliah',
+                  label: currentLocale === 'en' ? 'Class Schedule' : 'Jadwal Kuliah',
+                  desc: currentLocale === 'en' ? 'Latest official PDF schedules from CMS' : 'Unduh jadwal per semester dari CMS',
+                  href: localize('/akademik/jadwal-kuliah'),
                 },
               ]}
             />
 
-            <NavLink href="/dosen" label="Dosen" isActive={pathname.startsWith('/dosen')} />
-            <NavLink href="/fasilitas" label="Fasilitas" isActive={pathname.startsWith('/fasilitas')} />
-            <NavLink href="/berita" label="Berita" isActive={pathname.startsWith('/berita')} />
-            <NavLink href="/download" label="Unduhan" isActive={pathname.startsWith('/download')} />
+            <NavLink href={localize('/dosen')} label={currentLocale === 'en' ? 'Faculty' : 'Dosen'} isActive={pathname.includes('/dosen')} />
+            <NavLink href={localize('/fasilitas')} label={currentLocale === 'en' ? 'Facilities' : 'Fasilitas'} isActive={pathname.includes('/fasilitas')} />
+            <NavLink href={localize('/berita')} label={currentLocale === 'en' ? 'News' : 'Berita'} isActive={pathname.includes('/berita')} />
+            <NavLink href={localize('/download')} label={currentLocale === 'en' ? 'Downloads' : 'Unduhan'} isActive={pathname.includes('/download')} />
 
             <NavDropdown
-              label="Pendaftaran"
-              isActive={pathname.startsWith('/pendaftaran')}
+              label={currentLocale === 'en' ? 'Admissions' : 'Pendaftaran'}
+              isActive={pathname.includes('/pendaftaran')}
               items={[
                 {
-                  label: 'Magang',
-                  desc: 'Formulir & berkas Kerja Praktik industri',
-                  href: '/pendaftaran/magang',
+                  label: currentLocale === 'en' ? 'Internship' : 'Magang',
+                  desc: currentLocale === 'en' ? 'Industry internship practical forms' : 'Formulir & berkas Kerja Praktik industri',
+                  href: localize('/pendaftaran/magang'),
                 },
                 {
                   label: 'KKN',
@@ -116,24 +145,24 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
                   external: true,
                 },
                 {
-                  label: 'Skripsi',
+                  label: currentLocale === 'en' ? 'Thesis' : 'Skripsi',
                   desc: 'Sistem informasi SISKRIP',
                   href: SITE_LINKS.siskrip,
                   external: true,
                 },
                 {
-                  label: 'Organisasi',
+                  label: currentLocale === 'en' ? 'Student Orgs' : 'Organisasi',
                   desc: 'HIMAKA & ormawa prodi',
-                  badge: 'Segera',
+                  badge: currentLocale === 'en' ? 'Soon' : 'Segera',
                   disabled: true,
                 },
               ]}
             />
 
-            {/* Dynamic Dropdown from CMS — same behavior and panel as the other menus */}
+            {/* Dynamic Dropdown from CMS */}
             {headerData?.navItems && headerData.navItems.length > 0 && (
               <NavDropdown
-                label="Lainnya"
+                label={currentLocale === 'en' ? 'More' : 'Lainnya'}
                 items={headerData.navItems
                   .map(({ link }) => {
                     const href =
@@ -145,7 +174,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
                     if (!href) return null
                     return {
                       label: link?.label || href,
-                      href,
+                      href: localize(href),
                       external: !!link?.newTab,
                     }
                   })
@@ -156,10 +185,38 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
 
           {/* Desktop Right CTA */}
           <div className="hidden items-center gap-3 xl:flex">
+            {/* Language Switcher Pill */}
+            <div className="flex items-center rounded-full border border-blue-100 bg-[#eaf0ff] p-1 text-xs font-bold shadow-xs">
+              <button
+                type="button"
+                onClick={() => switchLocale('id')}
+                className={`rounded-full px-2.5 py-1 transition-all ${
+                  currentLocale === 'id'
+                    ? 'bg-[#1453d6] text-white shadow-xs font-black'
+                    : 'text-slate-600 hover:text-[#1453d6]'
+                }`}
+                aria-label="Bahasa Indonesia"
+              >
+                ID
+              </button>
+              <button
+                type="button"
+                onClick={() => switchLocale('en')}
+                className={`rounded-full px-2.5 py-1 transition-all ${
+                  currentLocale === 'en'
+                    ? 'bg-[#1453d6] text-white shadow-xs font-black'
+                    : 'text-slate-600 hover:text-[#1453d6]'
+                }`}
+                aria-label="English"
+              >
+                EN
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              aria-label="Cari di website"
+              aria-label={currentLocale === 'en' ? 'Search website' : 'Cari di website'}
               aria-haspopup="dialog"
               className="grid size-11 place-items-center rounded-full transition bg-[#eaf0ff] text-[#1453d6] hover:bg-blue-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9]"
             >
@@ -171,16 +228,42 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
               rel="noopener noreferrer"
               className="rounded-full px-6 py-3 text-sm font-bold transition-colors bg-[#1453d6] text-white shadow-[0_10px_24px_rgba(20,83,214,.25)] hover:bg-[#0f44b3]"
             >
-              Pendaftaran PMB
+              {currentLocale === 'en' ? 'PMB Admissions' : 'Pendaftaran PMB'}
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Bar */}
           <div className="flex items-center gap-2 xl:hidden">
+            {/* Mobile Language Switcher Pill */}
+            <div className="flex items-center rounded-full border border-blue-100 bg-[#eaf0ff] p-0.5 text-xs font-bold shadow-xs">
+              <button
+                type="button"
+                onClick={() => switchLocale('id')}
+                className={`rounded-full px-2 py-0.5 text-[11px] transition-all ${
+                  currentLocale === 'id'
+                    ? 'bg-[#1453d6] text-white font-black'
+                    : 'text-slate-600 hover:text-[#1453d6]'
+                }`}
+              >
+                ID
+              </button>
+              <button
+                type="button"
+                onClick={() => switchLocale('en')}
+                className={`rounded-full px-2 py-0.5 text-[11px] transition-all ${
+                  currentLocale === 'en'
+                    ? 'bg-[#1453d6] text-white font-black'
+                    : 'text-slate-600 hover:text-[#1453d6]'
+                }`}
+              >
+                EN
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              aria-label="Cari"
+              aria-label={currentLocale === 'en' ? 'Search' : 'Cari'}
               aria-haspopup="dialog"
               className="grid size-11 place-items-center rounded-full bg-[#eaf0ff] text-[#1453d6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E6FD9]"
             >
@@ -206,49 +289,49 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
           >
             <div className="space-y-1">
               <Link
-                href="/"
+                href={localize('/')}
                 className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
               >
-                Beranda
+                {currentLocale === 'en' ? 'Home' : 'Beranda'}
               </Link>
               <Link
-                href="/profil"
+                href={localize('/profil')}
                 className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
               >
-                Profil Program Studi
+                {currentLocale === 'en' ? 'Department Profile' : 'Profil Program Studi'}
               </Link>
 
               <Link
-                href="/dosen"
+                href={localize('/dosen')}
                 className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
               >
-                Dosen
+                {currentLocale === 'en' ? 'Faculty & Staff' : 'Dosen'}
               </Link>
               <Link
-                href="/fasilitas"
+                href={localize('/fasilitas')}
                 className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
               >
-                Fasilitas
+                {currentLocale === 'en' ? 'Laboratories & Facilities' : 'Fasilitas'}
               </Link>
               <Link
-                href="/berita"
+                href={localize('/berita')}
                 className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
               >
-                Berita
+                {currentLocale === 'en' ? 'News & Events' : 'Berita'}
               </Link>
               <Link
-                href="/download"
+                href={localize('/download')}
                 className="flex w-full items-center justify-between border-b border-[#e4ebfb] py-3.5 text-left text-sm font-semibold text-[#16356e]"
               >
-                Unduhan
+                {currentLocale === 'en' ? 'Downloads & Documents' : 'Unduhan'}
               </Link>
               <div className="border-b border-[#e4ebfb]">
                 <div className="flex w-full items-center justify-between">
                   <Link
-                    href="/akademik"
+                    href={localize('/akademik')}
                     className="flex-1 py-3.5 text-left text-sm font-semibold text-[#16356e]"
                   >
-                    Akademik
+                    {currentLocale === 'en' ? 'Academics' : 'Akademik'}
                   </Link>
                   <button
                     type="button"
@@ -268,18 +351,18 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
                   <ul id="submenu-seluler-akademik" aria-label="Submenu Akademik" className="pb-2 pl-4">
                     <li>
                       <Link
-                        href="/akademik"
+                        href={localize('/akademik')}
                         className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
                       >
-                        Kurikulum & CPL
+                        {currentLocale === 'en' ? 'Curriculum & OBE' : 'Kurikulum & CPL'}
                       </Link>
                     </li>
                     <li>
                       <Link
-                        href="/akademik/jadwal-kuliah"
+                        href={localize('/akademik/jadwal-kuliah')}
                         className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
                       >
-                        Jadwal Kuliah
+                        {currentLocale === 'en' ? 'Class Schedule' : 'Jadwal Kuliah'}
                       </Link>
                     </li>
                   </ul>
@@ -293,7 +376,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
                   aria-controls="submenu-seluler-pendaftaran"
                   className="flex min-h-[44px] w-full items-center justify-between py-3.5 text-left text-sm font-semibold text-[#16356e]"
                 >
-                  Pendaftaran
+                  {currentLocale === 'en' ? 'Admissions' : 'Pendaftaran'}
                   <ChevronDown
                     className={`size-5 text-[#1453d6] transition-transform ${mobileExpanded === 'pendaftaran' ? 'rotate-180' : ''}`}
                     aria-hidden="true"
@@ -303,10 +386,10 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
                   <ul id="submenu-seluler-pendaftaran" aria-label="Submenu Pendaftaran" className="pb-2 pl-4">
                     <li>
                       <Link
-                        href="/pendaftaran/magang"
+                        href={localize('/pendaftaran/magang')}
                         className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
                       >
-                        Magang
+                        {currentLocale === 'en' ? 'Internship' : 'Magang'}
                       </Link>
                     </li>
                     <li>
@@ -326,12 +409,12 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
                         rel="noopener noreferrer"
                         className="block min-h-[44px] py-3 text-sm font-semibold text-[#16356e]"
                       >
-                        Skripsi
+                        {currentLocale === 'en' ? 'Thesis' : 'Skripsi'}
                       </a>
                     </li>
                     <li>
                       <span aria-disabled="true" className="block min-h-[44px] cursor-default py-3 text-sm font-semibold text-slate-400">
-                        Organisasi
+                        {currentLocale === 'en' ? 'Student Orgs' : 'Organisasi'}
                       </span>
                     </li>
                   </ul>
@@ -355,7 +438,7 @@ export function SiteHeader({ logoSrc, headerData }: { logoSrc?: string; headerDa
                   rel="noopener noreferrer"
                   className="flex w-full items-center justify-center rounded-2xl bg-[#1453d6] py-3.5 text-center text-sm font-bold text-white shadow-lg"
                 >
-                  Pendaftaran PMB
+                  {currentLocale === 'en' ? 'PMB Admissions' : 'Pendaftaran PMB'}
                 </a>
               </div>
             </div>

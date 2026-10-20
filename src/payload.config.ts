@@ -16,18 +16,40 @@ import { Downloads } from './collections/Downloads'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { SiteMedia } from './SiteMedia/config'
+import { HomePage } from './HomePage/config'
+import { ProfilePage } from './ProfilePage/config'
+import { DosenPage } from './DosenPage/config'
+import { FasilitasPage } from './FasilitasPage/config'
+import { BeritaPage } from './BeritaPage/config'
+import { DownloadPage } from './DownloadPage/config'
+import { MagangPage } from './MagangPage/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 
 import { id } from '@payloadcms/translations/languages/id'
+import { en } from '@payloadcms/translations/languages/en'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  localization: {
+    locales: [
+      {
+        label: 'Bahasa Indonesia',
+        code: 'id',
+      },
+      {
+        label: 'English',
+        code: 'en',
+      },
+    ],
+    defaultLocale: 'id',
+    fallback: true,
+  },
   i18n: {
-    supportedLanguages: { id },
+    supportedLanguages: { id, en },
   },
   admin: {
     components: {
@@ -72,10 +94,11 @@ export default buildConfig({
       url: process.env.DATABASE_URL || '',
       authToken: process.env.DATABASE_AUTH_TOKEN,
     },
+    push: false,
   }),
   collections: [Pages, Media, Categories, Users, Lecturers, News, Curriculums, Partners, Downloads],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, SiteMedia],
+  globals: [Header, Footer, SiteMedia, HomePage, ProfilePage, DosenPage, FasilitasPage, BeritaPage, DownloadPage, MagangPage],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,

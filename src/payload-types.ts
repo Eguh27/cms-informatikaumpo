@@ -116,18 +116,32 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('id' | 'en') | ('id' | 'en')[];
   globals: {
     header: Header;
     footer: Footer;
     'site-media': SiteMedia;
+    'home-page': HomePage;
+    'profile-page': ProfilePage;
+    'dosen-page': DosenPage;
+    'fasilitas-page': FasilitasPage;
+    'berita-page': BeritaPage;
+    'download-page': DownloadPage;
+    'magang-page': MagangPage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'site-media': SiteMediaSelect<false> | SiteMediaSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'profile-page': ProfilePageSelect<false> | ProfilePageSelect<true>;
+    'dosen-page': DosenPageSelect<false> | DosenPageSelect<true>;
+    'fasilitas-page': FasilitasPageSelect<false> | FasilitasPageSelect<true>;
+    'berita-page': BeritaPageSelect<false> | BeritaPageSelect<true>;
+    'download-page': DownloadPageSelect<false> | DownloadPageSelect<true>;
+    'magang-page': MagangPageSelect<false> | MagangPageSelect<true>;
   };
-  locale: null;
+  locale: 'id' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -1802,21 +1816,28 @@ export interface Header {
  */
 export interface Footer {
   id: number;
+  description?: string | null;
+  navTitle?: string | null;
+  /**
+   * Kelola tautan menu navigasi footer. Anda dapat menambah, menghapus, atau menggeser urutan.
+   */
   navItems?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: number | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-        };
+        label: string;
+        url: string;
         id?: string | null;
       }[]
     | null;
+  contactTitle?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  phoneNote?: string | null;
+  email?: string | null;
+  copyrightText?: string | null;
+  portalLabel?: string | null;
+  portalUrl?: string | null;
+  pmbLabel?: string | null;
+  pmbUrl?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1830,6 +1851,377 @@ export interface SiteMedia {
   heroBuilding?: (number | null) | Media;
   heroCloud?: (number | null) | Media;
   himatifBanner?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  heroTitle?: string | null;
+  heroLead?: string | null;
+  heroPrimaryCtaText?: string | null;
+  heroSecondaryCtaText?: string | null;
+  heroScrollCue?: string | null;
+  stat1Value?: string | null;
+  stat1Label?: string | null;
+  stat2Value?: string | null;
+  stat2Label?: string | null;
+  stat3Value?: string | null;
+  stat3Label?: string | null;
+  stat4Value?: string | null;
+  stat4Label?: string | null;
+  profileSectionTag?: string | null;
+  profileTitle?: string | null;
+  profileDescription?: string | null;
+  btnHistoryText?: string | null;
+  btnVisiMisiText?: string | null;
+  degreeTag?: string | null;
+  degreeTitle?: string | null;
+  degreeQuote?: string | null;
+  quickStat1Number?: string | null;
+  quickStat1Title?: string | null;
+  quickStat1Desc?: string | null;
+  quickStat2Number?: string | null;
+  quickStat2Title?: string | null;
+  quickStat2Desc?: string | null;
+  curriculumSectionTag?: string | null;
+  curriculumTitle?: string | null;
+  curriculumDescription?: string | null;
+  driveCardTitle?: string | null;
+  driveCardSubtitle?: string | null;
+  driveBtnText?: string | null;
+  himatifSectionTag?: string | null;
+  himatifTitle?: string | null;
+  himatifDescription?: string | null;
+  himatifBtnText?: string | null;
+  himatifUrl?: string | null;
+  facilitySectionTag?: string | null;
+  facilityTitle?: string | null;
+  facilityDescription?: string | null;
+  facility1Title?: string | null;
+  facility1Desc?: string | null;
+  facility1Foot?: string | null;
+  facility2Title?: string | null;
+  facility2Desc?: string | null;
+  facility2Foot?: string | null;
+  facility3Title?: string | null;
+  facility3Desc?: string | null;
+  facility3Foot?: string | null;
+  facility3Link?: string | null;
+  ctaTitle?: string | null;
+  ctaDescription?: string | null;
+  ctaPrimaryBtnText?: string | null;
+  ctaPrimaryBtnUrl?: string | null;
+  ctaSecondaryBtnText?: string | null;
+  ctaSecondaryBtnUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profile-page".
+ */
+export interface ProfilePage {
+  id: number;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  tabSejarahLabel?: string | null;
+  tabVisimisiLabel?: string | null;
+  tabStrukturLabel?: string | null;
+  tabAkreditasiLabel?: string | null;
+  tabKontakLabel?: string | null;
+  sejarahBadge?: string | null;
+  sejarahTitle?: string | null;
+  sejarahParagraph1?: string | null;
+  sejarahParagraph2?: string | null;
+  sejarahParagraph3?: string | null;
+  btnNextTabLabel?: string | null;
+  btnDosenLabel?: string | null;
+  sidebarLegalTag?: string | null;
+  sidebarLegalTitle?: string | null;
+  legal1Label?: string | null;
+  legal1Value?: string | null;
+  legal1Sub?: string | null;
+  legal2Label?: string | null;
+  legal2Value?: string | null;
+  legal2Sub?: string | null;
+  legal3Label?: string | null;
+  legal3Value?: string | null;
+  legal3Sub?: string | null;
+  statNumber?: string | null;
+  statCaption?: string | null;
+  visiBadge?: string | null;
+  visiText?: string | null;
+  misiTag?: string | null;
+  misiTitle?: string | null;
+  misiItems?:
+    | {
+        no?: string | null;
+        title?: string | null;
+        desc?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  tujuanTag?: string | null;
+  tujuanTitle?: string | null;
+  tujuanItems?:
+    | {
+        no?: string | null;
+        title?: string | null;
+        desc?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  strukturTag?: string | null;
+  strukturTitle?: string | null;
+  strukturDesc?: string | null;
+  kaprodiRole?: string | null;
+  kaprodiName?: string | null;
+  kaprodiNidn?: string | null;
+  sekprodiRole?: string | null;
+  sekprodiName?: string | null;
+  sekprodiNidn?: string | null;
+  lab1Role?: string | null;
+  lab1Name?: string | null;
+  lab1Nidn?: string | null;
+  lab2Role?: string | null;
+  lab2Name?: string | null;
+  lab2Nidn?: string | null;
+  dosenBoxTitle?: string | null;
+  dosenBoxBtnLabel?: string | null;
+  dosenBoxDesc?: string | null;
+  akreditasiBadge?: string | null;
+  akreditasiTitle?: string | null;
+  akreditasiParagraph1?: string | null;
+  akreditasiParagraph2?: string | null;
+  akreditasiPoints?:
+    | {
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  btnDocLabel?: string | null;
+  btnDocUrl?: string | null;
+  btnKonsultasiLabel?: string | null;
+  certGrade?: string | null;
+  certAgency?: string | null;
+  certSk?: string | null;
+  certScope?: string | null;
+  hotlineTitle?: string | null;
+  hotlineNotice?: string | null;
+  waNumber?: string | null;
+  waPhone?: string | null;
+  emailLabel?: string | null;
+  emailValue?: string | null;
+  emailAlt?: string | null;
+  hoursLabel?: string | null;
+  hoursValue?: string | null;
+  hoursAlt?: string | null;
+  locationLabel?: string | null;
+  locationValue?: string | null;
+  locationAlt?: string | null;
+  mapsEmbed?: string | null;
+  mapsDirections?: string | null;
+  mapsTitle?: string | null;
+  mapsAddress?: string | null;
+  faqTitle?: string | null;
+  faqSubtitle?: string | null;
+  faqs?:
+    | {
+        q?: string | null;
+        a?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  pmbCardTitle?: string | null;
+  pmbCardBtnLabel?: string | null;
+  pmbCardDesc?: string | null;
+  pmbCardUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dosen-page".
+ */
+export interface DosenPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  tabSemua?: string | null;
+  tabPimpinan?: string | null;
+  tabLab?: string | null;
+  tabDosen?: string | null;
+  searchPlaceholder?: string | null;
+  searchAriaLabel?: string | null;
+  counterShowing?: string | null;
+  counterOf?: string | null;
+  counterLecturers?: string | null;
+  counterForKeyword?: string | null;
+  resetFilterBtn?: string | null;
+  badgePimpinan?: string | null;
+  badgeLab?: string | null;
+  badgeDosen?: string | null;
+  pddiktiTooltip?: string | null;
+  researchAreaLabel?: string | null;
+  waButtonLabel?: string | null;
+  emailButtonLabel?: string | null;
+  waDefaultMessage?: string | null;
+  emptyTitle?: string | null;
+  emptyDesc?: string | null;
+  resetSearchBtn?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fasilitas-page".
+ */
+export interface FasilitasPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  lab1Badge?: string | null;
+  lab1Title?: string | null;
+  lab1HeadRoleLabel?: string | null;
+  lab1HeadName?: string | null;
+  lab1Desc?: string | null;
+  lab1Point1?: string | null;
+  lab1Point2?: string | null;
+  lab1Point3?: string | null;
+  lab1Point4?: string | null;
+  lab1Capacity?: string | null;
+  lab1Connection?: string | null;
+  lab1Location?: string | null;
+  lab1Image?: (number | null) | Media;
+  lab1ImageTag?: string | null;
+  lab1ImageSub?: string | null;
+  lab2Badge?: string | null;
+  lab2Title?: string | null;
+  lab2HeadRoleLabel?: string | null;
+  lab2HeadName?: string | null;
+  lab2Desc?: string | null;
+  lab2Point1?: string | null;
+  lab2Point2?: string | null;
+  lab2Point3?: string | null;
+  lab2Point4?: string | null;
+  lab2Capacity?: string | null;
+  lab2Ac?: string | null;
+  lab2Location?: string | null;
+  lab2Image?: (number | null) | Media;
+  lab2ImageTag?: string | null;
+  lab2ImageSub?: string | null;
+  supportTag?: string | null;
+  supportTitle?: string | null;
+  supportDesc?: string | null;
+  support1Title?: string | null;
+  support1Desc?: string | null;
+  support2Title?: string | null;
+  support2Desc?: string | null;
+  support3Title?: string | null;
+  support3Desc?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "berita-page".
+ */
+export interface BeritaPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  filterAllLabel?: string | null;
+  searchPlaceholder?: string | null;
+  readTimePrefix?: string | null;
+  readMoreLabel?: string | null;
+  emptyTitle?: string | null;
+  emptyDesc?: string | null;
+  emptyResetLabel?: string | null;
+  detailBackLabel?: string | null;
+  detailRelatedTitle?: string | null;
+  detailAllNewsLabel?: string | null;
+  detailEmptyContent?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "download-page".
+ */
+export interface DownloadPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  filterAllLabel?: string | null;
+  searchPlaceholder?: string | null;
+  btnDownloadLabel?: string | null;
+  btnComingSoonLabel?: string | null;
+  emptyTitle?: string | null;
+  emptyDesc?: string | null;
+  guideTag?: string | null;
+  guideTitle?: string | null;
+  step1Title?: string | null;
+  step1Desc?: string | null;
+  step2Title?: string | null;
+  step2Desc?: string | null;
+  step3Title?: string | null;
+  step3Desc?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "magang-page".
+ */
+export interface MagangPage {
+  id: number;
+  bannerCategory?: string | null;
+  bannerTitle?: string | null;
+  bannerSubtitle?: string | null;
+  breadcrumbHome?: string | null;
+  breadcrumbCurrent?: string | null;
+  termsTitle?: string | null;
+  termsDesc?: string | null;
+  step1Title?: string | null;
+  step1Desc?: string | null;
+  step2Title?: string | null;
+  step2Desc?: string | null;
+  step3Title?: string | null;
+  step3Desc?: string | null;
+  docsSectionTitle?: string | null;
+  docsEmptyText?: string | null;
+  docsNoteText?: string | null;
+  btnDownloadLabel?: string | null;
+  btnComingSoonLabel?: string | null;
+  btnBackHomeLabel?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1861,20 +2253,25 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  description?: T;
+  navTitle?: T;
   navItems?:
     | T
     | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
+        label?: T;
+        url?: T;
         id?: T;
       };
+  contactTitle?: T;
+  address?: T;
+  phone?: T;
+  phoneNote?: T;
+  email?: T;
+  copyrightText?: T;
+  portalLabel?: T;
+  portalUrl?: T;
+  pmbLabel?: T;
+  pmbUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1888,6 +2285,377 @@ export interface SiteMediaSelect<T extends boolean = true> {
   heroBuilding?: T;
   heroCloud?: T;
   himatifBanner?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  heroTitle?: T;
+  heroLead?: T;
+  heroPrimaryCtaText?: T;
+  heroSecondaryCtaText?: T;
+  heroScrollCue?: T;
+  stat1Value?: T;
+  stat1Label?: T;
+  stat2Value?: T;
+  stat2Label?: T;
+  stat3Value?: T;
+  stat3Label?: T;
+  stat4Value?: T;
+  stat4Label?: T;
+  profileSectionTag?: T;
+  profileTitle?: T;
+  profileDescription?: T;
+  btnHistoryText?: T;
+  btnVisiMisiText?: T;
+  degreeTag?: T;
+  degreeTitle?: T;
+  degreeQuote?: T;
+  quickStat1Number?: T;
+  quickStat1Title?: T;
+  quickStat1Desc?: T;
+  quickStat2Number?: T;
+  quickStat2Title?: T;
+  quickStat2Desc?: T;
+  curriculumSectionTag?: T;
+  curriculumTitle?: T;
+  curriculumDescription?: T;
+  driveCardTitle?: T;
+  driveCardSubtitle?: T;
+  driveBtnText?: T;
+  himatifSectionTag?: T;
+  himatifTitle?: T;
+  himatifDescription?: T;
+  himatifBtnText?: T;
+  himatifUrl?: T;
+  facilitySectionTag?: T;
+  facilityTitle?: T;
+  facilityDescription?: T;
+  facility1Title?: T;
+  facility1Desc?: T;
+  facility1Foot?: T;
+  facility2Title?: T;
+  facility2Desc?: T;
+  facility2Foot?: T;
+  facility3Title?: T;
+  facility3Desc?: T;
+  facility3Foot?: T;
+  facility3Link?: T;
+  ctaTitle?: T;
+  ctaDescription?: T;
+  ctaPrimaryBtnText?: T;
+  ctaPrimaryBtnUrl?: T;
+  ctaSecondaryBtnText?: T;
+  ctaSecondaryBtnUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profile-page_select".
+ */
+export interface ProfilePageSelect<T extends boolean = true> {
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  tabSejarahLabel?: T;
+  tabVisimisiLabel?: T;
+  tabStrukturLabel?: T;
+  tabAkreditasiLabel?: T;
+  tabKontakLabel?: T;
+  sejarahBadge?: T;
+  sejarahTitle?: T;
+  sejarahParagraph1?: T;
+  sejarahParagraph2?: T;
+  sejarahParagraph3?: T;
+  btnNextTabLabel?: T;
+  btnDosenLabel?: T;
+  sidebarLegalTag?: T;
+  sidebarLegalTitle?: T;
+  legal1Label?: T;
+  legal1Value?: T;
+  legal1Sub?: T;
+  legal2Label?: T;
+  legal2Value?: T;
+  legal2Sub?: T;
+  legal3Label?: T;
+  legal3Value?: T;
+  legal3Sub?: T;
+  statNumber?: T;
+  statCaption?: T;
+  visiBadge?: T;
+  visiText?: T;
+  misiTag?: T;
+  misiTitle?: T;
+  misiItems?:
+    | T
+    | {
+        no?: T;
+        title?: T;
+        desc?: T;
+        id?: T;
+      };
+  tujuanTag?: T;
+  tujuanTitle?: T;
+  tujuanItems?:
+    | T
+    | {
+        no?: T;
+        title?: T;
+        desc?: T;
+        id?: T;
+      };
+  strukturTag?: T;
+  strukturTitle?: T;
+  strukturDesc?: T;
+  kaprodiRole?: T;
+  kaprodiName?: T;
+  kaprodiNidn?: T;
+  sekprodiRole?: T;
+  sekprodiName?: T;
+  sekprodiNidn?: T;
+  lab1Role?: T;
+  lab1Name?: T;
+  lab1Nidn?: T;
+  lab2Role?: T;
+  lab2Name?: T;
+  lab2Nidn?: T;
+  dosenBoxTitle?: T;
+  dosenBoxBtnLabel?: T;
+  dosenBoxDesc?: T;
+  akreditasiBadge?: T;
+  akreditasiTitle?: T;
+  akreditasiParagraph1?: T;
+  akreditasiParagraph2?: T;
+  akreditasiPoints?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  btnDocLabel?: T;
+  btnDocUrl?: T;
+  btnKonsultasiLabel?: T;
+  certGrade?: T;
+  certAgency?: T;
+  certSk?: T;
+  certScope?: T;
+  hotlineTitle?: T;
+  hotlineNotice?: T;
+  waNumber?: T;
+  waPhone?: T;
+  emailLabel?: T;
+  emailValue?: T;
+  emailAlt?: T;
+  hoursLabel?: T;
+  hoursValue?: T;
+  hoursAlt?: T;
+  locationLabel?: T;
+  locationValue?: T;
+  locationAlt?: T;
+  mapsEmbed?: T;
+  mapsDirections?: T;
+  mapsTitle?: T;
+  mapsAddress?: T;
+  faqTitle?: T;
+  faqSubtitle?: T;
+  faqs?:
+    | T
+    | {
+        q?: T;
+        a?: T;
+        id?: T;
+      };
+  pmbCardTitle?: T;
+  pmbCardBtnLabel?: T;
+  pmbCardDesc?: T;
+  pmbCardUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dosen-page_select".
+ */
+export interface DosenPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  tabSemua?: T;
+  tabPimpinan?: T;
+  tabLab?: T;
+  tabDosen?: T;
+  searchPlaceholder?: T;
+  searchAriaLabel?: T;
+  counterShowing?: T;
+  counterOf?: T;
+  counterLecturers?: T;
+  counterForKeyword?: T;
+  resetFilterBtn?: T;
+  badgePimpinan?: T;
+  badgeLab?: T;
+  badgeDosen?: T;
+  pddiktiTooltip?: T;
+  researchAreaLabel?: T;
+  waButtonLabel?: T;
+  emailButtonLabel?: T;
+  waDefaultMessage?: T;
+  emptyTitle?: T;
+  emptyDesc?: T;
+  resetSearchBtn?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fasilitas-page_select".
+ */
+export interface FasilitasPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  lab1Badge?: T;
+  lab1Title?: T;
+  lab1HeadRoleLabel?: T;
+  lab1HeadName?: T;
+  lab1Desc?: T;
+  lab1Point1?: T;
+  lab1Point2?: T;
+  lab1Point3?: T;
+  lab1Point4?: T;
+  lab1Capacity?: T;
+  lab1Connection?: T;
+  lab1Location?: T;
+  lab1Image?: T;
+  lab1ImageTag?: T;
+  lab1ImageSub?: T;
+  lab2Badge?: T;
+  lab2Title?: T;
+  lab2HeadRoleLabel?: T;
+  lab2HeadName?: T;
+  lab2Desc?: T;
+  lab2Point1?: T;
+  lab2Point2?: T;
+  lab2Point3?: T;
+  lab2Point4?: T;
+  lab2Capacity?: T;
+  lab2Ac?: T;
+  lab2Location?: T;
+  lab2Image?: T;
+  lab2ImageTag?: T;
+  lab2ImageSub?: T;
+  supportTag?: T;
+  supportTitle?: T;
+  supportDesc?: T;
+  support1Title?: T;
+  support1Desc?: T;
+  support2Title?: T;
+  support2Desc?: T;
+  support3Title?: T;
+  support3Desc?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "berita-page_select".
+ */
+export interface BeritaPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  filterAllLabel?: T;
+  searchPlaceholder?: T;
+  readTimePrefix?: T;
+  readMoreLabel?: T;
+  emptyTitle?: T;
+  emptyDesc?: T;
+  emptyResetLabel?: T;
+  detailBackLabel?: T;
+  detailRelatedTitle?: T;
+  detailAllNewsLabel?: T;
+  detailEmptyContent?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "download-page_select".
+ */
+export interface DownloadPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  filterAllLabel?: T;
+  searchPlaceholder?: T;
+  btnDownloadLabel?: T;
+  btnComingSoonLabel?: T;
+  emptyTitle?: T;
+  emptyDesc?: T;
+  guideTag?: T;
+  guideTitle?: T;
+  step1Title?: T;
+  step1Desc?: T;
+  step2Title?: T;
+  step2Desc?: T;
+  step3Title?: T;
+  step3Desc?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "magang-page_select".
+ */
+export interface MagangPageSelect<T extends boolean = true> {
+  bannerCategory?: T;
+  bannerTitle?: T;
+  bannerSubtitle?: T;
+  breadcrumbHome?: T;
+  breadcrumbCurrent?: T;
+  termsTitle?: T;
+  termsDesc?: T;
+  step1Title?: T;
+  step1Desc?: T;
+  step2Title?: T;
+  step2Desc?: T;
+  step3Title?: T;
+  step3Desc?: T;
+  docsSectionTitle?: T;
+  docsEmptyText?: T;
+  docsNoteText?: T;
+  btnDownloadLabel?: T;
+  btnComingSoonLabel?: T;
+  btnBackHomeLabel?: T;
+  metaTitle?: T;
+  metaDescription?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

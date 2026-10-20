@@ -19,16 +19,21 @@ import { getServerSideURL } from '@/utilities/getURL'
 
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { getCurrentLocale } from '@/utilities/getLocale'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
   const siteMedia = await getSiteMedia()
+  const locale = await getCurrentLocale()
   
   const payload = await getPayload({ config: configPromise })
-  const headerData = await payload.findGlobal({ slug: 'header' })
+  const [headerData, footerData] = await Promise.all([
+    payload.findGlobal({ slug: 'header', locale }).catch(() => null),
+    payload.findGlobal({ slug: 'footer', locale }).catch(() => null),
+  ])
 
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <html className={cn(GeistSans.variable, GeistMono.variable)} lang={locale} suppressHydrationWarning>
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
@@ -50,9 +55,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           >
             Lewati ke konten utama
           </a>
-          <SiteHeader logoSrc={siteMedia.logo} headerData={headerData} />
+          <SiteHeader logoSrc={siteMedia.logo} headerData={headerData} locale={locale} />
           {children}
-          <SiteFooter logoSrc={siteMedia.logo} />
+          <SiteFooter logoSrc={siteMedia.logo} footerData={footerData} locale={locale} />
         </Providers>
       </body>
     </html>
